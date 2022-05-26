@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ELearning_App.Repository.Repositories.CourseRepository">
+    <Position X="0.5" Y="5.25" Width="1.75" />
+    <InheritanceLine Type="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="7.25" Y="3.767" />
+        <Point X="7.25" Y="4.681" />
+        <Point X="1.375" Y="4.681" />
+        <Point X="1.375" Y="5.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAABAAAAAACAAAAAQAAAABAAAAAAAAA=</HashCode>
+      <FileName>Repository\Repositories\CourseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.231" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.GradeRepository">
+    <Position X="2.75" Y="5.5" Width="1.75" />
+    <InheritanceLine Type="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="7.25" Y="3.767" />
+        <Point X="7.25" Y="4.691" />
+        <Point X="3.625" Y="4.691" />
+        <Point X="3.625" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\Repositories\GradeRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.221" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.LoginInfoRepository">
+    <Position X="5" Y="5.5" Width="2" />
+    <InheritanceLine Type="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="7.25" Y="3.767" />
+        <Point X="7.25" Y="4.711" />
+        <Point X="6" Y="4.711" />
+        <Point X="6" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\Repositories\LoginInfoRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.398" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.ParentRepository">
+    <Position X="7.75" Y="5.5" Width="3.25" />
+    <InheritanceLine Type="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="7.25" Y="3.767" />
+        <Point X="7.25" Y="4.711" />
+        <Point X="9.375" Y="4.711" />
+        <Point X="9.375" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAAAgAAAAAAAQAAAA=</HashCode>
+      <FileName>Repository\Repositories\ParentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.94" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.StudentRepository">
+    <Position X="11.5" Y="5.5" Width="2.5" />
+    <InheritanceLine Type="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="7.25" Y="3.767" />
+        <Point X="7.25" Y="4.691" />
+        <Point X="12.75" Y="4.691" />
+        <Point X="12.75" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAQAAAAAAAAAAACAAAQAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\Repositories\StudentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.554" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.TeacherRepository">
+    <Position X="14.5" Y="5.75" Width="1.75" />
+    <InheritanceLine Type="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="7.25" Y="3.767" />
+        <Point X="7.25" Y="4.7" />
+        <Point X="15.375" Y="4.7" />
+        <Point X="15.375" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAQAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\Repositories\TeacherRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.054" />
+  </Class>
+  <Class Name="ELearning_App.Repository.GenericRepositories.GenericRepository&lt;TEntity&gt;">
+    <Position X="6.25" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAAAAAAAAAACAAAEAAAAAAgAAAAAAAIA=</HashCode>
+      <FileName>Repository\GenericRepositories\GenericRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

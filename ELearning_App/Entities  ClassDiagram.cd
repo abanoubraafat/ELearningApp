@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ELearning_App.Domain.Entities.LoginInfo">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAABAAACAAAAAgAAAAA=</HashCode>
+      <FileName>Domain\Entities\LoginInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ELearning_App.Domain.Entities.Student">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <AssociationLine Name="Grades" Type="ELearning_App.Domain.Entities.Grade" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.344" Y="5.31" />
+        <Point X="5.344" Y="7.25" />
+        <Point X="4.5" Y="7.25" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.174" Y="-1.032" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Parent" Type="ELearning_App.Domain.Entities.Parent" FixedToPoint="true">
+      <Path>
+        <Point X="6.25" Y="4.625" />
+        <Point X="7.75" Y="4.625" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Courses" Type="ELearning_App.Domain.Entities.Course" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.25" Y="5.125" />
+        <Point X="7.188" Y="5.125" />
+        <Point X="7.188" Y="6.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.825" Y="0.121" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAgAAQAAAAAAgAAAAAAAAgBEAAAA=</HashCode>
+      <FileName>Domain\Entities\Student.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Parent" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Grades" />
+      <Property Name="Courses" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ELearning_App.Domain.Entities.Teacher">
+    <Position X="10.5" Y="3.5" Width="1.5" />
+    <AssociationLine Name="Courses" Type="ELearning_App.Domain.Entities.Course">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.057" Y="-0.281" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAACAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Domain\Entities\Teacher.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Courses" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ELearning_App.Domain.Entities.Parent">
+    <Position X="7.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAgAAAAAAAABAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Parent.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Students" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ELearning_App.Domain.Entities.Grade">
+    <Position X="3" Y="6.75" Width="1.5" />
+    <AssociationLine Name="Course" Type="ELearning_App.Domain.Entities.Course" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.5" Y="7.688" />
+        <Point X="5.625" Y="7.688" />
+        <Point X="5.625" Y="7.687" />
+        <Point X="6.75" Y="7.687" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAIAAAAAAAAAAAAQAAQAAAAACAAA=</HashCode>
+      <FileName>Domain\Entities\Grade.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Student" />
+      <Property Name="Course" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ELearning_App.Domain.Entities.Course">
+    <Position X="6.75" Y="6.75" Width="1.5" />
+    <AssociationLine Name="Grades" Type="ELearning_App.Domain.Entities.Grade">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.121" Y="0.817" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Teacher" Type="ELearning_App.Domain.Entities.Teacher" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.25" Y="7.143" />
+        <Point X="10.812" Y="7.143" />
+        <Point X="10.812" Y="5.117" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Students" Type="ELearning_App.Domain.Entities.Student" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.75" Y="7.25" />
+        <Point X="6" Y="7.25" />
+        <Point X="6" Y="5.31" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.846" Y="0.078" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAOAAAAAAQAAAAAAAAAACAAAAAAAAAQAAAAAAAEAAAA=</HashCode>
+      <FileName>Domain\Entities\Course.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Teacher" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Grades" />
+      <Property Name="Students" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,12 @@
+﻿using ELearning_App.Domain.Entities;
+using ELearning_App.Repository.GenericRepositories;
+
+namespace ELearning_App.Repository.IRepositories
+{
+    public interface IUserRepository : IGenericRepository<User>
+    {
+        //IQueryable<User> GetByIdWithToDoLists(int id);
+        Task<bool> IsValidUserId(int id);
+        Task<User> Login(string email, string password);
+    }
+}
