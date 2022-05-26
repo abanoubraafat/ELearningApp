@@ -18,11 +18,13 @@ namespace ELearning_App.Controllers
     public class ParentsController : ControllerBase
     {
         private IParentRepository service { get; }
+        private IStudentRepository studentRepository { get; }
 
-        public ParentsController(IParentRepository _service)
+        public ParentsController(IParentRepository _service, IStudentRepository studentRepository)
         {
             service = _service;
             new Logger();
+            this.studentRepository = studentRepository;
         }
 
         // GET: api/Parents
@@ -108,6 +110,17 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        //[HttpGet("Students")]
+        //public async Task<ActionResult<Parent>> AddStudentsByEmail(int parentId, string studentEmail)
+        //{
+        //    var student = await studentRepository.FindAllAsync(s => s.EmailAddress == studentEmail);
+        //    var parent = await service.GetByIdAsync(parentId);
+        //    if (student == null || parent == null)
+        //        return NotFound();
+        //    parent.Students.Add(student);
+        //    await service.Update(parent);
+        //    return Ok();
+        //}
 
         // DELETE: api/Parents/5
         //[HttpDelete("{id}")]

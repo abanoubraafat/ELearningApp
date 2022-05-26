@@ -9,6 +9,6 @@ namespace ELearning_App.Repository.IRepositories
         //IQueryable<Parent> GetByIdWithStudentWithCoursesWithGrades(int id);
         //Task<Parent> GetParentByStudentId(int studentId);
         Task<bool> IsValidParentId(int id);
-
+        //Task<Parent> AddStudentsByEmail(int parentId ,string studentEmail);
     }
 }

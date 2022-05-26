@@ -23,6 +23,17 @@ namespace ELearning_App.Repository.Repositories
         {
             return await IsValidFk(a => a.Id == id);
         }
+
+        //public async Task<Parent> AddStudentsByEmail(int parentId, string studentEmail)
+        //{
+        //    var student = await unitOfWork.Context.Students.FirstAsync(s => s.EmailAddress == studentEmail);
+        //    var parent = await unitOfWork.Context.Parents.FirstAsync(p => p.Id == parentId);
+        //    if (student == null || parent == null)
+        //        return null;
+        //    parent.Students.Add(student);
+        //    await Update(parent);
+        //    return parent.Include
+        //}
         //public IQueryable<Parent> GetAllWithStudentWithCoursesWithGrades()
         //{
         //    return unitOfWork.Context.Parents;
