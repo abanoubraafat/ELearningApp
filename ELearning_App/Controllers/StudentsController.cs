@@ -110,6 +110,26 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        [HttpGet("/Email/{email}")]
+        public async Task<ActionResult<Student>> GetStudentByEmail(string email)
+        {
+            //try
+            //{
+                var isValidStudentEmail = await service.IsValidStudentEmail(email);
+                if (!isValidStudentEmail) return NotFound("Invalid Email");
+                return Ok(await service.GetStudentByEmail(email));
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error($"Controller: StudentsController , Action: GetStudents , Message: {ex.Message}");
+            //    return StatusCode(500);
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
+        }
+
 
         // DELETE: api/Students/5
         //[HttpDelete("{id}")]
