@@ -131,7 +131,6 @@ namespace ELearning_App.Controllers
 
                 var course = await service.GetByIdAsync(id);
                 if (course == null) return NotFound();
-
                 return Ok(await service.Delete(id));
             }
             catch (Exception ex)
@@ -144,52 +143,63 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        //[HttpGet("Students/{studentId}/JoinCourse/{courseId}")]
-        //public async Task<ActionResult<Course>> JoinCourse(int studentId, int courseId)
-        //{
-        //    try
-        //    {
-        //        Student s = await studentRepository.GetByIdAsync(studentId);
-        //        Course c = await service.GetByIdAsync(courseId);
-        //        if (c == null || s == null) return NotFound("Student Id or course Id or both are wrong");
-        //        c.Students.Add(s);
-        //        await service.Update(c);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetCourse , Message: {ex.Message}");
-        //        return NotFound();
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("Students/{studentId}/DropCourse/{courseId}")]
-        //public async Task<ActionResult<Course>> DropCourse(int studentId, int courseId)
-        //{
-        //    try
-        //    {
-        //        Student s = await studentRepository.GetByIdAsync(studentId);
-        //        Course c = await service.GetByIdAsync(courseId);
-        //        if (c == null || s == null) return NotFound("Student Id or course Id or both are wrong");
-        //        c.Students.Remove(s);
-        //        unitOfWork.Context.Entry(c).State = EntityState.Modified;
-        //        await unitOfWork.Commit();
-        //        //await service.Update(c);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetCourse , Message: {ex.Message}");
-        //        return NotFound();
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
+        [HttpGet("Students/{studentId}/JoinCourse/{courseId}")]
+        public async Task<ActionResult<Course>> JoinCourseForStudent(int studentId, int courseId)
+        {
+            try
+            {
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                var isValidCourseId = await service.IsValidCourseId(courseId);
+                if (!isValidStudentId)
+                    return NotFound("Invalid studentId");
+                else if (!isValidCourseId)
+                    return NotFound("Invalid courseId");
+
+                var added = await service.JoinCourseForStudent(studentId, courseId);
+                if (added.Equals("Course Joined Succefully"))
+                    return Ok(added);
+                else if (added.Equals("Already Joined"))
+                    return BadRequest(added);
+                return BadRequest(added);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: CoursesController , Action: GetCourse , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpGet("Students/{studentId}/DropCourse/{courseId}")]
+        public async Task<ActionResult<Course>> DropCourseForStudent(int studentId, int courseId)
+        {
+            try
+            {
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                var isValidCourseId = await service.IsValidCourseId(courseId);
+                if (!isValidStudentId)
+                    return NotFound("Invalid studentId");
+                else if (!isValidCourseId)
+                    return NotFound("Invalid courseId");
+
+                var dropped = await service.DropCourseForStudent(studentId, courseId);
+                if (dropped.Equals("Dropped"))
+                    return Ok("Course Dropped Succefully");
+                else
+                    return BadRequest("Invalid studentId or courseId");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: CoursesController , Action: GetCourse , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
         //[HttpGet("GetAllWithTeachers")]
         //public async Task<ActionResult<IEnumerable<Course>>> GetAllWithTeachers()
@@ -244,23 +254,23 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        //[HttpGet("Courses/{id}/Students")]
-        //public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithStudents(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithStudents , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
+        [HttpGet("Courses/{id}/Students/{id2}")]
+        public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id, int id2)
+        {
+            try
+            {
+                return Ok(await service.GetByIdWithStudents(id, id2));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: CoursesController , Action: GetByIdWithStudents , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
         // api/GetCoursesByTeacherId/5
         [HttpGet("GetCoursesByTeacherId/{teacherId}")]
         public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByTeacherId(int teacherId)

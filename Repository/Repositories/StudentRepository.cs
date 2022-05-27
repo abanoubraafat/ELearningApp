@@ -18,6 +18,16 @@ namespace ELearning_App.Repository.Repositories
             return await IsValidFk(a => a.Id == id);
         }
 
+        public async Task<bool> IsValidStudentEmail(string email)
+        {
+            return await IsValidFk(s => s.EmailAddress == email);
+        }
+
+        public async Task<Student> GetStudentByEmail(string email)
+        {
+            return await unitOfWork.Context.Students.FirstAsync(s => s.EmailAddress == email);
+        }
+
         //Implementations
 
         //public IQueryable<Student> GetAllWithCourses()

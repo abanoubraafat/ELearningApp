@@ -28,23 +28,30 @@ namespace ELearning_App.Repository.Repositories
             return await IsValidFk(a => a.Id == id);
         }
 
-        public async Task<Course> JoinCourse(int studentId, int courseId)
+        public async Task<string> JoinCourseForStudent(int studentId, int courseId)
         {
-            //    Student student = GetById(studentId).Result;
-            //    Course course = unitOfWork.Context.Courses.FirstOrDefault(c => c.Id == courseId);
-            //    if (course == null || student == null)
-            //    { return false; }
-            //    else
-            //    {
-            //        student.Courses.Add(course);
-            //        Update(student);
-            Student s = await unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId);
-            Course c = await GetByIdAsync(courseId);
-            c.Students.Add(s);
-            await Update(c);
-            return c;
+            
+            var student = unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId).Result;
+            var course = unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync().Result;
+            if (student == null || course == null)
+                return "Invalid studentId or courseId";
+            else if (course.Students.Any(s => s.Id == studentId))
+                return "Already Joined";
+            course.Students.Add(student);
+            await Update(course);
+            return "Course Joined Succefully";
         }
-        //not complete
+
+        public async Task<string> DropCourseForStudent(int studentId, int courseId)
+        {
+            var student = unitOfWork.Context.Students.FirstAsync(s=>s.Id == studentId).Result;
+            var course = unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync().Result;
+            if (student == null || course == null || !course.Students.Any(s => s.Id == studentId))
+                return "Invalid studentId or courseId";
+            course.Students.Remove(student);
+            await Update(course);
+            return "Dropped";
+        }
         public async Task<IEnumerable<Course>> GetCoursesByStudentId(int id)
         {
             return await unitOfWork.Context.Courses.Include(c => c.Students).Include(c => c.Teacher)
@@ -65,10 +72,24 @@ namespace ELearning_App.Repository.Repositories
         //    return unitOfWork.Context.Courses.Include(c => c.Teacher);
         //}
 
-        //public IQueryable<Course> GetByIdWithStudents(int id)
-        //{
-        //    return unitOfWork.Context.Courses.Where(c => c.Id == id).Include(c => c.Students);
-        //}
+        public async Task<bool> GetByIdWithStudents(int id, int studentId)
+        {
+            //return await unitOfWork.Context.Courses.Where(c => c.Id == id)
+            //    .Include(c => c.Students)
+            //    .Select( c => new Course
+            //    {
+            //        Id =c.Id,
+            //        Students = c.Students,
+            //        CourseName = c.CourseName
+            //    }).AnyAsync();
+            var course = unitOfWork.Context.Courses.Where(c => c.Id == id).Include(c => c.Students).FirstAsync().Result;
+            if (course.Students.Any(s => s.Id == studentId))
+                return true;
+            else
+                return false;
+        }
+
+
 
         //public IQueryable<Course> GetByIdWithTeachers(int id)
         //{

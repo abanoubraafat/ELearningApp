@@ -6,8 +6,8 @@ namespace ELearning_App.Domain.Entities
     public class QuestionAnswer
     {
         public int Id { get; set; }
-        public string QuestionAnswerText { get; set; } // chosen answer from mcq
-        public bool State { get; set; } // true or false
+        public string Answer { get; set; } // chosen answer from mcq
+        //public bool State { get; set; } // true or false
         //Relationships:
 
         // one to many (Question-> QuestionAnswer)
