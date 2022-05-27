@@ -17,7 +17,7 @@ namespace ELearning_App.Repository.Repositories
         public async Task<AssignmentGrade> GetAssignmentGradeByAssignmentAnswerId(int assignmentAnswerId)
         {
             return await unitOfWork.Context.AssignmentGrades
-                .FirstAsync(a => a.AssignmentAnswerId == assignmentAnswerId);
+                .FirstOrDefaultAsync(a => a.AssignmentAnswerId == assignmentAnswerId);
         }
         public async Task<bool> IsValidAssignmentGradeId(int id)
         {

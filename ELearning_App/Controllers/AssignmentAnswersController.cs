@@ -170,7 +170,7 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid AssignmentId or StudentId!");
                 var a = await service.GetAssignmentAnswerByStudentIdByAssignmentId(studentId, assignmentId);
                 if (a == null)
-                    return NotFound($"No Assignment or Student was found with Id: {assignmentId} , {studentId}");
+                    return NotFound($"No Assignment Associated with this Student was found");
                 return Ok(a);
             }
             catch (Exception ex)
