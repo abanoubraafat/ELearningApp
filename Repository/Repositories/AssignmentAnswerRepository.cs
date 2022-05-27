@@ -25,7 +25,7 @@ namespace ELearning_App.Repository.Repositories
         public async Task<AssignmentAnswer> GetAssignmentAnswerByStudentIdByAssignmentId(int studentId, int assignmentId)
         {
             return await unitOfWork.Context.AssignmentAnswers
-                .FirstAsync(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
+                .FirstOrDefaultAsync(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
 
         }
 
