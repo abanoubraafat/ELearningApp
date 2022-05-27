@@ -13,6 +13,8 @@ namespace ELearning_App.Repository.IRepositories
         //bool JoinCourseByCourseId(int studentId, int courseId);
         //IQueryable<Student> GetByIdWithNotes(int id);
         Task<bool> IsValidStudentId(int id);
+        Task<bool> IsValidStudentEmail(string email);
+        Task<Student> GetStudentByEmail(string email);
 
     }
 }

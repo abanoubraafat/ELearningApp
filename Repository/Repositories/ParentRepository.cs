@@ -24,16 +24,16 @@ namespace ELearning_App.Repository.Repositories
             return await IsValidFk(a => a.Id == id);
         }
 
-        //public async Task<Parent> AddStudentsByEmail(int parentId, string studentEmail)
-        //{
-        //    var student = await unitOfWork.Context.Students.FirstAsync(s => s.EmailAddress == studentEmail);
-        //    var parent = await unitOfWork.Context.Parents.FirstAsync(p => p.Id == parentId);
-        //    if (student == null || parent == null)
-        //        return null;
-        //    parent.Students.Add(student);
-        //    await Update(parent);
-        //    return parent.Include
-        //}
+        public async Task<string> AddStudentsByEmailToParent(int parentId, string studentEmail)
+        {
+            var student = unitOfWork.Context.Students.FirstAsync(s => s.EmailAddress == studentEmail).Result;
+            var parent = unitOfWork.Context.Parents.Where(p => p.Id == parentId).Include(p => p.Students).FirstAsync().Result;
+            if (student == null || parent == null)
+                return "Invalid studentId or parentId";
+            parent.Students.Add(student);
+            await Update(parent);
+            return "Added";
+        }
         //public IQueryable<Parent> GetAllWithStudentWithCoursesWithGrades()
         //{
         //    return unitOfWork.Context.Parents;

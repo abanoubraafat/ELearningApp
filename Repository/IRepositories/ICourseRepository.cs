@@ -10,7 +10,7 @@ namespace ELearning_App.Repository.IRepositories
 
         //// specific Course
         //IQueryable<Course> GetByIdWithTeachers(int id);
-        //Task<Course> GetByIdWithStudents(int id);
+        Task<bool> GetByIdWithStudents(int id, int studentId);
         //IQueryable<Course> GetCoursesByTeacherId(int id);
         //IQueryable<Course> GetNotGradedAnswersByCourseId(int id);
         Task<IEnumerable<Course>> GetCoursesByStudentId(int id);
@@ -23,8 +23,9 @@ namespace ELearning_App.Repository.IRepositories
         ////IQueryable<Course> GetByIdWithAnnouncementId(int id1, int id2);
         ///
         Task<IEnumerable<Course>> GetCoursesByTeacherId(int teacherId);
-        Task<Course> JoinCourse (int studentId, int courseId);
+        Task<string> JoinCourseForStudent(int studentId, int courseId);
         Task<bool> IsValidCourseId(int id);
+        Task<string> DropCourseForStudent(int studentId, int courseId);
 
     }
 }
