@@ -20,12 +20,14 @@ namespace ELearning_App.Controllers
         private IParentRepository service { get; }
         private IStudentRepository studentRepository { get; }
         private readonly IMapper mapper;
-        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper)
+        private readonly IUserRepository userRepository;
+        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository)
         {
             service = _service;
             new Logger();
             this.studentRepository = studentRepository;
             this.mapper = mapper;
+            this.userRepository = userRepository;
         }
 
         // GET: api/Parents
@@ -99,6 +101,9 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(parent.EmailAddress);
+                if (isNotAvailableUserEmail)
+                    return BadRequest("There's already an account with the same Email address");
                 var mapped = mapper.Map<Parent>(parent);
                 return Ok(await service.AddAsync(mapped));
             }

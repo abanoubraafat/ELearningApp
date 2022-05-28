@@ -18,11 +18,13 @@ namespace ELearning_App.Controllers
     {
         private IStudentRepository service { get; }
         private readonly IMapper mapper;
-        public StudentsController(IStudentRepository _service, IMapper mapper)
+        private readonly IUserRepository userRepository;
+        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository)
         {
             service = _service;
             new Logger();
             this.mapper = mapper;
+            this.userRepository = userRepository;
         }
 
         //// GET: api/Students
@@ -97,6 +99,9 @@ namespace ELearning_App.Controllers
 
             try
             {
+                var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
+                if (isNotAvailableUserEmail) 
+                    return BadRequest("There's already an account with the same Email address");
                 var student = mapper.Map<Student>(dto);
                 return Ok(await service.AddAsync(student));
             }

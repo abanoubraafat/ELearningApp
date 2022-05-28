@@ -23,6 +23,12 @@ namespace ELearning_App.Repository.Repositories
             return await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == email && u.Password == password);
         }
 
+        public async Task<bool> IsNotAvailableUserEmail(string email)
+        {
+            return await unitOfWork.Context.Users.AnyAsync(u => u.EmailAddress.Equals(email));
+            //if true means un valid
+        }
+
         //public IQueryable<LoginInfo> GetByIdWithToDoLists(int id)
         //{
         //    return unitOfWork.Context.LoginInfos.Where(l => l.Id == id).Include(l => l.ToDoLists);
