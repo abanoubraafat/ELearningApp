@@ -97,14 +97,16 @@ namespace ELearning_App.Controllers
         // POST: api/Parents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Parent>> PostParent(ParentDTO parent)
+        public async Task<ActionResult<Parent>> PostParent(ParentDTO dto)
         {
             try
             {
-                var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(parent.EmailAddress);
+                var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
                 if (isNotAvailableUserEmail)
                     return BadRequest("There's already an account with the same Email address");
-                var mapped = mapper.Map<Parent>(parent);
+                else if (!dto.Role.Equals("Parent"))
+                    return BadRequest("Make sure the Role field is 'Parent'");
+                var mapped = mapper.Map<Parent>(dto);
                 return Ok(await service.AddAsync(mapped));
             }
             catch (Exception ex)

@@ -100,8 +100,10 @@ namespace ELearning_App.Controllers
             try
             {
                 var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
-                if (isNotAvailableUserEmail) 
+                if (isNotAvailableUserEmail)
                     return BadRequest("There's already an account with the same Email address");
+                else if (!dto.Role.Equals("Student"))
+                    return BadRequest("Make sure the Role field is 'Student'");
                 var student = mapper.Map<Student>(dto);
                 return Ok(await service.AddAsync(student));
             }
