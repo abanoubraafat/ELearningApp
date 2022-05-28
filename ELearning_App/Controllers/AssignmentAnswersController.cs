@@ -14,13 +14,14 @@ namespace ELearning_App.Controllers
         private IAssignmentAnswerRepository service { get; }
         private readonly IAssignmentRepository assignmentRepository;
         private readonly IStudentRepository studentRepository;
-
-        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository)
+        private readonly IMapper mapper;
+        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository, IMapper mapper)
         {
             service = _service;
             new Logger();
             this.assignmentRepository = assignmentRepository;
             this.studentRepository = studentRepository;
+            this.mapper = mapper;
         }
 
         // GET: api/AssignmentAnsweres
@@ -67,7 +68,7 @@ namespace ELearning_App.Controllers
         // PUT: api/AssignmentAnsweres/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("AssignmentAnswers/{id}")]
-        public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] AssignmentAnswer a)
+        public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] AssignmentAnswerDTO a)
         {
 
             try
@@ -78,7 +79,8 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid AssignmentId or StudentId!");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
-                return Ok(await service.Update(a));
+                var aa = mapper.Map<AssignmentAnswer>(a);
+                return Ok(await service.Update(aa));
             }
             catch (Exception ex)
             {
@@ -94,7 +96,7 @@ namespace ELearning_App.Controllers
         // POST: api/AssignmentAnsweres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("AssignmentAnswers")]
-        public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer(AssignmentAnswer a)
+        public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer(AssignmentAnswerDTO a)
         {
             try
             {
@@ -102,7 +104,8 @@ namespace ELearning_App.Controllers
                 var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
                 if (!isValidAssignmentId || !isValidStudentId)
                     return BadRequest("Invalid AssignmentId or StudentId!");
-                return Ok(await service.AddAsync(a));
+                var aa = mapper.Map<AssignmentAnswer>(a);
+                return Ok(await service.AddAsync(aa));
             }
             catch (Exception ex)
             {
