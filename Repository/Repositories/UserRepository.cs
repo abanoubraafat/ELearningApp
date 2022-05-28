@@ -20,7 +20,7 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<User> Login(string email, string password)
         {
-            return await unitOfWork.Context.Users.FirstAsync(u => u.EmailAddress == email && u.Password == password);
+            return await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == email && u.Password == password);
         }
 
         //public IQueryable<LoginInfo> GetByIdWithToDoLists(int id)

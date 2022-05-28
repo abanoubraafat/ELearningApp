@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -23,6 +24,7 @@ namespace ELearning_App.Domain.Entities
         
         // (loginInfo(users) --> ToDoList) one to many  , users ->(Student & Teacher)
         public int UserId { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual User User { get; set; }
 
     }

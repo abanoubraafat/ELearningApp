@@ -70,16 +70,17 @@ namespace ELearning_App.Controllers
         // PUT: api/Contentes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContent(int id, Content c)
+        public async Task<IActionResult> PutContent(int id, ContentDTO dto)
         {
 
             try
             {
-                var isValidLessonId = await lessonRepository.IsValidLessonId(c.LessonId);
+                var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if (!isValidLessonId)
                     return BadRequest("Invalid LessonId");
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound();
+                var c = mapper.Map<Content>(dto);
                 return Ok(await service.Update(c));
             }
             catch (Exception ex)
@@ -96,13 +97,14 @@ namespace ELearning_App.Controllers
         // POST: api/Contentes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Content>> PostContent(Content c)
+        public async Task<ActionResult<Content>> PostContent(ContentDTO dto)
         {
             try
             {
-                var isValidLessonId = await lessonRepository.IsValidLessonId(c.LessonId);
+                var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if(!isValidLessonId)
                     return BadRequest("Invalid LessonId");
+                var c = mapper.Map<Content>(dto);
                 return Ok(await service.AddAsync(c));
             }
             catch (Exception ex)

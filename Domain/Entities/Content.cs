@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -16,6 +17,7 @@ namespace ELearning_App.Domain.Entities
 
         // (Lesson --> course_content_file) one to many
         public int LessonId { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Lesson Lesson { get; set; }
         //public int SectionId { get; set; }
         //public virtual Section Section { get; set; }

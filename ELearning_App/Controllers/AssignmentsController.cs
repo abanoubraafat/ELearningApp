@@ -29,8 +29,7 @@ namespace ELearning_App.Controllers
             try
             {
                 var a = await service.GetAllAsync();
-            var mapped = mapper.Map<IEnumerable<AssignmentDTO>>(a);
-            return Ok(mapped);
+            return Ok(a);
             }
             catch (Exception ex)
             {
@@ -52,7 +51,7 @@ namespace ELearning_App.Controllers
                 var a = await service.GetByIdAsync(id);
                 if (a == null)
                     return NotFound($"No Assignmetn was found with Id: {id}");
-                return Ok(mapper.Map<AssignmentDTO>(a));
+                return Ok(a);
             }
             catch (Exception ex)
             {
@@ -110,7 +109,7 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest("Invalid CourseId!");
                 var r = mapper.Map<Assignment>(dto);
-                return Ok(mapper.Map<AssignmentDTO>(await service.AddAsync(r)));
+                return Ok(r);
             }
             catch (Exception ex)
             {
@@ -135,7 +134,7 @@ namespace ELearning_App.Controllers
                 //var delete = await service.Delete(id);
                 //var x = mapper.Map<AssignmentDTO>(delete);
                 var a = await service.Delete(id);
-                return Ok(mapper.Map<AssignmentDTO>(a));
+                return Ok(a);
             }
             catch (Exception ex)
             {

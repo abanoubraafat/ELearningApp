@@ -92,12 +92,12 @@ namespace ELearning_App.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent(StudentDTO dto)
         {
 
             try
             {
-                
+                var student = mapper.Map<Student>(dto);
                 return Ok(await service.AddAsync(student));
             }
             catch (Exception ex)

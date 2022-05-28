@@ -18,11 +18,12 @@ namespace ELearning_App.Controllers
     public class TeachersController : ControllerBase
     {
         private ITeacherRepository service { get; }
-
-        public TeachersController(ITeacherRepository _service)
+        private readonly IMapper mapper;
+        public TeachersController(ITeacherRepository _service, IMapper mapper)
         {
             service = _service;
             new Logger();
+            this.mapper = mapper;
         }
 
         // GET: api/Teachers
@@ -92,10 +93,11 @@ namespace ELearning_App.Controllers
         // POST: api/Teachers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Teacher>> PostTeacher(Teacher teacher)
+        public async Task<ActionResult<Teacher>> PostTeacher(TeacherDTO dto)
         {
             try
             {
+                var teacher = mapper.Map<Teacher>(dto);
                 return Ok(await service.AddAsync(teacher));
             }
             catch (Exception ex)

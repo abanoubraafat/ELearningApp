@@ -131,7 +131,7 @@ namespace ELearning_App.Controllers
             //}
         //}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLoginInfo(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {

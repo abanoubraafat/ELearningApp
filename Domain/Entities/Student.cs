@@ -14,7 +14,7 @@ namespace ELearning_App.Domain.Entities
         // Relationships:
 
         //many to many  --> student -> Courses
-        public virtual ICollection<Course> Courses { get; set; } = new HashSet <Course>();
+        public virtual ICollection<Course> Courses { get; set; } = new HashSet<Course>();
         public virtual ICollection<Parent> Parents { get; set; } = new HashSet<Parent>();
 
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -12,6 +13,7 @@ namespace ELearning_App.Domain.Entities
         
         //(AssignmentAnswers --> AssignmentGrade) --> one to one.
         public int AssignmentAnswerId { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual AssignmentAnswer AssignmentAnswer { get; set; }
     }
 }
