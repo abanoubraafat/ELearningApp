@@ -11,7 +11,7 @@ namespace ELearning_App.Domain.Entities
         //one to one -->  parent --> student
         //public int StudentId { get; set; }
         //public virtual Student Student { get; set; }
-        public virtual ICollection<Student> Students { get; set; } = new HashSet<Student>();
+        public virtual ICollection<Student> Students { get; set; }
 
         //many student one parent
         //also service

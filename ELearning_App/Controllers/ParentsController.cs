@@ -19,12 +19,13 @@ namespace ELearning_App.Controllers
     {
         private IParentRepository service { get; }
         private IStudentRepository studentRepository { get; }
-
-        public ParentsController(IParentRepository _service, IStudentRepository studentRepository)
+        private readonly IMapper mapper;
+        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper)
         {
             service = _service;
             new Logger();
             this.studentRepository = studentRepository;
+            this.mapper = mapper;
         }
 
         // GET: api/Parents
@@ -94,11 +95,12 @@ namespace ELearning_App.Controllers
         // POST: api/Parents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Parent>> PostParent(Parent parent)
+        public async Task<ActionResult<Parent>> PostParent(ParentDTO parent)
         {
             try
             {
-                return Ok(await service.AddAsync(parent));
+                var mapped = mapper.Map<Parent>(parent);
+                return Ok(await service.AddAsync(mapped));
             }
             catch (Exception ex)
             {

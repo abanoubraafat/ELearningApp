@@ -8,7 +8,7 @@ namespace Domain.DTOs
 {
     public class ParentDTO : UserDTO
     {
-        public int StudentId { get; set; }
+        //public int StudentId { get; set; }
 
     }
 }

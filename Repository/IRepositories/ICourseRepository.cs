@@ -10,7 +10,7 @@ namespace ELearning_App.Repository.IRepositories
 
         //// specific Course
         //IQueryable<Course> GetByIdWithTeachers(int id);
-        Task<bool> GetByIdWithStudents(int id, int studentId);
+        Task<Course> GetByIdWithStudents(int id);
         //IQueryable<Course> GetCoursesByTeacherId(int id);
         //IQueryable<Course> GetNotGradedAnswersByCourseId(int id);
         Task<IEnumerable<Course>> GetCoursesByStudentId(int id);

@@ -72,21 +72,21 @@ namespace ELearning_App.Repository.Repositories
         //    return unitOfWork.Context.Courses.Include(c => c.Teacher);
         //}
 
-        public async Task<bool> GetByIdWithStudents(int id, int studentId)
+        public async Task<Course> GetByIdWithStudents(int id)
         {
-            //return await unitOfWork.Context.Courses.Where(c => c.Id == id)
-            //    .Include(c => c.Students)
-            //    .Select( c => new Course
-            //    {
-            //        Id =c.Id,
-            //        Students = c.Students,
-            //        CourseName = c.CourseName
-            //    }).AnyAsync();
-            var course = unitOfWork.Context.Courses.Where(c => c.Id == id).Include(c => c.Students).FirstAsync().Result;
-            if (course.Students.Any(s => s.Id == studentId))
-                return true;
-            else
-                return false;
+            return await unitOfWork.Context.Courses.Where(c => c.Id == id)
+                .Include(c => c.Students)
+                .Select(c => new Course
+                {
+                    Id = c.Id,
+                    Students = c.Students,
+                    CourseName = c.CourseName
+                }).FirstOrDefaultAsync();
+            //var course = unitOfWork.Context.Courses.Where(c => c.Id == id).Include(c => c.Students).FirstAsync().Result;
+            //if (course.Students.Any(s => s.Id == studentId))
+            //    return true;
+            //else
+            //    return false;
         }
 
 

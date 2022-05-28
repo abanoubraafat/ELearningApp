@@ -254,12 +254,12 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        [HttpGet("Courses/{id}/Students/{id2}")]
-        public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id, int id2)
+        [HttpGet("Courses/{id}/Students")]
+        public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id)
         {
             try
             {
-                return Ok(await service.GetByIdWithStudents(id, id2));
+                return Ok(await service.GetByIdWithStudents(id));
             }
             catch (Exception ex)
             {
