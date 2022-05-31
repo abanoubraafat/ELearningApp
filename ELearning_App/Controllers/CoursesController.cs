@@ -255,7 +255,7 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        [HttpGet("Courses/{id}/Students")]
+        [HttpGet("GetByIdWithStudents/{id}")]
         public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id)
         {
             try
@@ -280,7 +280,7 @@ namespace ELearning_App.Controllers
             {
                 var isValidTeacherId = await teacherRepository.IsValidTeacherId(teacherId);
                 if (!isValidTeacherId)
-                    return BadRequest("No Teacher with that id");
+                    return BadRequest($"No Teacher with that id: {teacherId}");
                 var courses = await service.GetCoursesByTeacherId(teacherId);
                 if (courses.Count() == 0) return NotFound("No Courses with that teacherId");
                 return Ok();
@@ -288,6 +288,29 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: GetCoursesByTeacherId , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpGet("GetCoursesByStudentId/{studentId}")]
+        public async Task<ActionResult<IEnumerable<CourseDetailsDTO>>> GetCoursesByStudentId(int studentId)
+        {
+            try
+            {
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                if (!isValidStudentId)
+                    return BadRequest($"No Student with that id: {studentId}");
+                var courses = await service.GetCoursesByStudentId(studentId);
+                if (courses.Count() == 0) return NotFound("No Courses with that studentId");
+                var mapped = mapper.Map<IEnumerable<CourseDetailsDTO>>(courses);
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: CoursesController , Action: GetCoursesByStudentId , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally

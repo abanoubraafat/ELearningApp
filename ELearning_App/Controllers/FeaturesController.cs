@@ -16,11 +16,14 @@ namespace ELearning_App.Controllers
     public class FeaturesController : ControllerBase
     {
         private IFeatureRepository service { get; }
-
-        public FeaturesController(IFeatureRepository _service)
+        private readonly IMapper mapper;
+        private readonly IStudentRepository studentRepository;
+        public FeaturesController(IFeatureRepository _service, IMapper mapper, IStudentRepository studentRepository)
         {
             service = _service;
             new Logger();
+            this.mapper = mapper;
+            this.studentRepository = studentRepository;
         }
 
         // GET: api/Featurees
@@ -66,14 +69,21 @@ namespace ELearning_App.Controllers
         // PUT: api/Featurees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFeature(int id, Feature f)
+        public async Task<IActionResult> PutFeature(int id, FeatureDTO f)
         {
 
             try
             {
+                var isValidStudentId = await studentRepository.IsValidStudentId(f.StudentId);
+                if (!isValidStudentId) return BadRequest("Invalid studentId");
                 var feature = await service.GetByIdAsync(id);
                 if (feature == null) return NotFound();
-                return Ok(await service.Update(f));
+                feature.OldName = f.OldName;
+                feature.NewName = f.NewName;
+                feature.OldPath = f.OldPath;
+                feature.NewPath = f.NewPath;
+                feature.StudentId = f.StudentId;
+                return Ok(await service.Update(feature));
             }
             catch (Exception ex)
             {
@@ -89,11 +99,14 @@ namespace ELearning_App.Controllers
         // POST: api/Featurees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Feature>> PostFeature(Feature Feature)
+        public async Task<ActionResult<Feature>> PostFeature(FeatureDTO dto)
         {
             try
             {
-                return Ok(await service.AddAsync(Feature));
+                var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
+                if (!isValidStudentId) return BadRequest("Invalid studentId");
+                var feature = mapper.Map<Feature>(dto);
+                return Ok(await service.AddAsync(feature));
             }
             catch (Exception ex)
             {

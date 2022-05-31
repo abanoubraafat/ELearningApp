@@ -15,6 +15,7 @@ namespace ELearning_App.Repository.IRepositories
         Task<bool> IsValidStudentId(int id);
         Task<bool> IsValidStudentEmail(string email);
         Task<Student> GetStudentByEmail(string email);
+        Task<IEnumerable<Student>> GetStudentsByCourseId(int courseId);
 
     }
 }

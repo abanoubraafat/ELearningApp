@@ -55,10 +55,15 @@ namespace ELearning_App.Repository.Repositories
         public async Task<IEnumerable<Course>> GetCoursesByStudentId(int id)
         {
             return await unitOfWork.Context.Courses.Include(c => c.Students).Include(c => c.Teacher)
-                .Where(s => s.Students.Any(s => s.Id == id)).Select(c => new Course
+                .Where(c => c.Students.Any(s => s.Id == id)).Select(c => new Course
                 {
                     Id = c.Id,
                     CourseName = c.CourseName,
+                    CourseDescription = c.CourseDescription,
+                    CourseImage = c.CourseImage,
+                    Students = c.Students,
+                    TeacherId = c.TeacherId,
+                    Teacher = c.Teacher
                 }).ToListAsync();
         }
 

@@ -28,6 +28,22 @@ namespace ELearning_App.Repository.Repositories
             return await unitOfWork.Context.Students.FirstAsync(s => s.EmailAddress == email);
         }
 
+        public async Task<IEnumerable<Student>> GetStudentsByCourseId(int courseId)
+        {
+            return await unitOfWork.Context.Students
+                .Where(s => s.Courses.Any(c => c.Id == courseId))
+                .Include(s => s.Courses)
+                .Select(s => new Student
+                {
+                    Id = s.Id,
+                    FirstName = s.FirstName,
+                    LastName = s.LastName,
+                    EmailAddress = s.EmailAddress,
+                    Courses = s.Courses
+                })
+                .ToListAsync();
+        }
+
         //Implementations
 
         //public IQueryable<Student> GetAllWithCourses()

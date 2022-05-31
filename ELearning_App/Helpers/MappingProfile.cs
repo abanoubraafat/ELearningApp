@@ -30,6 +30,7 @@ namespace ELearning_App.Helpers
             CreateMap<UserDTO, User>();
             CreateMap<AnnouncementDTO, Announcement>();
             CreateMap<ResourceDTO, Resource>();
+            CreateMap<Course, CourseDetailsDTO>().ReverseMap();
 
             CreateMap<AssignmentAnswer, AssignmentAnswerDetailsDTO>();
             CreateMap<QuestionAnswer, QuestionAnswerDetailsDTO>();
