@@ -15,9 +15,9 @@ namespace ELearning_App.Domain.Entities
         // Relationships:
 
         //many to many  --> student -> Courses
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        //[JsonIgnore]
         public virtual ICollection<Course> Courses { get; set; } = new HashSet<Course>();
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        //[JsonIgnore]
         public virtual ICollection<Parent> Parents { get; set; } = new HashSet<Parent>();
 
 
