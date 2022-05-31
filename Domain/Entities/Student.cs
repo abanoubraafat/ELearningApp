@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -14,7 +15,9 @@ namespace ELearning_App.Domain.Entities
         // Relationships:
 
         //many to many  --> student -> Courses
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public virtual ICollection<Course> Courses { get; set; } = new HashSet<Course>();
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public virtual ICollection<Parent> Parents { get; set; } = new HashSet<Parent>();
 
 

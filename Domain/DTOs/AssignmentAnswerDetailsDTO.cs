@@ -8,6 +8,6 @@ namespace Domain.DTOs
 {
     public class AssignmentAnswerDetailsDTO : AssignmentAnswerDTO
     {
-        public string StudentName { get; set; }
+        public string StudentFirstName { get; set; }
     }
 }

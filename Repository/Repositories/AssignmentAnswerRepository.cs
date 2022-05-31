@@ -1,4 +1,6 @@
-﻿using ELearning_App.Domain.Entities;
+﻿using AutoMapper;
+using Domain.DTOs;
+using ELearning_App.Domain.Entities;
 using ELearning_App.Repository.GenericRepositories;
 using ELearning_App.Repository.IRepositories;
 using ELearning_App.Repository.UnitOfWork;
@@ -9,17 +11,31 @@ namespace ELearning_App.Repository.Repositories
     public class AssignmentAnswerRepository : GenericRepository<AssignmentAnswer>, IAssignmentAnswerRepository
     {
         private IUnitOfWork unitOfWork { get; }
-        public AssignmentAnswerRepository(IUnitOfWork _unitOfWork) : base(_unitOfWork)
+        private readonly IMapper mapper;
+        public AssignmentAnswerRepository(IUnitOfWork _unitOfWork, IMapper mapper) : base(_unitOfWork)
         {
             unitOfWork = _unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<AssignmentAnswer>> GetAssignmentAnswersByAssignmentId(int assignmentId)
         {
-            return await unitOfWork.Context.AssignmentAnswers
+             var a = await unitOfWork.Context.AssignmentAnswers
                 .Where(aa => aa.AssignmentId == assignmentId)
                 .Include(a => a.Student)
+                //.Select(a => new AssignmentAnswerDetailsDTO
+                //{
+                //    Id = a.Id,
+                //    FileName = a.FileName,
+                //    PDF = a.PDF,
+                //    SubmitDate = a.SubmitDate,
+                //    AssignmentId = a.AssignmentId,
+                //    StudentId = a.StudentId,
+                //    StudentFirstName = a.Student.FirstName
+
+                //})
                 .ToListAsync();
+            return a;
         }
 
         public async Task<AssignmentAnswer> GetAssignmentAnswerByStudentIdByAssignmentId(int studentId, int assignmentId)
