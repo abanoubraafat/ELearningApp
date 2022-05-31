@@ -78,16 +78,43 @@ namespace ELearning_App.Controllers
         // PUT: api/LoginInfoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User loginInfo)
+        public async Task<IActionResult> UpdateUser(int id, UserDTO dto)
         {
 
             try
             {
-                if (id != loginInfo.Id)
+                var user = await service.GetByIdAsync(id);
+                if (user == null)
+                    return NotFound($"No User was found with this id: {id}");
+                //else if (!(dto.Role.Equals("Student") || dto.Role.Equals("Parent") || dto.Role.Equals("Teacher")))
+                //    return BadRequest("Role must be 'Student', 'Parent', or 'Teacher'");
+                else if (!dto.Role.Equals(user.Role))
+                    return BadRequest("Role field Can't be changed");
+                else if (dto.EmailAddress.Equals(user.EmailAddress))
                 {
-                    return BadRequest();
+                    user.FirstName = dto.FirstName;
+                    user.LastName = dto.LastName;
+                    user.ProfilePic = dto.ProfilePic;
+                    //user.EmailAddress = dto.EmailAddress;
+                    user.Password = dto.Password;
+                    user.Phone = dto.Phone;
+                    //user.Role = dto.Role;
+                    return Ok(await service.Update(user));
                 }
-                return Ok(await service.Update(loginInfo));
+                else if (await service.IsNotAvailableUserEmail(dto.EmailAddress))
+                    return BadRequest("There's already an account with the same Email address");
+                else
+                {
+                    user.FirstName = dto.FirstName;
+                    user.LastName = dto.LastName;
+                    user.ProfilePic = dto.ProfilePic;
+                    user.EmailAddress = dto.EmailAddress;
+                    user.Password = dto.Password;
+                    user.Phone = dto.Phone;
+                    //user.Role = dto.Role;
+                    return Ok(await service.Update(user));
+                }
+
             }
             catch (Exception ex)
             {
@@ -100,25 +127,25 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/LoginInfoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<User>> AddUser(User user)
-        //{
-        //    //try
-        //    //{
-        //        //var addedUser = await service.AddAsync(user);
-        //        //var loginInfo = new LoginInfo { emailAddress = dto.EmailAddress, password = dto.Password, type = dto.Type, ToDoLists = dto.ToDoLists};
-        //        if (user == null) return BadRequest("The User can't be null!");
-        //        //else if (user.Role.Equals("Student"))
-        //        //    await studentService.AddAsync(new Student { Id = user.Id, EmailAddress = user.EmailAddress, Password = user.Password, FirstName = user.FirstName, LastName = user.LastName, ProfilePic = user.ProfilePic, Phone = user.Phone, Role = user.Role });
-        //        //else if (user.Role.Equals("Teacher"))
-        //        //    await teacherService.AddAsync(new Teacher { Id = user.Id });
-        //        //else if (user.Role.Equals("Parent"))
-        //        //    await parentService.AddAsync(new Parent { Id = user.Id });
-        //        //else
-        //        //    return BadRequest("Please specify the Role field CORRECTLY!!");
-        //        return Ok(await service.AddAsync(user));
+            // POST: api/LoginInfoes
+            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            //[HttpPost]
+            //public async Task<ActionResult<User>> AddUser(User user)
+            //{
+            //    //try
+            //    //{
+            //        //var addedUser = await service.AddAsync(user);
+            //        //var loginInfo = new LoginInfo { emailAddress = dto.EmailAddress, password = dto.Password, type = dto.Type, ToDoLists = dto.ToDoLists};
+            //        if (user == null) return BadRequest("The User can't be null!");
+            //        //else if (user.Role.Equals("Student"))
+            //        //    await studentService.AddAsync(new Student { Id = user.Id, EmailAddress = user.EmailAddress, Password = user.Password, FirstName = user.FirstName, LastName = user.LastName, ProfilePic = user.ProfilePic, Phone = user.Phone, Role = user.Role });
+            //        //else if (user.Role.Equals("Teacher"))
+            //        //    await teacherService.AddAsync(new Teacher { Id = user.Id });
+            //        //else if (user.Role.Equals("Parent"))
+            //        //    await parentService.AddAsync(new Parent { Id = user.Id });
+            //        //else
+            //        //    return BadRequest("Please specify the Role field CORRECTLY!!");
+            //        return Ok(await service.AddAsync(user));
             //}
             //catch (Exception ex)
             //{
@@ -129,8 +156,8 @@ namespace ELearning_App.Controllers
             //{
             //    Log.CloseAndFlush();
             //}
-        //}
-        [HttpDelete("{id}")]
+            //}
+            [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
