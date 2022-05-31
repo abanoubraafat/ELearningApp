@@ -79,8 +79,15 @@ namespace ELearning_App.Controllers
                 if (!isValidUserId) return BadRequest("Invalid UserId");
                 var toDoList = await service.GetByIdAsync(id);
                 if (toDoList == null) return NotFound("Invalid ToDoListId");
-                var t = mapper.Map<ToDoList>(dto);
-                return Ok(await service.Update(t));
+                toDoList.Notes = dto.Notes;
+                toDoList.Title = dto.Title;
+                toDoList.Description = dto.Description;
+                toDoList.Date = dto.Date;
+                toDoList.Done = dto.Done;
+                toDoList.Urgent = dto.Urgent;
+                toDoList.Important = dto.Important;
+                toDoList.UserId = dto.UserId;
+                return Ok(await service.Update(toDoList));
             }
             catch (Exception ex)
             {

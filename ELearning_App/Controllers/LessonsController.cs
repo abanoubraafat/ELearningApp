@@ -77,8 +77,10 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
                 var lesson = await service.GetByIdAsync(id);
                 if (lesson == null) return NotFound($"No Lesson With this id : {id}");
-                var l = mapper.Map<Lesson>(dto);
-                return Ok(await service.Update(l));
+                lesson.Title = dto.Title;
+                lesson.Description = dto.Description;
+                lesson.CourseId = dto.CourseId;
+                return Ok(await service.Update(lesson));
             }
             catch (Exception ex)
             {

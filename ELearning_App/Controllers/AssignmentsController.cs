@@ -78,13 +78,13 @@ namespace ELearning_App.Controllers
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No Assignment was found with Id: {id}");
                 //var r = mapper.Map<Assignment>(dto);
-                assignment.CourseId = dto.CourseId;
                 assignment.Title = dto.Title;
                 assignment.Description = dto.Description;
                 assignment.FilePath = dto.FilePath;
-                //assignment.DeadlineDate = dto.DeadlineDate;
-                //assignment.DeadlineTime = dto.DeadlineTime;
+                assignment.StartDate = dto.StartDate;
+                assignment.EndTime = dto.EndTime;
                 assignment.Grade = dto.Grade;
+                assignment.CourseId = dto.CourseId;
                 return Ok(await service.Update(assignment));
             }
             catch (Exception ex)

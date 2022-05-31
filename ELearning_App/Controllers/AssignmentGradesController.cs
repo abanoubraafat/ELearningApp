@@ -79,8 +79,9 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid AssignmentGradeId!");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentGrade was found with Id: {id}");
-                var a = mapper.Map<AssignmentGrade>(dto);
-                return Ok(await service.Update(a));
+                assignment.Grade = dto.Grade;
+                assignment.AssignmentAnswerId = dto.AssignmentAnswerId;
+                return Ok(await service.Update(assignment));
             }
             catch (Exception ex)
             {

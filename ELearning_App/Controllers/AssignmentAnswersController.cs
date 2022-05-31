@@ -84,8 +84,13 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid AssignmentId or StudentId!");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
-                var aa = mapper.Map<AssignmentAnswer>(a);
-                return Ok(await service.Update(aa));
+                //var aa = mapper.Map<AssignmentAnswer>(a);
+                assignment.FileName = a.FileName;
+                assignment.PDF = a.PDF;
+                assignment.SubmitDate = a.SubmitDate;
+                assignment.AssignmentId = a.AssignmentId;
+                assignment.StudentId = a.StudentId;
+                return Ok(await service.Update(assignment));
             }
             catch (Exception ex)
             {

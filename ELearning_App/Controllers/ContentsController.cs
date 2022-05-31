@@ -80,8 +80,11 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid LessonId");
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound();
-                var c = mapper.Map<Content>(dto);
-                return Ok(await service.Update(c));
+                content.FileName = dto.FileName;
+                content.Path = dto.Path;
+                content.ShowDate = dto.ShowDate;
+                content.LessonId = dto.LessonId;
+                return Ok(await service.Update(content));
             }
             catch (Exception ex)
             {
