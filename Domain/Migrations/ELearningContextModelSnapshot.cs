@@ -34,7 +34,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("CoursesId");
 
-                    b.ToTable("AnnouncementCourse");
+                    b.ToTable("AnnouncementCourse", (string)null);
                 });
 
             modelBuilder.Entity("CourseStudent", b =>
@@ -49,7 +49,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentsId");
 
-                    b.ToTable("CourseStudent");
+                    b.ToTable("CourseStudent", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Announcement", b =>
@@ -69,7 +69,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Announcements");
+                    b.ToTable("Announcements", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Assignment", b =>
@@ -106,7 +106,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Assignments");
+                    b.ToTable("Assignments", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentAnswer", b =>
@@ -140,7 +140,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("AssignmentAnswers");
+                    b.ToTable("AssignmentAnswers", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentFeedback", b =>
@@ -162,7 +162,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("AssignmentAnswerId");
 
-                    b.ToTable("AssignmentFeedbacks");
+                    b.ToTable("AssignmentFeedbacks", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
@@ -183,7 +183,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("AssignmentAnswerId");
 
-                    b.ToTable("AssignmentGrades");
+                    b.ToTable("AssignmentGrades", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>
@@ -209,7 +209,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("AssignmentAnswerId");
 
-                    b.ToTable("Badges");
+                    b.ToTable("Badges", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Content", b =>
@@ -238,7 +238,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Content");
+                    b.ToTable("Content", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Course", b =>
@@ -266,7 +266,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Feature", b =>
@@ -300,7 +300,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Features");
+                    b.ToTable("Features", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.LatestPassedLesson", b =>
@@ -327,7 +327,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("LatestPassedLessons");
+                    b.ToTable("LatestPassedLessons", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Lesson", b =>
@@ -353,7 +353,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Note", b =>
@@ -380,7 +380,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Notes", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Question", b =>
@@ -409,7 +409,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.QuestionAnswer", b =>
@@ -436,7 +436,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("QuestionAnswers");
+                    b.ToTable("QuestionAnswers", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Quiz", b =>
@@ -473,7 +473,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.QuizGrade", b =>
@@ -499,7 +499,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("QuizGrades");
+                    b.ToTable("QuizGrades", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Resource", b =>
@@ -528,7 +528,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Resources");
+                    b.ToTable("Resources", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.ToDoList", b =>
@@ -569,7 +569,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ToDoLists");
+                    b.ToTable("ToDoLists", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.User", b =>
@@ -616,7 +616,7 @@ namespace Domain.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ParentStudent", b =>
@@ -631,28 +631,28 @@ namespace Domain.Migrations
 
                     b.HasIndex("StudentsId");
 
-                    b.ToTable("ParentStudent");
+                    b.ToTable("ParentStudent", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Parent", b =>
                 {
                     b.HasBaseType("ELearning_App.Domain.Entities.User");
 
-                    b.ToTable("Parents");
+                    b.ToTable("Parents", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Student", b =>
                 {
                     b.HasBaseType("ELearning_App.Domain.Entities.User");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Teacher", b =>
                 {
                     b.HasBaseType("ELearning_App.Domain.Entities.User");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("AnnouncementCourse", b =>

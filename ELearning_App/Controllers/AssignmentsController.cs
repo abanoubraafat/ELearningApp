@@ -109,7 +109,7 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest("Invalid CourseId!");
                 var r = mapper.Map<Assignment>(dto);
-                return Ok(r);
+                return Ok(await service.AddAsync(r));
             }
             catch (Exception ex)
             {
