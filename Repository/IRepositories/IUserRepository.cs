@@ -7,6 +7,7 @@ namespace ELearning_App.Repository.IRepositories
     {
         //IQueryable<User> GetByIdWithToDoLists(int id);
         Task<bool> IsValidUserId(int id);
+        Task<bool> IsNotAvailableUserEmail(string email);
         Task<User> Login(string email, string password);
     }
 }

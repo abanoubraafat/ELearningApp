@@ -70,15 +70,23 @@ namespace ELearning_App.Controllers
         // PUT: api/ToDoListes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutToDoList(int id, ToDoList toDoList)
+        public async Task<IActionResult> PutToDoList(int id, ToDoListDTO dto)
         {
 
             try
             {
-                if (id != toDoList.Id)
-                {
-                    return BadRequest();
-                }
+                var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
+                if (!isValidUserId) return BadRequest("Invalid UserId");
+                var toDoList = await service.GetByIdAsync(id);
+                if (toDoList == null) return NotFound("Invalid ToDoListId");
+                toDoList.Notes = dto.Notes;
+                toDoList.Title = dto.Title;
+                toDoList.Description = dto.Description;
+                toDoList.Date = dto.Date;
+                toDoList.Done = dto.Done;
+                toDoList.Urgent = dto.Urgent;
+                toDoList.Important = dto.Important;
+                toDoList.UserId = dto.UserId;
                 return Ok(await service.Update(toDoList));
             }
             catch (Exception ex)
@@ -95,21 +103,24 @@ namespace ELearning_App.Controllers
         // POST: api/ToDoListes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ToDoList>> PostToDoList(ToDoList toDoList)
+        public async Task<ActionResult<ToDoList>> PostToDoList(ToDoListDTO dto)
         {
-            try
-            {
-                return Ok(await service.AddAsync(toDoList));
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Controller: ToDoListController , Action: PostToDoList , Message: {ex.Message}");
-                return StatusCode(500);
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            //try
+            //{
+                var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
+                if (!isValidUserId) return BadRequest("Invalid UserId");
+                var t = mapper.Map<ToDoList>(dto);
+                return Ok(await service.AddAsync(t));
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error($"Controller: ToDoListController , Action: PostToDoList , Message: {ex.Message}");
+            //    return StatusCode(500);
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
         }
 
         // DELETE: api/ToDoListes/5

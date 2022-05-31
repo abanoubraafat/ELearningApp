@@ -102,13 +102,14 @@ namespace ELearning_App.Controllers
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<Course>> PostCourse(CourseDTO dto)
         {
             try
             {
-                var isValidTeacherId = await teacherRepository.IsValidTeacherId(course.TeacherId);
+                var isValidTeacherId = await teacherRepository.IsValidTeacherId(dto.TeacherId);
                 if(!isValidTeacherId)
                     return BadRequest("No Teacher with that id");
+                var course = mapper.Map<Course>(dto);
                 return Ok(await service.AddAsync(course));
             }
             catch (Exception ex)
@@ -254,12 +255,12 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        [HttpGet("Courses/{id}/Students/{id2}")]
-        public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id, int id2)
+        [HttpGet("Courses/{id}/Students")]
+        public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id)
         {
             try
             {
-                return Ok(await service.GetByIdWithStudents(id, id2));
+                return Ok(await service.GetByIdWithStudents(id));
             }
             catch (Exception ex)
             {

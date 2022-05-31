@@ -17,11 +17,13 @@ namespace ELearning_App.Controllers
     {
         private IAssignmentGradeRepository service { get; }
         private readonly IAssignmentAnswerRepository assignmentAnswerRepository;
-        public AssignmentGradesController(IAssignmentGradeRepository _service, IAssignmentAnswerRepository assignmentAnswerRepository)
+        private readonly IMapper mapper;
+        public AssignmentGradesController(IAssignmentGradeRepository _service, IAssignmentAnswerRepository assignmentAnswerRepository, IMapper mapper)
         {
             service = _service;
             new Logger();
             this.assignmentAnswerRepository = assignmentAnswerRepository;
+            this.mapper = mapper;
         }
 
         // GET: api/AssignmentGradees
@@ -67,17 +69,19 @@ namespace ELearning_App.Controllers
         // PUT: api/AssignmentGradees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("AssignmentGrades/{id}")]
-        public async Task<IActionResult> PutAssignmentGrade(int id, [FromBody] AssignmentGrade a)
+        public async Task<IActionResult> PutAssignmentGrade(int id, [FromBody] AssignmentGradeDTO dto)
         {
 
             try
             {
-                var isValidAssignmentId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(a.AssignmentAnswerId);
+                var isValidAssignmentId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(dto.AssignmentAnswerId);
                 if (!isValidAssignmentId)
                     return BadRequest("Invalid AssignmentGradeId!");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentGrade was found with Id: {id}");
-                return Ok(await service.Update(a));
+                assignment.Grade = dto.Grade;
+                assignment.AssignmentAnswerId = dto.AssignmentAnswerId;
+                return Ok(await service.Update(assignment));
             }
             catch (Exception ex)
             {
@@ -93,13 +97,14 @@ namespace ELearning_App.Controllers
         // POST: api/AssignmentGradees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("AssignmentGrades")]
-        public async Task<ActionResult<AssignmentGrade>> PostAssignmentGrade(AssignmentGrade a)
+        public async Task<ActionResult<AssignmentGrade>> PostAssignmentGrade(AssignmentGradeDTO dto)
         {
             try
             {
-                var isValidAssignmentId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(a.AssignmentAnswerId);
+                var isValidAssignmentId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(dto.AssignmentAnswerId);
                 if (!isValidAssignmentId)
                     return BadRequest("Invalid AssignmentGradeId!");
+                var a = mapper.Map<AssignmentGrade>(dto);
                 return Ok(await service.AddAsync(a));
             }
             catch (Exception ex)
@@ -133,7 +138,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("AssignmnetAnswers/{assignmentAnswerId}/AssignmentGrades")]
+        [HttpGet("AssignmnetAnswers/{assignmentAnswerId}/AssignmentGrade")]
         public async Task<ActionResult<AssignmentGrade>> GetAssignmentGradeByAssignmentAnswerId(int assignmentAnswerId)
         {
             try

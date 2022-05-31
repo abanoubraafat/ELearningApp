@@ -18,11 +18,14 @@ namespace ELearning_App.Controllers
     public class TeachersController : ControllerBase
     {
         private ITeacherRepository service { get; }
-
-        public TeachersController(ITeacherRepository _service)
+        private readonly IMapper mapper;
+        private readonly IUserRepository userRepository;
+        public TeachersController(ITeacherRepository _service, IMapper mapper, IUserRepository userRepository)
         {
             service = _service;
             new Logger();
+            this.mapper = mapper;
+            this.userRepository = userRepository;
         }
 
         // GET: api/Teachers
@@ -92,10 +95,16 @@ namespace ELearning_App.Controllers
         // POST: api/Teachers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Teacher>> PostTeacher(Teacher teacher)
+        public async Task<ActionResult<Teacher>> PostTeacher(TeacherDTO dto)
         {
             try
             {
+                var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
+                if (isNotAvailableUserEmail) 
+                    return BadRequest("There's already an account with the same Email address");
+                else if (!dto.Role.Equals("Teacher"))
+                    return BadRequest("Make sure the Role field is 'Teacher'");
+                var teacher = mapper.Map<Teacher>(dto);
                 return Ok(await service.AddAsync(teacher));
             }
             catch (Exception ex)

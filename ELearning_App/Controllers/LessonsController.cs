@@ -68,16 +68,19 @@ namespace ELearning_App.Controllers
         // PUT: api/Lessones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLesson(int id, Lesson l)
+        public async Task<IActionResult> PutLesson(int id, LessonDTO dto)
         {
 
             try
             {
-                var isValidCourseId = await courseRepository.IsValidCourseId(l.CourseId);
+                var isValidCourseId = await courseRepository.IsValidCourseId(dto.CourseId);
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
                 var lesson = await service.GetByIdAsync(id);
                 if (lesson == null) return NotFound($"No Lesson With this id : {id}");
-                return Ok(await service.Update(l));
+                lesson.Title = dto.Title;
+                lesson.Description = dto.Description;
+                lesson.CourseId = dto.CourseId;
+                return Ok(await service.Update(lesson));
             }
             catch (Exception ex)
             {
@@ -93,12 +96,13 @@ namespace ELearning_App.Controllers
         // POST: api/Lessones
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Lesson>> PostLesson(Lesson l)
+        public async Task<ActionResult<Lesson>> PostLesson(LessonDTO dto)
         {
             try
             {
-                var isValidCourseId = await courseRepository.IsValidCourseId(l.CourseId);
+                var isValidCourseId = await courseRepository.IsValidCourseId(dto.CourseId);
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
+                var l = mapper.Map<Lesson>(dto);
                 return Ok(await service.AddAsync(l));
             }
             catch (Exception ex)

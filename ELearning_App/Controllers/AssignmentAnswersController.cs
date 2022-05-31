@@ -1,8 +1,10 @@
 ﻿using ELearning_App.Domain.Entities;
 using ELearning_App.Helpers;
 using ELearning_App.Repository.IRepositories;
+using ELearning_App.Repository.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace ELearning_App.Controllers
@@ -14,13 +16,17 @@ namespace ELearning_App.Controllers
         private IAssignmentAnswerRepository service { get; }
         private readonly IAssignmentRepository assignmentRepository;
         private readonly IStudentRepository studentRepository;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
 
-        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository)
+        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             service = _service;
             new Logger();
             this.assignmentRepository = assignmentRepository;
             this.studentRepository = studentRepository;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
         }
 
         // GET: api/AssignmentAnsweres
@@ -50,7 +56,7 @@ namespace ELearning_App.Controllers
             {
                 var a = await service.GetByIdAsync(id);
                 if (a == null)
-                    return NotFound();
+                    return NotFound();         
                 return Ok(a);
             }
             catch (Exception ex)
@@ -67,7 +73,7 @@ namespace ELearning_App.Controllers
         // PUT: api/AssignmentAnsweres/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("AssignmentAnswers/{id}")]
-        public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] AssignmentAnswer a)
+        public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] AssignmentAnswerDTO a)
         {
 
             try
@@ -78,7 +84,13 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid AssignmentId or StudentId!");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
-                return Ok(await service.Update(a));
+                //var aa = mapper.Map<AssignmentAnswer>(a);
+                assignment.FileName = a.FileName;
+                assignment.PDF = a.PDF;
+                assignment.SubmitDate = a.SubmitDate;
+                assignment.AssignmentId = a.AssignmentId;
+                assignment.StudentId = a.StudentId;
+                return Ok(await service.Update(assignment));
             }
             catch (Exception ex)
             {
@@ -94,7 +106,7 @@ namespace ELearning_App.Controllers
         // POST: api/AssignmentAnsweres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("AssignmentAnswers")]
-        public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer(AssignmentAnswer a)
+        public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer(AssignmentAnswerDTO a)
         {
             try
             {
@@ -102,7 +114,8 @@ namespace ELearning_App.Controllers
                 var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
                 if (!isValidAssignmentId || !isValidStudentId)
                     return BadRequest("Invalid AssignmentId or StudentId!");
-                return Ok(await service.AddAsync(a));
+                var aa = mapper.Map<AssignmentAnswer>(a);
+                return Ok(await service.AddAsync(aa));
             }
             catch (Exception ex)
             {
@@ -137,7 +150,7 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("Assignments/{assignmentId}/AssignmentAnswers")]
-        public async Task<ActionResult<IEnumerable<AssignmentAnswer>>> GetAssignmentAnswersByAssignmentId(int assignmentId)
+        public async Task<ActionResult<IEnumerable<AssignmentAnswerDetailsDTO>>> GetAssignmentAnswersByAssignmentId(int assignmentId)
         {
             try
             {
@@ -147,7 +160,8 @@ namespace ELearning_App.Controllers
                 var a = await service.GetAssignmentAnswersByAssignmentId(assignmentId);
                 if (a.Count() == 0)
                     return NotFound($"No Assignment was found with Id: {assignmentId}");
-                return Ok(a);
+                var b = mapper.Map<IEnumerable<AssignmentAnswerDetailsDTO>>(a);
+                return Ok(b);
             }
             catch (Exception ex)
             {

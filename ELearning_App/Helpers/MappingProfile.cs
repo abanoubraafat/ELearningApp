@@ -7,6 +7,7 @@ namespace ELearning_App.Helpers
         public MappingProfile()
         {
             CreateMap<AssignmentDTO, Assignment>();
+                //.BeforeMap((src, dest) => src.Id = dest.Id);
             CreateMap<AssignmentAnswerDTO, AssignmentAnswer>();
             CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
             CreateMap<AssignmentGradeDTO, AssignmentGrade>();
