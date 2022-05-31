@@ -19,12 +19,14 @@ namespace ELearning_App.Controllers
         private IStudentRepository service { get; }
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
-        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository)
+        private readonly ICourseRepository courseRepository;
+        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository)
         {
             service = _service;
             new Logger();
             this.mapper = mapper;
             this.userRepository = userRepository;
+            this.courseRepository = courseRepository;
         }
 
         //// GET: api/Students
@@ -122,9 +124,9 @@ namespace ELearning_App.Controllers
         {
             //try
             //{
-                var isValidStudentEmail = await service.IsValidStudentEmail(email);
-                if (!isValidStudentEmail) return NotFound("Invalid Email");
-                return Ok(await service.GetStudentByEmail(email));
+            var isValidStudentEmail = await service.IsValidStudentEmail(email);
+            if (!isValidStudentEmail) return NotFound("Invalid Email");
+            return Ok(await service.GetStudentByEmail(email));
             //}
             //catch (Exception ex)
             //{
@@ -136,6 +138,30 @@ namespace ELearning_App.Controllers
             //    Log.CloseAndFlush();
             //}
         }
+        [HttpGet("GetStudentsByCourseId/{courseId}")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByCourseId(int courseId)
+        {
+            //try
+            //{
+                var isValidCourseId = await courseRepository.IsValidCourseId(courseId);
+                if (!isValidCourseId)
+                    return BadRequest($"No Teacher with that id: {courseId}");
+                var students = await service.GetStudentsByCourseId(courseId);
+                if (students.Count() == 0) return NotFound("No Students with that courseId");
+
+                return Ok(students);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
+            //    return StatusCode(500);
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
+        }
+
 
 
         // DELETE: api/Students/5
