@@ -41,13 +41,17 @@ namespace ELearning_App.Repository.Repositories
         public async Task<AssignmentAnswer> GetAssignmentAnswerByStudentIdByAssignmentId(int studentId, int assignmentId)
         {
             return await unitOfWork.Context.AssignmentAnswers
-                .FirstOrDefaultAsync(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
-
+                .SingleOrDefaultAsync(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
         }
 
         public async Task<bool> IsValidAssignmentAnswerId(int id)
         {
             return await IsValidFk(a => a.Id == id);
+        }
+
+        public async Task<bool> IsNotValidAssignmentAnswerWithStudentId(int studentId, int assignmentId)
+        {
+            return await unitOfWork.Context.AssignmentAnswers.AnyAsync(a => a.StudentId == studentId && a.AssignmentId == assignmentId);
         }
 
         //public async Task<bool> IsValidAssignmentIdFk(int assignmentId)

@@ -7,5 +7,6 @@ namespace ELearning_App.Repository.IRepositories
     {
         Task<AssignmentGrade> GetAssignmentGradeByAssignmentAnswerId(int assignmentAnswerId);
         Task<bool> IsValidAssignmentGradeId(int id);
+        Task<bool> IsNotValidAssignmentGradeWithAssignmentAnswerId(int assignmentAnswerId);
     }
 }

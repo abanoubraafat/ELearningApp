@@ -74,13 +74,13 @@ namespace ELearning_App.Controllers
 
             try
             {
-                var isValidAssignmentId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(dto.AssignmentAnswerId);
-                if (!isValidAssignmentId)
+                var isValidAssignmentAnswerId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(dto.AssignmentAnswerId);
+                if (!isValidAssignmentAnswerId)
                     return BadRequest("Invalid AssignmentGradeId!");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentGrade was found with Id: {id}");
                 assignment.Grade = dto.Grade;
-                assignment.AssignmentAnswerId = dto.AssignmentAnswerId;
+                //assignment.AssignmentAnswerId = dto.AssignmentAnswerId;
                 return Ok(await service.Update(assignment));
             }
             catch (Exception ex)
@@ -101,9 +101,12 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                var isValidAssignmentId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(dto.AssignmentAnswerId);
-                if (!isValidAssignmentId)
+                var isValidAssignmentAnswerId = await assignmentAnswerRepository.IsValidAssignmentAnswerId(dto.AssignmentAnswerId);
+                var isNotValidAssignmentGradeWithAssignmentAnswerId = await service.IsNotValidAssignmentGradeWithAssignmentAnswerId(dto.AssignmentAnswerId);
+                if (!isValidAssignmentAnswerId)
                     return BadRequest("Invalid AssignmentGradeId!");
+                else if (isNotValidAssignmentGradeWithAssignmentAnswerId)
+                    return BadRequest($"There's already an assignment grade to this assignment answer : {dto.AssignmentAnswerId}");
                 var a = mapper.Map<AssignmentGrade>(dto);
                 return Ok(await service.AddAsync(a));
             }
@@ -150,6 +153,10 @@ namespace ELearning_App.Controllers
                 if (a == null)
                     return NotFound($"No AssignmentAnswer was found with Id: {assignmentAnswerId}");
                 return Ok(a);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return BadRequest("There're more than grade to this assignment answer.");
             }
             catch (Exception ex)
             {
