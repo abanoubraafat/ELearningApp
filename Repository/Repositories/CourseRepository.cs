@@ -21,6 +21,7 @@ namespace ELearning_App.Repository.Repositories
         {
             return await unitOfWork.Context.Courses
                 .Where(c => c.TeacherId == teacherId)
+                .Include(c=> c.Teacher)
                 .ToListAsync();
         }
         public async Task<bool> IsValidCourseId(int id)

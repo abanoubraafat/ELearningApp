@@ -20,13 +20,15 @@ namespace ELearning_App.Controllers
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         private readonly ICourseRepository courseRepository;
-        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository)
+        private readonly IParentRepository parentRepository;
+        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository)
         {
             service = _service;
             new Logger();
             this.mapper = mapper;
             this.userRepository = userRepository;
             this.courseRepository = courseRepository;
+            this.parentRepository = parentRepository;
         }
 
         //// GET: api/Students
@@ -141,8 +143,8 @@ namespace ELearning_App.Controllers
         [HttpGet("GetStudentsByCourseId/{courseId}")]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByCourseId(int courseId)
         {
-            //try
-            //{
+            try
+            {
                 var isValidCourseId = await courseRepository.IsValidCourseId(courseId);
                 if (!isValidCourseId)
                     return BadRequest($"No Teacher with that id: {courseId}");
@@ -150,19 +152,40 @@ namespace ELearning_App.Controllers
                 if (students.Count() == 0) return NotFound("No Students with that courseId");
 
                 return Ok(students);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
-            //    return StatusCode(500);
-            //}
-            //finally
-            //{
-            //    Log.CloseAndFlush();
-            //}
+        }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
+                return StatusCode(500);
+    }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
-
+        [HttpGet("GetStudentsByParentId/{parentId}")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByParentId(int parentId)
+        {
+            try
+            {
+                var isValidParentId = await parentRepository.IsValidParentId(parentId);
+                if (!isValidParentId)
+                    return BadRequest($"No Parent with that id: {parentId}");
+                var students = await service.GetStudentsByParentId(parentId);
+                if (students.Count() == 0) return NotFound($"No Students with that parentId :{parentId}");
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
         // DELETE: api/Students/5
         //[HttpDelete("{id}")]

@@ -80,8 +80,10 @@ namespace ELearning_App.Controllers
             {
                 var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(a.AssignmentId);
                 var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
-                if (!isValidAssignmentId || !isValidStudentId)
-                    return BadRequest("Invalid AssignmentId or StudentId!");
+                if (!isValidAssignmentId)
+                    return BadRequest($"Invalid AssignmentId : {a.AssignmentId}");
+                else if (!isValidStudentId)
+                    return BadRequest($"Invalid StudentId : {a.StudentId}");
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
                 //var aa = mapper.Map<AssignmentAnswer>(a);
@@ -89,7 +91,7 @@ namespace ELearning_App.Controllers
                 assignment.PDF = a.PDF;
                 assignment.SubmitDate = a.SubmitDate;
                 assignment.AssignmentId = a.AssignmentId;
-                assignment.StudentId = a.StudentId;
+                //assignment.StudentId = a.StudentId;
                 return Ok(await service.Update(assignment));
             }
             catch (Exception ex)
@@ -112,8 +114,13 @@ namespace ELearning_App.Controllers
             {
                 var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(a.AssignmentId);
                 var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
-                if (!isValidAssignmentId || !isValidStudentId)
-                    return BadRequest("Invalid AssignmentId or StudentId!");
+                var isNotValidAssignmentAnswerWithStudentId = await service.IsNotValidAssignmentAnswerWithStudentId(a.StudentId, a.AssignmentId);
+                if (!isValidAssignmentId)
+                    return BadRequest($"Invalid AssignmentId : {a.AssignmentId}");
+                else if (!isValidStudentId)
+                    return BadRequest($"Invalid StudentId : {a.StudentId}");
+                else if (isNotValidAssignmentAnswerWithStudentId)
+                    return BadRequest($"There's already an existing Assignment Answer with this StudentId :{a.StudentId}, to this assignment");
                 var aa = mapper.Map<AssignmentAnswer>(a);
                 return Ok(await service.AddAsync(aa));
             }
@@ -180,12 +187,18 @@ namespace ELearning_App.Controllers
             {
                 var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(assignmentId);
                 var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
-                if (!isValidAssignmentId || !isValidStudentId)
-                    return BadRequest("Invalid AssignmentId or StudentId!");
+                if (!isValidAssignmentId)
+                    return BadRequest($"Invalid AssignmentId : {assignmentId}");
+                else if (!isValidStudentId)
+                    return BadRequest($"Invalid StudentId : {studentId}");
                 var a = await service.GetAssignmentAnswerByStudentIdByAssignmentId(studentId, assignmentId);
                 if (a == null)
                     return NotFound($"No Assignment Associated with this Student was found");
                 return Ok(a);
+            }
+            catch(System.InvalidOperationException)
+            {
+                return BadRequest("There're more than answer to this assignment by this student");
             }
             catch (Exception ex)
             {

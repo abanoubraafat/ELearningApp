@@ -17,11 +17,16 @@ namespace ELearning_App.Repository.Repositories
         public async Task<AssignmentGrade> GetAssignmentGradeByAssignmentAnswerId(int assignmentAnswerId)
         {
             return await unitOfWork.Context.AssignmentGrades
-                .FirstOrDefaultAsync(a => a.AssignmentAnswerId == assignmentAnswerId);
+                .SingleOrDefaultAsync(a => a.AssignmentAnswerId == assignmentAnswerId);
         }
         public async Task<bool> IsValidAssignmentGradeId(int id)
         {
             return await IsValidFk(a => a.Id == id);
+        }
+
+        public async Task<bool> IsNotValidAssignmentGradeWithAssignmentAnswerId(int assignmentAnswerId)
+        {
+            return await unitOfWork.Context.AssignmentGrades.AnyAsync(g => g.AssignmentAnswerId == assignmentAnswerId);
         }
     }
 }
