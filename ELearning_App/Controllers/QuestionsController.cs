@@ -1,147 +1,185 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using ELearning_App.Domain.Entities;
-//using ELearning_App.Helpers;
-//using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ELearning_App.Domain.Entities;
+using ELearning_App.Helpers;
+using Serilog;
 
-//namespace ELearning_App.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class QuestionsController : ControllerBase
-//    {
-//        private IQuestionRepository service { get; }
+namespace ELearning_App.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class QuestionsController : ControllerBase
+    {
+        private IQuestionRepository service { get; }
+        private readonly IQuizRepository quizRepository;
+        private readonly IMapper mapper;
+        public QuestionsController(IQuestionRepository _service, IQuizRepository quizRepository, IMapper mapper)
+        {
+            service = _service;
+            this.quizRepository = quizRepository;
+            new Logger();
+            this.mapper = mapper;
+        }
 
-//        public QuestionsController(IQuestionRepository _service)
-//        {
-//            service = _service;
-//            new Logger();
-//        }
+        // GET: api/Questiones
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
+        {
+            try
+            {
+                return Ok(await service.GetAllAsync());
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionController , Action: GetQuestions , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
-//        // GET: api/Questiones
-//        [HttpGet]
-//        public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
-//        {
-//            try
-//            {
-//                return Ok(await service.GetAllQuestions());
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: QuestionController , Action: GetQuestions , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
+        // GET: api/Questiones/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Question>> GetQuestion(int id)
+        {
+            try
+            {
+                if (service.GetByIdAsync(id) == null)
+                    return NotFound();
+                return Ok(await service.GetByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionController , Action: GetQuestion , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
-//        // GET: api/Questiones/5
-//        [HttpGet("{id}")]
-//        public async Task<ActionResult<Question>> GetQuestion(int id)
-//        {
-//            try
-//            {
-//                if (service.GetByIdAsync(id) == null)
-//                    return NotFound();
-//                return Ok(await service.GetByIdAsync(id));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: QuestionController , Action: GetQuestion , Message: {ex.Message}");
-//                return NotFound();
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
+        // PUT: api/Questiones/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutQuestion(int id, QuestionDTO dto)
+        {
 
-//        // PUT: api/Questiones/5
-//        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> PutQuestion(int id, Question q)
-//        {
+            try
+            {
+                var isValidQuizId = await quizRepository.IsValidQuizId(dto.QuizId);
+                var question = await service.GetByIdAsync(id);
+                if (!isValidQuizId)
+                    return BadRequest($"Invalid quizId: {dto.QuizId}");
+                if (question == null)
+                    return NotFound($"Invalid questionId: {id}");
+                question.Title = dto.Title;
+                question.correctAnswer = dto.correctAnswer;
+                question.ShowDate = dto.ShowDate;
+                //question.QuizId = dto.QuizId;
+                return Ok(await service.Update(question));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionController , Action: PutQuestion , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
-//            try
-//            {
-//                if (id != q.Id)
-//                {
-//                    return BadRequest();
-//                }
-//                return Ok(await service.UpdateQuestion(q));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: QuestionController , Action: PutQuestion , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
+        // POST: api/Questiones
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Question>> PostQuestion(QuestionDTO dto)
+        {
+            try
+            {
+                var isValidQuizId = await quizRepository.IsValidQuizId(dto.QuizId);
+                if (!isValidQuizId)
+                    return BadRequest($"Invalid quizId: {dto.QuizId}");
+                var question = mapper.Map<Question>(dto);
+                return Ok(await service.AddAsync(question));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionController , Action: PostQuestion , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
-//        // POST: api/Questiones
-//        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-//        [HttpPost]
-//        public async Task<ActionResult<Question>> PostQuestion(Question q)
-//        {
-//            try
-//            {
-//                return Ok(await service.AddQuestion(q));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: QuestionController , Action: PostQuestion , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
-
-//        // DELETE: api/Questiones/5
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteQuestion(int id)
-//        {
-//            try
-//            {
-//                return Ok(await service.DeleteQuestion(id));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: QuestionController , Action: DeleteQuestion , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
-//        [HttpGet("GetByIdWithAnswers/{id}")]
-//        public async Task<ActionResult<Question>> GetByIdWithAnswers(int id)
-//        {
-//            try
-//            {
-//                return Ok(await service.GetByIdWithAnswers(id));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: QuestionController , Action: GetByIdWithAnswers , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
-//    }
-//}
+        // DELETE: api/Questiones/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            try
+            {
+                var question = await service.GetByIdAsync(id);
+                if (question == null)
+                    return NotFound($"Invalid questionId: {id}");
+                return Ok(await service.Delete(id));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionController , Action: DeleteQuestion , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpGet("GetQuestionsByQuizId/{id}")]
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsByQuizId(int quizId)
+        {
+            try
+            {
+                var isValidQuizId = await quizRepository.IsValidQuizId(quizId);
+                if (!isValidQuizId) return BadRequest($"Invalid QuizId : {quizId}");
+                var questions = await service.GetQuestionsByQuizId(quizId);
+                if (questions.Count() == 0)
+                    return NotFound();
+                return Ok(questions);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionController , Action: GetQuestionsByQuizId , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        //[HttpGet("GetByIdWithAnswers/{id}")]
+        //public async Task<ActionResult<Question>> GetByIdWithAnswers(int id)
+        //{
+        //    try
+        //    {
+        //        return Ok(await service.GetByIdWithAnswers(id));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"Controller: QuestionController , Action: GetByIdWithAnswers , Message: {ex.Message}");
+        //        return StatusCode(500);
+        //    }
+        //    finally
+        //    {
+        //        Log.CloseAndFlush();
+        //    }
+        //}
+    }
+}

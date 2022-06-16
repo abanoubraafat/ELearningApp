@@ -7,6 +7,8 @@ using ELearning_App.Repository.UnitOfWork;
 //using ELearning_App.Service.IServices;
 //using ELearning_App.Service.Services;
 using Microsoft.EntityFrameworkCore;
+using Repository.IRepositories;
+using Repository.Repositories;
 using System.Configuration;
 
 
@@ -57,8 +59,9 @@ builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<ILatestPassedLessonRepository, LatestPassedLessonRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
-//builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-//builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
+builder.Services.AddScoped<IQuestionChoiceRepository, QuestionChoiceRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 
 

@@ -9,12 +9,9 @@ namespace Domain.DTOs
     public class QuestionDTO
     {
         public int Id { get; set; }
-        public string QuestionTitle { get; set; }
-        public string Firstchoise { get; set; } 
-        public string Secondchoise { get; set; } 
-        public string Lastchoise { get; set; } 
-        public string CorrectAnswer { get; set; }
-        public DateTime ShowDate { get; set; } 
-        public int LessonId { get; set; }
+        public string Title { get; set; }
+        public string correctAnswer { get; set; }
+        public DateTime? ShowDate { get; set; }
+        public int QuizId { get; set; }
     }
 }

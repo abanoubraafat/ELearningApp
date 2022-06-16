@@ -1,4 +1,5 @@
-﻿using ELearning_App.Domain.Entities;
+﻿using Domain.Entities;
+using ELearning_App.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -245,7 +246,7 @@ namespace ELearning_App.Domain.Context
 
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
-
+        public virtual DbSet<QuestionChoice> QuestionChoices { get; set; }
         public virtual DbSet<Announcement> Announcements { get; set; }
         public virtual DbSet<Feature> Features { get; set; }
         public virtual DbSet <Resource> Resources { get; set; }

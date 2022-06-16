@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Entities;
 using ELearning_App.Domain.Entities;
 namespace ELearning_App.Helpers
 {
@@ -31,7 +32,7 @@ namespace ELearning_App.Helpers
             CreateMap<AnnouncementDTO, Announcement>();
             CreateMap<ResourceDTO, Resource>();
             CreateMap<Course, CourseDetailsDTO>().ReverseMap();
-
+            CreateMap<QuestionChoiceDTO, QuestionChoice>().ReverseMap();
             CreateMap<AssignmentAnswer, AssignmentAnswerDetailsDTO>();
             CreateMap<QuestionAnswer, QuestionAnswerDetailsDTO>();
             //CreateMap<QuizAnswer, QuizAnswerDetailsDTO>();
