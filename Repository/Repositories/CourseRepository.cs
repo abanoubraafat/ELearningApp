@@ -22,6 +22,12 @@ namespace ELearning_App.Repository.Repositories
             return await unitOfWork.Context.Courses
                 .Where(c => c.TeacherId == teacherId)
                 .Include(c=> c.Teacher)
+                .Select(c => new Course
+                { 
+                    Id = c.Id,
+                    CourseName = c.CourseName,
+                    CourseImage = c.CourseImage
+                })
                 .ToListAsync();
         }
         public async Task<bool> IsValidCourseId(int id)
@@ -53,6 +59,7 @@ namespace ELearning_App.Repository.Repositories
             await Update(course);
             return "Dropped";
         }
+        //teacher name
         public async Task<IEnumerable<Course>> GetCoursesByStudentId(int id)
         {
             return await unitOfWork.Context.Courses.Include(c => c.Students).Include(c => c.Teacher)
@@ -60,11 +67,11 @@ namespace ELearning_App.Repository.Repositories
                 {
                     Id = c.Id,
                     CourseName = c.CourseName,
-                    CourseDescription = c.CourseDescription,
+                    //CourseDescription = c.CourseDescription,
                     CourseImage = c.CourseImage,
-                    Students = c.Students,
+                    //Students = c.Students,
                     TeacherId = c.TeacherId,
-                    Teacher = c.Teacher
+                    //Teacher = c.Teacher
                 }).ToListAsync();
         }
 

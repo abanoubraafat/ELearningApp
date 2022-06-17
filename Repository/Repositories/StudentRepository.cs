@@ -39,7 +39,7 @@ namespace ELearning_App.Repository.Repositories
                     FirstName = s.FirstName,
                     LastName = s.LastName,
                     EmailAddress = s.EmailAddress,
-                    Courses = s.Courses
+                    //Courses = s.Courses
                 })
                 .ToListAsync();
         }

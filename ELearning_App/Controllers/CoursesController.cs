@@ -283,7 +283,7 @@ namespace ELearning_App.Controllers
                     return BadRequest($"No Teacher with that id: {teacherId}");
                 var courses = await service.GetCoursesByTeacherId(teacherId);
                 if (courses.Count() == 0) return NotFound("No Courses with that teacherId");
-                return Ok(mapper.Map<IEnumerable<CourseDetailsDTO>>(courses));
+                return Ok(courses);
             }
             catch (Exception ex)
             {
