@@ -110,10 +110,16 @@ namespace ELearning_App.Controllers
             {
                 var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
                 var isValidQuizId = await quizRepository.IsValidQuizId(dto.QuizId);
+                var isNotValidQuizGrade = await service.IsNotValidQuizGrade(dto.StudentId, dto.QuizId);
                 if (!isValidStudentId)
                     return BadRequest($"Invalid studentId : {dto.StudentId}");
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId : {dto.QuizId}");
+                if (isNotValidQuizGrade)
+                    return BadRequest($"There's already a QuizGrade to student {dto.StudentId} of quiz {dto.QuizId}");
+                int grade = await service.QuizGradeAdderInt(dto.StudentId, dto.QuizId);
+                if(dto.Grade == 0) //automatically set the grade if value entered by the user = 0, manyally otherwise.
+                    dto.Grade = grade;
                 var mapped = mapper.Map<QuizGrade>(dto);
                 return Ok(await service.AddAsync(mapped));
             }
@@ -150,27 +156,27 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("GetQuizGradesByQuizId/{quizId}")]
-        public async Task<ActionResult<IEnumerable<QuizGrade>>> GetQuizGradesByQuizId(int quizId)
+        public async Task<ActionResult<IEnumerable<QuizGradeDetailsDTO>>> GetQuizGradesByQuizId(int quizId)
         {
-            try
-            {
+            //try
+            //{
                 var isValidQuizId = await quizRepository.IsValidQuizId(quizId);
                 var quizGrades = await service.GetQuizGradesByQuizId(quizId);
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId :{quizId}");
                 if (quizGrades.Count() == 0)
                     return NotFound($"There're No QuizGrades with such quizId: {quizId}");
-                return Ok(quizGrades);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Controller: QuizGradeController , Action: GetQuizGradesByQuizId , Message: {ex.Message}");
-                return StatusCode(500);
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+                return Ok(mapper.Map<IEnumerable<QuizGradeDetailsDTO>>(quizGrades));
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error($"Controller: QuizGradeController , Action: GetQuizGradesByQuizId , Message: {ex.Message}");
+            //    return StatusCode(500);
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
         }
         [HttpGet("GetQuizGradeByQuizIdByStudentId/{studentId}/{quizId}")]
         public async Task<ActionResult<QuizGrade>> GetQuizGradeByQuizIdByStudentId(int quizId, int studentId)
@@ -187,6 +193,32 @@ namespace ELearning_App.Controllers
                 if (quizGrade == null)
                     return NotFound($"There're No QuizGrades with such quizId: {quizId}");
                 return Ok(quizGrade);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuizGradeController , Action: GetQuizGradeByQuizIdByStudentId , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpGet("QuizGradeAdder/{studentId}/{quizId}")]
+        public async Task<ActionResult<QuizGrade>> QuizGrader(int studentId, int quizId)
+        {
+            try
+            {
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                var isValidQuizId = await quizRepository.IsValidQuizId(quizId);
+                var grade = await service.QuizGradeAdder(studentId, quizId);
+                if (!isValidQuizId)
+                    return BadRequest($"Invalid quizId :{quizId}");
+                if (!isValidStudentId)
+                    return BadRequest($"Invalid studentId :{studentId}");
+                if (grade == null)
+                    return NotFound($"Post A grade to this quiz first");
+                return Ok(grade);
             }
             catch (Exception ex)
             {

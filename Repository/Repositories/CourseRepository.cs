@@ -21,7 +21,6 @@ namespace ELearning_App.Repository.Repositories
         {
             return await unitOfWork.Context.Courses
                 .Where(c => c.TeacherId == teacherId)
-                .Include(c=> c.Teacher)
                 .Select(c => new Course
                 { 
                     Id = c.Id,
@@ -38,8 +37,8 @@ namespace ELearning_App.Repository.Repositories
         public async Task<string> JoinCourseForStudent(int studentId, int courseId)
         {
             
-            var student = unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId).Result;
-            var course = unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync().Result;
+            var student = await unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId);
+            var course = await unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync();
             if (student == null || course == null)
                 return "Invalid studentId or courseId";
             else if (course.Students.Any(s => s.Id == studentId))
@@ -51,8 +50,8 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<string> DropCourseForStudent(int studentId, int courseId)
         {
-            var student = unitOfWork.Context.Students.FirstAsync(s=>s.Id == studentId).Result;
-            var course = unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync().Result;
+            var student = await unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId);
+            var course = await unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync();
             if (student == null || course == null || !course.Students.Any(s => s.Id == studentId))
                 return "Invalid studentId or courseId";
             course.Students.Remove(student);
@@ -71,7 +70,7 @@ namespace ELearning_App.Repository.Repositories
                     CourseImage = c.CourseImage,
                     //Students = c.Students,
                     TeacherId = c.TeacherId,
-                    //Teacher = c.Teacher
+                    Teacher = c.Teacher
                 }).ToListAsync();
         }
 

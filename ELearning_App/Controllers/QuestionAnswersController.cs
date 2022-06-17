@@ -109,10 +109,13 @@ namespace ELearning_App.Controllers
             {
                 var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
                 var isValidQuestionId = await questionRepository.IsValidQuestionId(dto.QuestionId);
+                var isNotValidQuestionAnswer = await service.IsNotValidQuestionAnswer(dto.StudentId, dto.QuestionId);
                 if (!isValidStudentId)
                     return BadRequest($"Invalid studentId : {dto.StudentId}");
                 if (!isValidQuestionId)
                     return BadRequest($"Invalid questionId : {dto.QuestionId}");
+                if (isNotValidQuestionAnswer)
+                    return BadRequest($"There's already a QuestionAnswer assigned by student :{dto.StudentId} to question {dto.QuestionId}");
                 var mapped = mapper.Map<QuestionAnswer>(dto);
                 return Ok(await service.AddAsync(mapped));
             }

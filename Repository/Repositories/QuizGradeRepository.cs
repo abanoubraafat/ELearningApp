@@ -36,18 +36,18 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<IEnumerable<QuizGrade>> GetQuizGradesByQuizId(int quizId)
         {
-            return await unitOfWork.Context.QuizGrades.Where(g => g.QuizId == quizId).ToListAsync();
+            return await unitOfWork.Context.QuizGrades.Where(g => g.QuizId == quizId).Include(g => g.Quiz).Include(g => g.Student).ToListAsync();
         }
-        public async Task<QuizGrade> QuizGradeAdder(int gradeId, int questionId, int studentId, int quizId)
+        public async Task<QuizGrade> QuizGradeAdder(int studentId, int quizId)
         {
-            var questionAnswers = unitOfWork.Context.QuestionAnswers
+            var questionAnswers = await unitOfWork.Context.QuestionAnswers
                 .Include(q => q.Question)
                 .Where(q => q.Question.QuizId == quizId && q.StudentId == studentId)
-                .ToListAsync().Result;
-            var questions = questionRepository.GetQuestionsByQuizId(quizId).Result;
+                .ToListAsync();
+            var questions = await questionRepository.GetQuestionsByQuizId(quizId);
             //var grade =  unitOfWork.Context.QuizGrades.AddAsync(new QuizGrade { Grade = 0, StudentId = studentId, QuizId = quizId }).Result;
-            var quizGrade = unitOfWork.Context.QuizGrades
-                .SingleOrDefaultAsync(q => q.StudentId == studentId && q.QuizId == quizId).Result;
+            var quizGrade = await unitOfWork.Context.QuizGrades.SingleOrDefaultAsync(q => q.StudentId == studentId && q.QuizId == quizId);
+            if (quizGrade == null) return null;
             foreach(var q in questions)
             {
                 foreach(var a in questionAnswers)
@@ -59,8 +59,50 @@ namespace ELearning_App.Repository.Repositories
                             quizGrade.Grade++;
                             await Update(quizGrade);
                         }
+                        //else {
+                        //    quizGrade.Grade--;
+                        //    await Update(quizGrade);
+                        //}
                     }
                         
+                }
+            }
+            return quizGrade;
+        }
+
+        public async Task<bool> IsNotValidQuizGrade(int studentId, int quizId)
+        {
+            return await IsValidFk(g => g.StudentId == studentId && g.QuizId == quizId);
+        }
+
+        //public async Task<QuizGrade> GetQuestionAnswers(int quizId, int studentId)
+        //{
+        //    var questionAnswers = await unitOfWork.Context.QuestionAnswers
+        //        //.Include(q => q.Question)
+        //        .Where(q => q.Question.QuizId == quizId && q.StudentId == studentId)
+        //        .ToListAsync();
+        //    var questions = await questionRepository.GetQuestionsByQuizId(quizId);
+        //   return await unitOfWork.Context.QuizGrades.SingleOrDefaultAsync(q => q.StudentId == studentId && q.QuizId == quizId);
+        //}
+        public async Task<int> QuizGradeAdderInt(int studentId, int quizId)
+        {
+            var questionAnswers = await unitOfWork.Context.QuestionAnswers
+                .Include(q => q.Question)
+                .Where(q => q.Question.QuizId == quizId && q.StudentId == studentId)
+                .ToListAsync();
+            var questions = await questionRepository.GetQuestionsByQuizId(quizId);
+            var quizGrade = 0;
+            foreach (var q in questions)
+            {
+                foreach (var a in questionAnswers)
+                {
+                    if (q.Id == a.QuestionId)
+                    {
+                        if (await questionAnswerRepository.CorrectQuestionAnswerOrNot(q.Id, a.Id))
+                        {
+                            quizGrade++;
+                        }
+                    }
                 }
             }
             return quizGrade;

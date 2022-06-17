@@ -11,5 +11,6 @@ namespace ELearning_App.Repository.IRepositories
         Task<IEnumerable<QuestionAnswer>> GetQuestionAnswersByQuestionId(int questionId);
         Task<QuestionAnswer> GetQuestionAnswerByQuestionIdByStudentId(int questionId, int studentId);
         Task<bool> CorrectQuestionAnswerOrNot(int questionId, int questionAnswerId);
+        Task<bool> IsNotValidQuestionAnswer(int studentId, int questionId);
     }
 }
