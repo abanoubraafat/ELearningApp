@@ -54,6 +54,11 @@ namespace ELearning_App.Repository.Repositories
             return await unitOfWork.Context.AssignmentAnswers.AnyAsync(a => a.StudentId == studentId && a.AssignmentId == assignmentId);
         }
 
+        public async Task<bool> IsSubmittedAssignmentAnswer(int assignmentId, int studentId)
+        {
+            return await IsValidFk(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
+        }
+
         //public async Task<bool> IsValidAssignmentIdFk(int assignmentId)
         //{
         //    var isValid = await unitOfWork.Context.Assignments.AnyAsync(a => a.Id == assignmentId);

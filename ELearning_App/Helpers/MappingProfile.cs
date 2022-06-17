@@ -68,6 +68,7 @@ namespace ELearning_App.Helpers
 
             //CreateMap<MovieDto, Movie>()
             //    .ForMember(src => src.Poster, opt => opt.Ignore());
+            CreateMap<Assignment, AssignmentDetailsDTO>().ReverseMap();
         }
     }
 }
