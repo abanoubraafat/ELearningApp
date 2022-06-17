@@ -51,9 +51,10 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                if (service.GetByIdAsync(id) == null)
-                    return NotFound();
-                return Ok(await service.GetByIdAsync(id));
+                var quiz = await service.GetByIdAsync(id);
+                if (quiz == null)
+                    return NotFound($"Invalid quizId : {id}");
+                return Ok(quiz);
             }
             catch (Exception ex)
             {

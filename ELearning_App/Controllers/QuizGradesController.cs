@@ -34,7 +34,10 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                return Ok(await service.GetAllAsync());
+                var quizGrades = await service.GetAllAsync();
+                if (!quizGrades.Any())
+                    return NotFound("No QuizGrades was found");
+                return Ok(quizGrades);
             }
             catch (Exception ex)
             {
@@ -53,9 +56,10 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                if (service.GetByIdAsync(id) == null)
-                    return NotFound();
-                return Ok(await service.GetByIdAsync(id));
+                var quizGrade = await service.GetByIdAsync(id);
+                if (quizGrade == null)
+                    return NotFound($"Invalid quizGradeId : {id}");
+                return Ok(quizGrade);
             }
             catch (Exception ex)
             {
