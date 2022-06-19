@@ -230,14 +230,12 @@ namespace ELearning_App.Domain.Context
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<Lesson> Lessons { get; set; }
         public virtual DbSet<Content> Content { get; set; }
-        public virtual DbSet<Note> Notes { get; set; }
-        public virtual DbSet<LatestPassedLesson> LatestPassedLessons { get; set; }
-        //public virtual DbSet<Student_CC> Student_CCs { get; set; }
-
+        //public virtual DbSet<Note> Notes { get; set; }
+        //public virtual DbSet<LatestPassedLesson> LatestPassedLessons { get; set; }
         public virtual DbSet<Badge> Badges { get; set; }
         public virtual DbSet<Assignment> Assignments { get; set; }
         public virtual DbSet<AssignmentAnswer> AssignmentAnswers{ get; set; }
-        public virtual DbSet <AssignmentFeedback> AssignmentFeedbacks { get; set; }
+        //public virtual DbSet <AssignmentFeedback> AssignmentFeedbacks { get; set; }
         public virtual DbSet<AssignmentGrade> AssignmentGrades { get; set; }
 
         public virtual DbSet<Quiz> Quizzes{ get; set; }
@@ -247,7 +245,7 @@ namespace ELearning_App.Domain.Context
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual DbSet<QuestionChoice> QuestionChoices { get; set; }
-        public virtual DbSet<Announcement> Announcements { get; set; }
+        //public virtual DbSet<Announcement> Announcements { get; set; }
         public virtual DbSet<Feature> Features { get; set; }
         public virtual DbSet <Resource> Resources { get; set; }
         public virtual DbSet <ToDoList> ToDoLists { get; set; }

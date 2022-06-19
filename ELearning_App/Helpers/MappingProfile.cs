@@ -10,15 +10,15 @@ namespace ELearning_App.Helpers
             CreateMap<AssignmentDTO, Assignment>();
                 //.BeforeMap((src, dest) => src.Id = dest.Id);
             CreateMap<AssignmentAnswerDTO, AssignmentAnswer>();
-            CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
+            //CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
             CreateMap<AssignmentGradeDTO, AssignmentGrade>();
             CreateMap<BadgeDTO, Badge>();
             CreateMap<ContentDTO, Content>();
             CreateMap<CourseDTO, Course>();
             CreateMap<FeatureDTO, Feature>();
-            CreateMap<LatestPassedLessonDTO, LatestPassedLesson>();
+            //CreateMap<LatestPassedLessonDTO, LatestPassedLesson>();
             CreateMap<LessonDTO, Lesson>();
-            CreateMap<NoteDTO, Note>();
+            //CreateMap<NoteDTO, Note>();
             CreateMap<ParentDTO, Parent>();
             CreateMap<QuestionDTO, Question>();
             CreateMap<QuestionAnswerDTO, QuestionAnswer>();
@@ -29,7 +29,7 @@ namespace ELearning_App.Helpers
             CreateMap<TeacherDTO, Teacher>();
             CreateMap<ToDoListDTO, ToDoList>();
             CreateMap<UserDTO, User>();
-            CreateMap<AnnouncementDTO, Announcement>();
+            //CreateMap<AnnouncementDTO, Announcement>();
             CreateMap<ResourceDTO, Resource>();
             CreateMap<Course, CourseDetailsDTO>().ReverseMap();
             CreateMap<QuestionChoiceDTO, QuestionChoice>().ReverseMap();
@@ -39,15 +39,15 @@ namespace ELearning_App.Helpers
 
             CreateMap<Assignment, AssignmentDTO>();
             CreateMap<AssignmentAnswer, AssignmentAnswerDTO>();
-            CreateMap<AssignmentFeedback, AssignmentFeedbackDTO>();
+            //CreateMap<AssignmentFeedback, AssignmentFeedbackDTO>();
             CreateMap<AssignmentGrade, AssignmentGradeDTO>();
             CreateMap<Badge, BadgeDTO>();
             CreateMap<Content, ContentDTO>();
             CreateMap<Course, CourseDTO>();
             CreateMap<Feature, FeatureDTO>();
-            CreateMap<LatestPassedLesson, LatestPassedLessonDTO>();
+            //CreateMap<LatestPassedLesson, LatestPassedLessonDTO>();
             CreateMap<Lesson, LessonDTO>();
-            CreateMap<Note, NoteDTO>();
+            //CreateMap<Note, NoteDTO>();
             CreateMap<Parent, ParentDTO>();
             CreateMap<Question, QuestionDTO>();
             CreateMap<QuestionAnswer, QuestionAnswerDTO>();
@@ -58,7 +58,7 @@ namespace ELearning_App.Helpers
             CreateMap<Teacher, TeacherDTO>();
             CreateMap<ToDoList, ToDoListDTO>();
             CreateMap<User, UserDTO>();
-            CreateMap<Announcement, AnnouncementDTO>();
+            //CreateMap<Announcement, AnnouncementDTO>();
             CreateMap<Resource, ResourceDTO>();
 
             CreateMap<AssignmentAnswerDetailsDTO, AssignmentAnswer>();

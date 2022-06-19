@@ -1,11 +1,11 @@
-﻿using ELearning_App.Domain.Entities;
-using ELearning_App.Repository.GenericRepositories;
+﻿//using ELearning_App.Domain.Entities;
+//using ELearning_App.Repository.GenericRepositories;
 
-namespace ELearning_App.Repository.IRepositories
-{
-    public interface ILatestPassedLessonRepository : IGenericRepository<LatestPassedLesson>
-    {
-        Task<bool> IsValidLatestPassedLessonId(int id);
+//namespace ELearning_App.Repository.IRepositories
+//{
+//    public interface ILatestPassedLessonRepository : IGenericRepository<LatestPassedLesson>
+//    {
+//        Task<bool> IsValidLatestPassedLessonId(int id);
 
-    }
-}
+//    }
+//}
