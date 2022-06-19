@@ -119,7 +119,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("AddStudentsByEmailToParent/{parentId}/{studentEmail}")]
+        [HttpGet("{parentId}/AddStudentsByEmailToParent/{studentEmail}")]
         public async Task<ActionResult<Parent>> AddStudentsByEmailToParent(int parentId, string studentEmail)
         {
             try

@@ -136,7 +136,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("Course/{courseId}/Lessons")]
+        [HttpGet("GetLessonsByCourseId/{courseId}")]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetLessonsByCourseId(int courseId)
         {
             try

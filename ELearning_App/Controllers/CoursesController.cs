@@ -144,7 +144,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("Students/{studentId}/JoinCourse/{courseId}")]
+        [HttpGet("{courseId}/JoinCourse/{studentId}")]
         public async Task<ActionResult<Course>> JoinCourseForStudent(int studentId, int courseId)
         {
             try
@@ -173,7 +173,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("Students/{studentId}/DropCourse/{courseId}")]
+        [HttpGet("{courseId}/DropCourse/{studentId}")]
         public async Task<ActionResult<Course>> DropCourseForStudent(int studentId, int courseId)
         {
             try
@@ -255,23 +255,23 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        [HttpGet("GetByIdWithStudents/{id}")]
-        public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id)
-        {
-            try
-            {
-                return Ok(await service.GetByIdWithStudents(id));
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Controller: CoursesController , Action: GetByIdWithStudents , Message: {ex.Message}");
-                return StatusCode(500);
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
+        //[HttpGet("GetByIdWithStudents/{id}")]
+        //public async Task<ActionResult> GetByIdWithStudents([FromRoute] int id)
+        //{
+        //    try
+        //    {
+        //        return Ok(await service.GetByIdWithStudents(id));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithStudents , Message: {ex.Message}");
+        //        return StatusCode(500);
+        //    }
+        //    finally
+        //    {
+        //        Log.CloseAndFlush();
+        //    }
+        //}
         // api/GetCoursesByTeacherId/5
         [HttpGet("GetCoursesByTeacherId/{teacherId}")]
         public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByTeacherId(int teacherId)
