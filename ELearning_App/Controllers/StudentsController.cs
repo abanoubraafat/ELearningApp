@@ -108,6 +108,8 @@ namespace ELearning_App.Controllers
                     return BadRequest("There's already an account with the same Email address");
                 else if (!dto.Role.Equals("Student"))
                     return BadRequest("Make sure the Role field is 'Student'");
+                string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
+                dto.Password = hashedPassword;
                 var student = mapper.Map<Student>(dto);
                 return Ok(await service.AddAsync(student));
             }

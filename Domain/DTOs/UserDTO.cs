@@ -12,7 +12,6 @@ namespace Domain.DTOs
         public int Id { get; set; }
         [EmailAddress]
         public string EmailAddress { get; set; }
-        [MaxLength(50)]
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

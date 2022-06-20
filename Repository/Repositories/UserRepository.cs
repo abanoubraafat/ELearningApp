@@ -20,13 +20,35 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<User> Login(string email, string password)
         {
-            return await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == email && u.Password == password);
+            var user = await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == email);
+            if (user == null)
+                return null;
+            bool isValidPassword = VerifyPassword(password, user.Password);
+            if(!isValidPassword)
+                return null;
+            else
+                return user;
         }
 
         public async Task<bool> IsNotAvailableUserEmail(string email)
         {
             return await unitOfWork.Context.Users.AnyAsync(u => u.EmailAddress.Equals(email));
             //if true means un valid
+        }
+
+        public string CreatePasswordHash(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        public bool VerifyPassword(string password, string hashedPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == email);
         }
 
         //public IQueryable<LoginInfo> GetByIdWithToDoLists(int id)

@@ -96,7 +96,8 @@ namespace ELearning_App.Controllers
                     user.LastName = dto.LastName;
                     user.ProfilePic = dto.ProfilePic;
                     //user.EmailAddress = dto.EmailAddress;
-                    user.Password = dto.Password;
+                    if (!user.Password.Equals(dto.Password))
+                        user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
                     //user.Role = dto.Role;
                     return Ok(await service.Update(user));
@@ -109,7 +110,8 @@ namespace ELearning_App.Controllers
                     user.LastName = dto.LastName;
                     user.ProfilePic = dto.ProfilePic;
                     user.EmailAddress = dto.EmailAddress;
-                    user.Password = dto.Password;
+                    if (!user.Password.Equals(dto.Password))
+                        user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
                     //user.Role = dto.Role;
                     return Ok(await service.Update(user));
@@ -176,13 +178,19 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpPost("login/{email}/{password}")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(string email, string password)
         {
             try
             {
+                //var user = await service.GetByEmailAsync(email);
+                //if (user == null) return NotFound($"Invalid email : {email}");
+                //bool isValidPassword = service.VerifyPassword(password, user.Password);
+                var ExistingEmailAdress = await service.IsNotAvailableUserEmail(email);
+                if (!ExistingEmailAdress)
+                    return NotFound($"Invalid email : {email}");
                 if (await service.Login(email, password) == null)
-                    return StatusCode(404);
+                    return BadRequest($"Invalid password");
                 else
                     return Ok(await service.Login(email, password));
             }
@@ -196,8 +204,32 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        //[HttpPost("changePassword")]
+        //public async Task<IActionResult> ChangePassword(string email, string oldPassword, string newPassword)
+        //{
+        //    try
+        //    {
+        //        var user = await service.GetByEmailAsync(email);
+        //        if (user == null) return NotFound($"Invalid email : {email}");
+        //        bool isValidPassword = service.VerifyPassword(oldPassword, user.Password);
+        //        if (!isValidPassword)
+        //            return BadRequest($"Invalid password");
+        //        user.Password = newPassword;
+        //        return Ok(await service.Update(user));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"Controller: LoginInfoController , Action: ChangePassword , Message: {ex.Message}");
+        //        return StatusCode(500);
+        //    }
+        //    finally
+        //    {
+        //        Log.CloseAndFlush();
+        //    }
+        //}
     }
 }
+
 
 // DELETE: api/LoginInfoes/5
 
