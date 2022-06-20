@@ -17,6 +17,7 @@ namespace ELearning_App.Domain.Entities
         public virtual Quiz Quiz { get; set; }
         public int StudentId { get; set; }
         public virtual Student Student { get; set; }
-
+        
+        //json: quiz name, student name, grade
     }
 }

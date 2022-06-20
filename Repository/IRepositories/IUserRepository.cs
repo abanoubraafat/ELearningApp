@@ -9,5 +9,9 @@ namespace ELearning_App.Repository.IRepositories
         Task<bool> IsValidUserId(int id);
         Task<bool> IsNotAvailableUserEmail(string email);
         Task<User> Login(string email, string password);
+        string CreatePasswordHash(string password);
+        bool VerifyPassword(string password, string hashedPassword);
+        Task<User> GetByEmailAsync(string email);
+
     }
 }

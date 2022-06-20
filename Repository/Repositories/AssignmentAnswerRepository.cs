@@ -17,7 +17,7 @@ namespace ELearning_App.Repository.Repositories
             unitOfWork = _unitOfWork;
             this.mapper = mapper;
         }
-
+        //json answer + student name
         public async Task<IEnumerable<AssignmentAnswer>> GetAssignmentAnswersByAssignmentId(int assignmentId)
         {
              var a = await unitOfWork.Context.AssignmentAnswers
@@ -37,7 +37,7 @@ namespace ELearning_App.Repository.Repositories
                 .ToListAsync();
             return a;
         }
-
+        
         public async Task<AssignmentAnswer> GetAssignmentAnswerByStudentIdByAssignmentId(int studentId, int assignmentId)
         {
             return await unitOfWork.Context.AssignmentAnswers
@@ -52,6 +52,11 @@ namespace ELearning_App.Repository.Repositories
         public async Task<bool> IsNotValidAssignmentAnswerWithStudentId(int studentId, int assignmentId)
         {
             return await unitOfWork.Context.AssignmentAnswers.AnyAsync(a => a.StudentId == studentId && a.AssignmentId == assignmentId);
+        }
+
+        public async Task<bool> IsSubmittedAssignmentAnswer(int assignmentId, int studentId)
+        {
+            return await IsValidFk(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
         }
 
         //public async Task<bool> IsValidAssignmentIdFk(int assignmentId)

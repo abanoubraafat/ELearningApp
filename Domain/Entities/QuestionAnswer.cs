@@ -17,6 +17,8 @@ namespace ELearning_App.Domain.Entities
         // one to many (Student -> QuestionAnswer)
         public int StudentId { get; set; }
         public virtual Student Student { get; set; }
+        //public int QuizId { get; set; }
+        //public virtual Quiz Quiz { get; set; }
         //public int ChoiceId { get; set; }
         //public virtual Choice Choice { get; set; }
 

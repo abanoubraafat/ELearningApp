@@ -56,7 +56,7 @@ namespace ELearning_App.Repository.Repositories
                     LastName= s.LastName,
                     Phone = s.Phone,
                     ProfilePic = s.ProfilePic,
-                    //Parents = s.Parents
+                    Parents = s.Parents
                 })
                 .ToListAsync();
         }

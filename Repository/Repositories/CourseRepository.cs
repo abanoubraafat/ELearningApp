@@ -21,7 +21,12 @@ namespace ELearning_App.Repository.Repositories
         {
             return await unitOfWork.Context.Courses
                 .Where(c => c.TeacherId == teacherId)
-                .Include(c=> c.Teacher)
+                .Select(c => new Course
+                { 
+                    Id = c.Id,
+                    CourseName = c.CourseName,
+                    CourseImage = c.CourseImage
+                })
                 .ToListAsync();
         }
         public async Task<bool> IsValidCourseId(int id)
@@ -32,8 +37,8 @@ namespace ELearning_App.Repository.Repositories
         public async Task<string> JoinCourseForStudent(int studentId, int courseId)
         {
             
-            var student = unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId).Result;
-            var course = unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync().Result;
+            var student = await unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId);
+            var course = await unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync();
             if (student == null || course == null)
                 return "Invalid studentId or courseId";
             else if (course.Students.Any(s => s.Id == studentId))
@@ -45,14 +50,15 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<string> DropCourseForStudent(int studentId, int courseId)
         {
-            var student = unitOfWork.Context.Students.FirstAsync(s=>s.Id == studentId).Result;
-            var course = unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync().Result;
+            var student = await unitOfWork.Context.Students.FirstAsync(s => s.Id == studentId);
+            var course = await unitOfWork.Context.Courses.Where(c => c.Id == courseId).Include(c => c.Students).FirstAsync();
             if (student == null || course == null || !course.Students.Any(s => s.Id == studentId))
                 return "Invalid studentId or courseId";
             course.Students.Remove(student);
             await Update(course);
             return "Dropped";
         }
+        //teacher name
         public async Task<IEnumerable<Course>> GetCoursesByStudentId(int id)
         {
             return await unitOfWork.Context.Courses.Include(c => c.Students).Include(c => c.Teacher)
@@ -60,9 +66,9 @@ namespace ELearning_App.Repository.Repositories
                 {
                     Id = c.Id,
                     CourseName = c.CourseName,
-                    CourseDescription = c.CourseDescription,
+                    //CourseDescription = c.CourseDescription,
                     CourseImage = c.CourseImage,
-                    Students = c.Students,
+                    //Students = c.Students,
                     TeacherId = c.TeacherId,
                     Teacher = c.Teacher
                 }).ToListAsync();

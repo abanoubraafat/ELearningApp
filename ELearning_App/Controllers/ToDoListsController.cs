@@ -107,10 +107,10 @@ namespace ELearning_App.Controllers
         {
             //try
             //{
-                var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
-                if (!isValidUserId) return BadRequest("Invalid UserId");
-                var t = mapper.Map<ToDoList>(dto);
-                return Ok(await service.AddAsync(t));
+            var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
+            if (!isValidUserId) return BadRequest("Invalid UserId");
+            var t = mapper.Map<ToDoList>(dto);
+            return Ok(await service.AddAsync(t));
             //}
             //catch (Exception ex)
             //{
@@ -129,6 +129,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                var toDoList = await service.GetByIdAsync(id);
+                if (toDoList == null) return NotFound($"Invalid ToDoListId : {id}");
                 return Ok(await service.Delete(id));
             }
             catch (Exception ex)
@@ -147,5 +149,26 @@ namespace ELearning_App.Controllers
         //    var book = service.AddToDoList(new ToDoList { Notes ="", Date = new DateTime().Date, Time = new DateTime().Date, Done = true, Urgent=false, important = false, LoginInfoId = 5 });
         //    return Ok(await book);
         //}
+        [HttpGet("GetToDoListsByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<ToDoList>>> GetToDoListsByUserId(int userId)
+        {
+            try
+            {
+                var isValidUserId = await userRepository.IsValidUserId(userId);
+                if (!isValidUserId) return BadRequest($"Invalid UserId {userId}");
+                var toDoLists = await service.GetToDoListsByUserId(userId);
+                if (toDoLists == null) return NotFound($"No ToDoLists found for this user : {userId}");
+                return Ok(toDoLists);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ToDoListController , Action: GetToDoLists , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
     }
 }

@@ -7,6 +7,10 @@ namespace ELearning_App.Repository.IRepositories
     {
         //Task<QuizGrade> GetQuizGradeByQuizAnswerId(int quizAnswerId);
         Task<bool> IsValidQuizGradeId(int id);
-
+        Task<QuizGrade> GetQuizGradeByQuizIdByStudentId(int quizId, int studentId);
+        Task<IEnumerable<QuizGrade>> GetQuizGradesByQuizId(int quizId);
+        Task<QuizGrade> QuizGradeAdder(int studentId, int quizId);
+        Task<bool> IsNotValidQuizGrade(int studentId, int quizId);
+        Task<int> QuizGradeAdderInt(int studentId, int quizId);
     }
 }

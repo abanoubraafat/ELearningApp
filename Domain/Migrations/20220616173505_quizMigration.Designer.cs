@@ -4,6 +4,7 @@ using ELearning_App.Domain.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ELearningContext))]
-    partial class ELearningContextModelSnapshot : ModelSnapshot
+    [Migration("20220616173505_quizMigration")]
+    partial class quizMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,6 +59,26 @@ namespace Domain.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("QuestionChoices");
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AnnouncementContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PostDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Assignment", b =>
@@ -128,6 +150,28 @@ namespace Domain.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("AssignmentAnswers");
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AssignmentAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Feedback")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentAnswerId");
+
+                    b.ToTable("AssignmentFeedbacks");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
@@ -268,6 +312,33 @@ namespace Domain.Migrations
                     b.ToTable("Features");
                 });
 
+            modelBuilder.Entity("ELearning_App.Domain.Entities.LatestPassedLesson", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LatestLessonName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("LatestPassedLessons");
+                });
+
             modelBuilder.Entity("ELearning_App.Domain.Entities.Lesson", b =>
                 {
                     b.Property<int>("Id")
@@ -292,6 +363,33 @@ namespace Domain.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.Note", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NoteText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Question", b =>
@@ -505,7 +603,8 @@ namespace Domain.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -621,6 +720,17 @@ namespace Domain.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentFeedback", b =>
+                {
+                    b.HasOne("ELearning_App.Domain.Entities.AssignmentAnswer", "AssignmentAnswer")
+                        .WithMany()
+                        .HasForeignKey("AssignmentAnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssignmentAnswer");
+                });
+
             modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
                 {
                     b.HasOne("ELearning_App.Domain.Entities.AssignmentAnswer", "AssignmentAnswer")
@@ -676,6 +786,25 @@ namespace Domain.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("ELearning_App.Domain.Entities.LatestPassedLesson", b =>
+                {
+                    b.HasOne("ELearning_App.Domain.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ELearning_App.Domain.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("ELearning_App.Domain.Entities.Lesson", b =>
                 {
                     b.HasOne("ELearning_App.Domain.Entities.Course", "Course")
@@ -685,6 +814,25 @@ namespace Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.Note", b =>
+                {
+                    b.HasOne("ELearning_App.Domain.Entities.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ELearning_App.Domain.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Question", b =>

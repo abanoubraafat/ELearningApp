@@ -10,6 +10,7 @@ namespace Domain.DTOs
     {
         public int Id { get; set; }
         public int Grade { get; set; }
-        public int QuizAnswerId { get; set; }
+        public int QuizId { get; set; }
+        public int StudentId { get; set; }
     }
 }

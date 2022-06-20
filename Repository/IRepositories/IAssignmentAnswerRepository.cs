@@ -16,7 +16,7 @@ namespace ELearning_App.Repository.IRepositories
         //Task<bool> IsValidStudentIdFk(int assignmentId);
         Task<bool> IsValidAssignmentAnswerId(int id);
         Task<bool> IsNotValidAssignmentAnswerWithStudentId(int studentId, int assignmentId);
-
+        Task<bool> IsSubmittedAssignmentAnswer(int assignmentId, int studentId);
 
     }
 }

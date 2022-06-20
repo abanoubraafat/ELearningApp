@@ -28,5 +28,19 @@ namespace ELearning_App.Repository.Repositories
         {
             return await unitOfWork.Context.AssignmentGrades.AnyAsync(g => g.AssignmentAnswerId == assignmentAnswerId);
         }
+
+        public async Task<int> GetIntAssignmentGrade(int assignmentId, int studentId)
+        {
+            var a = await unitOfWork.Context.AssignmentAnswers.SingleOrDefaultAsync(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
+            if (a == null)
+                return -1;
+            else
+            {
+                var assignmentgrade = await unitOfWork.Context.AssignmentGrades.SingleOrDefaultAsync(grade => grade.AssignmentAnswerId == a.Id);
+                if (assignmentgrade == null)
+                    return -1;
+                return assignmentgrade.Grade;
+            }
+        }
     }
 }

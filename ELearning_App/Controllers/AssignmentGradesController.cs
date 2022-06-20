@@ -11,7 +11,7 @@ using Serilog;
 
 namespace ELearning_App.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AssignmentGradesController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace ELearning_App.Controllers
         }
 
         // GET: api/AssignmentGradees
-        [HttpGet("AssignmentGrades")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<AssignmentGrade>>> GetAssignmentGrades()
         {
             try
@@ -46,7 +46,7 @@ namespace ELearning_App.Controllers
         }
 
         // GET: api/AssignmentGradees/5
-        [HttpGet("AssignmentGrades/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AssignmentGrade>> GetAssignmentGrade(int id)
         {
             try
@@ -68,7 +68,7 @@ namespace ELearning_App.Controllers
 
         // PUT: api/AssignmentGradees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("AssignmentGrades/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutAssignmentGrade(int id, [FromBody] AssignmentGradeDTO dto)
         {
 
@@ -96,7 +96,7 @@ namespace ELearning_App.Controllers
 
         // POST: api/AssignmentGradees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("AssignmentGrades")]
+        [HttpPost]
         public async Task<ActionResult<AssignmentGrade>> PostAssignmentGrade(AssignmentGradeDTO dto)
         {
             try
@@ -122,7 +122,7 @@ namespace ELearning_App.Controllers
         }
 
         // DELETE: api/AssignmentGradees/5
-        [HttpDelete("AssignmentGrades/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAssignmentGrade(int id)
         {
             try
@@ -141,7 +141,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("AssignmnetAnswers/{assignmentAnswerId}/AssignmentGrade")]
+        [HttpGet("GetAssignmentGradeByAssignmentAnswerId/{assignmentAnswerId}")]
         public async Task<ActionResult<AssignmentGrade>> GetAssignmentGradeByAssignmentAnswerId(int assignmentAnswerId)
         {
             try

@@ -9,7 +9,7 @@ using Serilog;
 
 namespace ELearning_App.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AssignmentAnswersController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace ELearning_App.Controllers
         }
 
         // GET: api/AssignmentAnsweres
-        [HttpGet("AssignmentAnswers")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<AssignmentAnswer>>> GetAssignmentAnswers()
         {
             try
@@ -49,7 +49,7 @@ namespace ELearning_App.Controllers
         }
 
         // GET: api/AssignmentAnsweres/5
-        [HttpGet("AssignmentAnswers/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AssignmentAnswer>> GetAssignmentAnswer(int id)
         {
             try
@@ -72,7 +72,7 @@ namespace ELearning_App.Controllers
 
         // PUT: api/AssignmentAnsweres/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("AssignmentAnswers/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] AssignmentAnswerDTO a)
         {
 
@@ -107,7 +107,7 @@ namespace ELearning_App.Controllers
 
         // POST: api/AssignmentAnsweres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("AssignmentAnswers")]
+        [HttpPost]
         public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer(AssignmentAnswerDTO a)
         {
             try
@@ -136,7 +136,7 @@ namespace ELearning_App.Controllers
         }
 
         // DELETE: api/AssignmentAnsweres/5
-        [HttpDelete("AssignmentAnswers/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAssignmentAnswer(int id)
         {
             try
@@ -156,7 +156,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("Assignments/{assignmentId}/AssignmentAnswers")]
+        [HttpGet("GetAssignmentAnswersByAssignmentId/{assignmentId}")]
         public async Task<ActionResult<IEnumerable<AssignmentAnswerDetailsDTO>>> GetAssignmentAnswersByAssignmentId(int assignmentId)
         {
             try
@@ -180,7 +180,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("Students/{studentId}/Assignment/{assignmentId}/AssignmentAnswer")]
+        [HttpGet("GetAssignmentAnswerByStudentIdByAssignmentId/{studentId}/{assignmentId}")]
         public async Task<ActionResult<AssignmentAnswer>> GetAssignmentAnswerByStudentIdByAssignmentId(int studentId, int assignmentId)
         {
             try

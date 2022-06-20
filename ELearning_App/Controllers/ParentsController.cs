@@ -106,6 +106,8 @@ namespace ELearning_App.Controllers
                     return BadRequest("There's already an account with the same Email address");
                 else if (!dto.Role.Equals("Parent"))
                     return BadRequest("Make sure the Role field is 'Parent'");
+                string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
+                dto.Password = hashedPassword;
                 var mapped = mapper.Map<Parent>(dto);
                 return Ok(await service.AddAsync(mapped));
             }
@@ -119,7 +121,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("AddStudentsByEmailToParent/{parentId}/{studentEmail}")]
+        [HttpGet("{parentId}/AddStudentsByEmailToParent/{studentEmail}")]
         public async Task<ActionResult<Parent>> AddStudentsByEmailToParent(int parentId, string studentEmail)
         {
             try

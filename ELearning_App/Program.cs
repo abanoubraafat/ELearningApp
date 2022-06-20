@@ -7,6 +7,8 @@ using ELearning_App.Repository.UnitOfWork;
 //using ELearning_App.Service.IServices;
 //using ELearning_App.Service.Services;
 using Microsoft.EntityFrameworkCore;
+using Repository.IRepositories;
+using Repository.Repositories;
 using System.Configuration;
 
 
@@ -44,7 +46,7 @@ builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<IAssignmentAnswerRepository, AssignmentAnswerRepository>();
-builder.Services.AddScoped<IAssignmentFeedbackRepository, AssignmentFeedbackRepository>();
+//builder.Services.AddScoped<IAssignmentFeedbackRepository, AssignmentFeedbackRepository>();
 builder.Services.AddScoped<IAssignmentGradeRepository, AssignmentGradeRepository>();
 builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
 builder.Services.AddScoped<IContentRepository, ContentRepository>();
@@ -53,12 +55,13 @@ builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 //builder.Services.AddScoped<IQuizAnswerRepository, QuizAnswerRepository>();
 builder.Services.AddScoped<IQuizGradeRepository, QuizGradeRepository>();
 builder.Services.AddScoped<IToDoListRepository, ToDoListRepository>();
-builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
-builder.Services.AddScoped<ILatestPassedLessonRepository, LatestPassedLessonRepository>();
+//builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+//builder.Services.AddScoped<ILatestPassedLessonRepository, LatestPassedLessonRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
-builder.Services.AddScoped<INoteRepository, NoteRepository>();
-//builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-//builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
+//builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
+builder.Services.AddScoped<IQuestionChoiceRepository, QuestionChoiceRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 
 
