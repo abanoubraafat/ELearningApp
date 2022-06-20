@@ -129,6 +129,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                var toDoList = await service.GetByIdAsync(id);
+                if (toDoList == null) return NotFound($"Invalid ToDoListId : {id}");
                 return Ok(await service.Delete(id));
             }
             catch (Exception ex)

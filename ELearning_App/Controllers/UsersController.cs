@@ -162,6 +162,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                var user = await service.GetByIdAsync(id);
+                if (user == null) return NotFound($"Invalid userId : {id}");
                 return Ok(await service.Delete(id));
             }
             catch (Exception ex)
