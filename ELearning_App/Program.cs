@@ -1,23 +1,18 @@
 using ELearning_App.Domain.Context;
 using ELearning_App.Repository.Repositories;
 using ELearning_App.Repository.UnitOfWork;
-//using ELearning_App.Repository.IRepositories;
-//using ELearning_App.Repository.Repositories;
-//using ELearning_App.Repository.UnitOfWork;
-//using ELearning_App.Service.IServices;
-//using ELearning_App.Service.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Repository.IRepositories;
 using Repository.Repositories;
 using System.Configuration;
-
-
-
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,6 +24,27 @@ builder.Services.AddDbContext<DbContext, ELearningContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly(typeof(ELearningContext).Assembly.FullName)));
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+                .AddJwtBearer(o =>
+                {
+                    o.RequireHttpsMetadata = false;
+                    o.SaveToken = false;
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = builder.Configuration["JWT:Issuer"],
+                        ValidAudience = builder.Configuration["JWT:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                    };
+                });
+
 //builder.Services.AddAuthentication().AddGoogle(options =>
 //{
 //    IConfigurationSection googleAuthSection = builder.Configuration.GetSection("Authentication:Google");
@@ -102,7 +118,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-//app.UseAuthentication();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

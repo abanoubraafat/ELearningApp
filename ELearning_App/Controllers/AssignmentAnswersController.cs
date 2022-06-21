@@ -2,6 +2,7 @@
 using ELearning_App.Helpers;
 using ELearning_App.Repository.IRepositories;
 using ELearning_App.Repository.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Serilog;
 
 namespace ELearning_App.Controllers
 {
+    //[Authorize(Roles = "Teacher")]
     [Route("api/[controller]")]
     [ApiController]
     public class AssignmentAnswersController : ControllerBase

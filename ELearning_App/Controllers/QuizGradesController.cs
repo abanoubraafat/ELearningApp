@@ -162,8 +162,8 @@ namespace ELearning_App.Controllers
         [HttpGet("GetQuizGradesByQuizId/{quizId}")]
         public async Task<ActionResult<IEnumerable<QuizGradeDetailsDTO>>> GetQuizGradesByQuizId(int quizId)
         {
-            //try
-            //{
+            try
+            {
                 var isValidQuizId = await quizRepository.IsValidQuizId(quizId);
                 var quizGrades = await service.GetQuizGradesByQuizId(quizId);
                 if (!isValidQuizId)
@@ -171,16 +171,16 @@ namespace ELearning_App.Controllers
                 if (quizGrades.Count() == 0)
                     return NotFound($"There're No QuizGrades with such quizId: {quizId}");
                 return Ok(mapper.Map<IEnumerable<QuizGradeDetailsDTO>>(quizGrades));
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error($"Controller: QuizGradeController , Action: GetQuizGradesByQuizId , Message: {ex.Message}");
-            //    return StatusCode(500);
-            //}
-            //finally
-            //{
-            //    Log.CloseAndFlush();
-            //}
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuizGradeController , Action: GetQuizGradesByQuizId , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
         [HttpGet("GetQuizGradeByQuizIdByStudentId/{studentId}/{quizId}")]
         public async Task<ActionResult<QuizGrade>> GetQuizGradeByQuizIdByStudentId(int quizId, int studentId)

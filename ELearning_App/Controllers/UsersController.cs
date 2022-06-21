@@ -179,20 +179,20 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             try
             {
                 //var user = await service.GetByEmailAsync(email);
                 //if (user == null) return NotFound($"Invalid email : {email}");
                 //bool isValidPassword = service.VerifyPassword(password, user.Password);
-                var ExistingEmailAdress = await service.IsNotAvailableUserEmail(email);
+                var ExistingEmailAdress = await service.IsNotAvailableUserEmail(loginRequest.EmailAddress);
                 if (!ExistingEmailAdress)
-                    return NotFound($"Invalid email : {email}");
-                if (await service.Login(email, password) == null)
+                    return NotFound($"Invalid email : {loginRequest.EmailAddress}");
+                if (await service.Login(loginRequest) == null)
                     return BadRequest($"Invalid password");
                 else
-                    return Ok(await service.Login(email, password));
+                    return Ok(await service.Login(loginRequest));
             }
             catch (Exception ex)
             {

@@ -186,7 +186,7 @@ namespace ELearning_App.Controllers
                 var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
                 if(!isValidStudentId)
                     return BadRequest("Invalid StudentId!");
-                var a = await service.GetAssignmentsByCourseId(courseId);
+                var a = await service.GetAssignmentsByCourseIdForStudent(courseId);
                 if (!a.Any())
                     return NotFound($"No Assignments were found with CourseId: {courseId}");
                 var assignments = mapper.Map<IEnumerable<AssignmentDetailsDTO>>(a);
