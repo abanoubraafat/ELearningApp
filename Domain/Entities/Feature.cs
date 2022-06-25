@@ -15,7 +15,7 @@ namespace ELearning_App.Domain.Entities
         // Relationships:
         //one to many (Student -> Feature)
         public int StudentId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Student Student { get; set; }
     }
 }

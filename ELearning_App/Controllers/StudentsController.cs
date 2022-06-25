@@ -130,7 +130,9 @@ namespace ELearning_App.Controllers
             //{
             var isValidStudentEmail = await service.IsValidStudentEmail(email);
             if (!isValidStudentEmail) return NotFound("Invalid Email");
-            return Ok(await service.GetStudentByEmail(email));
+            var student = await service.GetStudentByEmail(email);
+            if (student == null) return NotFound($"No Student was found with that email: {email}");
+            return Ok(student);
             //}
             //catch (Exception ex)
             //{

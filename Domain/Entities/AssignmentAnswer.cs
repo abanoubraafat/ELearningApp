@@ -17,12 +17,12 @@ namespace ELearning_App.Domain.Entities
 
         // (Assignment --> AssignmentAnswer) --> one to many 
         public int AssignmentId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Assignment Assignment { get; set; }
 
         // (Student --> AssignmentAnswer) --> one to many
         public int StudentId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Student Student { get; set;}
 
 

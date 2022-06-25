@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs;
+using Domain.Entities;
 using ELearning_App.Domain.Entities;
 using ELearning_App.Repository.GenericRepositories;
 using ELearning_App.Repository.IRepositories;
@@ -10,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace ELearning_App.Repository.Repositories
 {
@@ -79,7 +81,7 @@ namespace ELearning_App.Repository.Repositories
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddDays(_jwt.DurationInDays),
+                expires: DateTime.Now.AddMinutes(_jwt.DurationInMinutes),
                 signingCredentials: signingCredentials);
 
             return jwtSecurityToken;
@@ -87,7 +89,7 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
-            var loginRespone = new LoginResponse();
+            var loginResponse = new LoginResponse();
 
             var user = await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == loginRequest.EmailAddress);
             if (user == null)
@@ -97,13 +99,109 @@ namespace ELearning_App.Repository.Repositories
                 return null;
 
             var jwtSecurityToken = await CreateJwtToken(user);
-            loginRespone.IsAuthenticated = true;
-            loginRespone.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            loginRespone.Email = user.EmailAddress;
-            loginRespone.ExpiresOn = jwtSecurityToken.ValidTo;
-            loginRespone.Role = user.Role;
+            loginResponse.IsAuthenticated = true;
+            loginResponse.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            loginResponse.Email = user.EmailAddress;
+            loginResponse.ExpiresOn = jwtSecurityToken.ValidTo;
+            loginResponse.Role = user.Role;
+            if(user.RefreshTokens.Any(t => t.IsActive))
+            {
+                var activeRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+                loginResponse.RefreshToken = activeRefreshToken.Token;
+                loginResponse.RefreshTokenExpiration = activeRefreshToken.ExpiresOn;
 
-            return loginRespone;
+            }
+            else
+            {
+                var refreshToken = GenerateRefreshToken();
+                loginResponse.RefreshToken = refreshToken.Token;
+                loginResponse.RefreshTokenExpiration = refreshToken.ExpiresOn;
+                user.RefreshTokens.Add(refreshToken);
+                await Update(user);
+            }
+            return loginResponse;
+        }
+
+        private RefreshToken GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using var generator = new RNGCryptoServiceProvider();
+
+            generator.GetBytes(randomNumber);
+
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomNumber),
+                ExpiresOn = DateTime.UtcNow.AddDays(10),
+                CreatedOn = DateTime.UtcNow
+            };
+        }
+
+        public async Task<LoginResponse> RefreshTokenAsync(string token)
+        {
+            var loginResponse = new LoginResponse();
+
+            var user = await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null)
+            {
+                loginResponse.Message = "Invalid token";
+                return loginResponse;
+            }
+
+            var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+
+            if (!refreshToken.IsActive)
+            {
+                loginResponse.Message = "Inactive token";
+                return loginResponse;
+            }
+
+            refreshToken.RevokedOn = DateTime.UtcNow;
+
+            var newRefreshToken = GenerateRefreshToken();
+            user.RefreshTokens.Add(newRefreshToken);
+            await Update(user);
+
+            var jwtToken = await CreateJwtToken(user);
+            loginResponse.IsAuthenticated = true;
+            loginResponse.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            loginResponse.Email = user.EmailAddress;
+            loginResponse.Role = user.Role;
+            loginResponse.RefreshToken = newRefreshToken.Token;
+            loginResponse.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+            loginResponse.ExpiresOn = jwtToken.ValidTo;
+            return loginResponse;
+        }
+        public async Task<bool> RevokeTokenAsync(string token)
+        {
+            var user = await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null)
+                return false;
+
+            var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+
+            if (!refreshToken.IsActive)
+                return false;
+
+            refreshToken.RevokedOn = DateTime.UtcNow;
+
+            await Update(user);
+
+            return true;
+        }
+
+        public async Task<User> LoginTest(LoginRequest loginRequest)
+        {
+            var user = await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == loginRequest.EmailAddress);
+            if (user == null)
+                return null;
+            bool isValidPassword = VerifyPassword(loginRequest.Password, user.Password);
+            if (!isValidPassword)
+                return null;
+            return user;
         }
     }
 }

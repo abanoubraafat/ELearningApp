@@ -10,6 +10,7 @@ using ELearning_App.Domain.Entities;
 using ELearning_App.Helpers;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using ELearning_App.Repository.UnitOfWork;
 
 namespace ELearning_App.Controllers
 {
@@ -22,7 +23,6 @@ namespace ELearning_App.Controllers
         private readonly IStudentRepository studentService;
         private readonly ITeacherRepository teacherService;
         private readonly IParentRepository parentService;
-
         private readonly IMapper mapper;
 
         public UsersController(IUserRepository _service, IMapper mapper, IStudentRepository studentService, ITeacherRepository teacherService, IParentRepository parentService)
@@ -159,7 +159,7 @@ namespace ELearning_App.Controllers
             //    Log.CloseAndFlush();
             //}
             //}
-            [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
@@ -191,8 +191,10 @@ namespace ELearning_App.Controllers
                     return NotFound($"Invalid email : {loginRequest.EmailAddress}");
                 if (await service.Login(loginRequest) == null)
                     return BadRequest($"Invalid password");
-                else
-                    return Ok(await service.Login(loginRequest));
+                var result = await service.Login(loginRequest);
+                if (!string.IsNullOrEmpty(result.RefreshToken))
+                    SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -203,6 +205,73 @@ namespace ELearning_App.Controllers
             {
                 Log.CloseAndFlush();
             }
+        }
+        private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = expires.ToLocalTime()
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+        //refreshs the security token the front send if security token is expired
+        [HttpGet("refreshToken")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            var result = await service.RefreshTokenAsync(refreshToken);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result);
+
+            SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+            return Ok(result);
+        }
+        //revoke the refresh token (if the user logged out for ex)
+        [HttpPost("revokeToken")]
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeToken model)
+        {
+            var token = model.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Token is required!");
+
+            var result = await service.RevokeTokenAsync(token);
+
+            if (!result)
+                return BadRequest("Token is invalid!");
+
+            return Ok();
+        }
+
+        [HttpPost("LoginTest")]
+        public async Task<ActionResult<User>> LoginTest(LoginRequest loginRequest)
+        {
+            var ExistingEmailAdress = await service.IsNotAvailableUserEmail(loginRequest.EmailAddress);
+            if (!ExistingEmailAdress)
+                return NotFound($"Invalid email : {loginRequest.EmailAddress}");
+            var user = await service.LoginTest(loginRequest);
+            if (user == null)
+                return BadRequest($"Invalid password");
+            return Ok(user);
+
+        }
+        [HttpGet("EmailExists/{email}")]
+        public async Task<ActionResult> EmailExists(string email)
+        {
+            var exist = await service.IsNotAvailableUserEmail(email);
+            if (exist)
+                return Ok();
+            return BadRequest();
+        }
+        [HttpGet("GetByEmail/{email}")]
+        public async Task<ActionResult<User>> GetByEmail(string email)
+        {
+            return Ok(await service.GetByEmailAsync(email));
         }
         //[HttpPost("changePassword")]
         //public async Task<IActionResult> ChangePassword(string email, string oldPassword, string newPassword)

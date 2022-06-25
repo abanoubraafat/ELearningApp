@@ -13,7 +13,7 @@ namespace ELearning_App.Domain.Entities
         
         //(AssignmentAnswers --> AssignmentGrade) --> one to one.
         public int AssignmentAnswerId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual AssignmentAnswer AssignmentAnswer { get; set; }
     }
 }

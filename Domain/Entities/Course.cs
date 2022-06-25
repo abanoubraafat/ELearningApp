@@ -18,12 +18,12 @@ namespace ELearning_App.Domain.Entities
         // RelationShips:
 
         // many to many  course --> student
-        //[JsonIgnore]
+        [JsonIgnore]
         public virtual ICollection<Student> Students { get; set; } = new HashSet<Student>();
 
         // one to many  (teacher -> courses)
         public int TeacherId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Teacher Teacher { get; set; }
 
         // one to many (course -> lesson)

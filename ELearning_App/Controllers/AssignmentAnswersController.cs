@@ -10,7 +10,7 @@ using Serilog;
 
 namespace ELearning_App.Controllers
 {
-    //[Authorize(Roles = "Teacher")]
+    //[Authorize/*(Roles = "Teacher")*/]
     [Route("api/[controller]")]
     [ApiController]
     public class AssignmentAnswersController : ControllerBase

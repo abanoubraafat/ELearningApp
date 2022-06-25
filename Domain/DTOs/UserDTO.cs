@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace Domain.DTOs
         public string LastName { get; set; }
         [Phone]
         public string Phone { get; set; }
-        public string ProfilePic { get; set; }
+        //public IFormFile? ProfilePic { get; set; }
+        public string? ProfilePic { get; set; }
         public string Role { get; set; }
     }
 }

@@ -21,13 +21,15 @@ namespace ELearning_App.Controllers
         private IStudentRepository studentRepository { get; }
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
-        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository)
+        //private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
+        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             service = _service;
             new Logger();
             this.studentRepository = studentRepository;
             this.mapper = mapper;
             this.userRepository = userRepository;
+            //_env = env;
         }
 
         // GET: api/Parents
@@ -97,7 +99,7 @@ namespace ELearning_App.Controllers
         // POST: api/Parents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Parent>> PostParent(ParentDTO dto)
+        public async Task<ActionResult<Parent>> PostParent(/*[FromForm]*/ ParentDTO dto)
         {
             try
             {
@@ -108,7 +110,27 @@ namespace ELearning_App.Controllers
                     return BadRequest("Make sure the Role field is 'Parent'");
                 string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
                 dto.Password = hashedPassword;
+                //var imagePath = @"\Upload\Images\";
+                //var uploadPath = _env.WebRootPath + imagePath;
+                //if (!Directory.Exists(uploadPath))
+                //    Directory.CreateDirectory(uploadPath);
+                //var uniqFileName = Guid.NewGuid().ToString();
+                //var fileName = Path.GetFileName(uniqFileName + "." + dto.ProfilePic.FileName.Split(".")[1].ToLower());
+                //string fullPath = uploadPath + fileName;
+                //imagePath += @"\";
+                //var filePath = @"..\" + Path.Combine(imagePath, fileName);
+                //using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                //{
+                //    await dto.ProfilePic.CopyToAsync(fileStream);
+                //}
+                //using var dataStream = new MemoryStream();
+
+                //await dto.ProfilePic.CopyToAsync(dataStream);
+                //string imagePath = Path.GetFileName(dto.ProfilePic.FileName);
+                //dto.ProfilePic.SaveAs()
                 var mapped = mapper.Map<Parent>(dto);
+                //mapped.ProfilePic = fullPath;  
+                
                 return Ok(await service.AddAsync(mapped));
             }
             catch (Exception ex)

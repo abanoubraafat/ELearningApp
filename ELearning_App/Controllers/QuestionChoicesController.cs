@@ -147,7 +147,7 @@ namespace ELearning_App.Controllers
                     return BadRequest($"Invalid questionId : {questionId}");
                 if (choices.Count() == 0)
                     return NotFound($"There're No Choices with such questionId :{questionId}");
-                return Ok(await service.GetAllAsync());
+                return Ok(choices);
             }
             catch (Exception ex)
             {

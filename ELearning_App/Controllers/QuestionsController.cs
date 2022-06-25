@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ELearning_App.Domain.Entities;
 using ELearning_App.Helpers;
 using Serilog;
+using Repository.IRepositories;
 
 namespace ELearning_App.Controllers
 {
@@ -18,12 +19,14 @@ namespace ELearning_App.Controllers
         private IQuestionRepository service { get; }
         private readonly IQuizRepository quizRepository;
         private readonly IMapper mapper;
-        public QuestionsController(IQuestionRepository _service, IQuizRepository quizRepository, IMapper mapper)
+        private readonly IQuestionChoiceRepository questionChoiceRepository;
+        public QuestionsController(IQuestionRepository _service, IQuizRepository quizRepository, IMapper mapper, IQuestionChoiceRepository questionChoiceRepository)
         {
             service = _service;
             this.quizRepository = quizRepository;
             new Logger();
             this.mapper = mapper;
+            this.questionChoiceRepository = questionChoiceRepository;
         }
 
         // GET: api/Questiones
@@ -143,8 +146,8 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("GetQuestionsByQuizId/{id}")]
-        public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsByQuizId(int quizId)
+        [HttpGet("GetQuestionsByQuizId/{quizId}")]
+        public async Task<ActionResult<IEnumerable<QuestionDetailsDTO>>> GetQuestionsByQuizId(int quizId)
         {
             try
             {
@@ -153,7 +156,13 @@ namespace ELearning_App.Controllers
                 var questions = await service.GetQuestionsByQuizId(quizId);
                 if (questions.Count() == 0)
                     return NotFound();
-                return Ok(questions);
+                var questionsWithChoices = mapper.Map<IEnumerable<QuestionDetailsDTO>>(questions);
+                foreach(var questionWithChoice in questionsWithChoices)
+                {
+                    questionWithChoice.QuestionChoices = await questionChoiceRepository.GetQuestionChoicesByQuestionId(questionWithChoice.Id);
+                }
+                
+                return Ok(questionsWithChoices);
             }
             catch (Exception ex)
             {

@@ -25,7 +25,8 @@ namespace ELearning_App.Repository.Repositories
                 { 
                     Id = c.Id,
                     CourseName = c.CourseName,
-                    CourseImage = c.CourseImage
+                    CourseImage = c.CourseImage,
+                    TeacherId = c.TeacherId
                 })
                 .ToListAsync();
         }
@@ -61,17 +62,19 @@ namespace ELearning_App.Repository.Repositories
         //teacher name
         public async Task<IEnumerable<Course>> GetCoursesByStudentId(int id)
         {
-            return await unitOfWork.Context.Courses.Include(c => c.Students).Include(c => c.Teacher)
-                .Where(c => c.Students.Any(s => s.Id == id)).Select(c => new Course
-                {
-                    Id = c.Id,
-                    CourseName = c.CourseName,
-                    //CourseDescription = c.CourseDescription,
-                    CourseImage = c.CourseImage,
-                    //Students = c.Students,
-                    TeacherId = c.TeacherId,
-                    Teacher = c.Teacher
-                }).ToListAsync();
+            return await unitOfWork.Context.Courses.Include(c => c.Teacher)
+                .Where(c => c.Students.Any(s => s.Id == id))
+                //.Select(c => new Course
+                //{
+                //    Id = c.Id,
+                //    CourseName = c.CourseName,
+                //    //CourseDescription = c.CourseDescription,
+                //    CourseImage = c.CourseImage,
+                //    //Students = c.Students,
+                //    TeacherId = c.TeacherId,
+                //    Teacher = c.Teacher
+                //})
+                .ToListAsync();
         }
 
         //public IQueryable<Course> GetAllWithStudents()

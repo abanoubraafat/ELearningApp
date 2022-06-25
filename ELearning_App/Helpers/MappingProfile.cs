@@ -70,6 +70,7 @@ namespace ELearning_App.Helpers
             //    .ForMember(src => src.Poster, opt => opt.Ignore());
             CreateMap<Assignment, AssignmentDetailsDTO>().ReverseMap();
             CreateMap<QuizGradeDetailsDTO, QuizGrade>().ReverseMap();
+            CreateMap<Question, QuestionDetailsDTO>().ReverseMap();
         }
     }
 }

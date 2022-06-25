@@ -17,7 +17,7 @@ namespace ELearning_App.Domain.Entities
 
         // (Lesson --> course_content_file) one to many
         public int LessonId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Lesson Lesson { get; set; }
         //public int SectionId { get; set; }
         //public virtual Section Section { get; set; }

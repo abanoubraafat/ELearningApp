@@ -13,7 +13,7 @@ namespace ELearning_App.Domain.Entities
 
         // one to many (Course --> lesson)
         public int CourseId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Course Course { get; set; }
 
         // one to many  (Lesson --> Content)

@@ -14,6 +14,9 @@ namespace ELearning_App.Repository.IRepositories
         bool VerifyPassword(string password, string hashedPassword);
         Task<User> GetByEmailAsync(string email);
         Task<LoginResponse> Login(LoginRequest loginRequest);
+        Task<LoginResponse> RefreshTokenAsync(string token);
+        Task<bool> RevokeTokenAsync(string token);
+        Task<User> LoginTest(LoginRequest loginRequest);
 
     }
 }

@@ -24,7 +24,7 @@ namespace ELearning_App.Domain.Entities
         
         // (loginInfo(users) --> ToDoList) one to many  , users ->(Student & Teacher)
         public int UserId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual User User { get; set; }
 
     }
