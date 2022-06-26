@@ -21,7 +21,11 @@ namespace ELearning_App.Controllers
         private readonly IUserRepository userRepository;
         private readonly ICourseRepository courseRepository;
         private readonly IParentRepository parentRepository;
-        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository)
+        [Obsolete]
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _host;
+
+        [Obsolete]
+        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment host)
         {
             service = _service;
             new Logger();
@@ -29,6 +33,7 @@ namespace ELearning_App.Controllers
             this.userRepository = userRepository;
             this.courseRepository = courseRepository;
             this.parentRepository = parentRepository;
+            _host = host;
         }
 
         //// GET: api/Students
@@ -98,11 +103,12 @@ namespace ELearning_App.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(StudentDTO dto)
+        [Obsolete]
+        public async Task<ActionResult<Student>> PostStudent([FromForm] StudentDTO dto)
         {
 
             try
-            {
+            { 
                 var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
                 if (isNotAvailableUserEmail)
                     return BadRequest("There's already an account with the same Email address");
@@ -110,7 +116,21 @@ namespace ELearning_App.Controllers
                     return BadRequest("Make sure the Role field is 'Student'");
                 string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
                 dto.Password = hashedPassword;
+                if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
+                    return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
+                    return BadRequest("Max allowed size for profile picture is 5MB!");
                 var student = mapper.Map<Student>(dto);
+                ////////////////ProfilePic//////////////////
+                var img = dto.ProfilePic;
+                var filePath = Path.Combine(_host.WebRootPath + "/Pictures/ProfilePictures", img.FileName);
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(fileStream);
+                }
+                student.ProfilePic = @"\\Abanoub\wwwroot\Pictures\ProfilePictures\" + img.FileName;
+                ////////////////////////////////////////////
                 return Ok(await service.AddAsync(student));
             }
             catch (Exception ex)
@@ -124,7 +144,7 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("/Email/{email}")]
-        public async Task<ActionResult<Student>> GetStudentByEmail(string email)
+        public async Task<ActionResult<StudentDTO>> GetStudentByEmail(string email)
         {
             //try
             //{
@@ -132,7 +152,9 @@ namespace ELearning_App.Controllers
             if (!isValidStudentEmail) return NotFound("Invalid Email");
             var student = await service.GetStudentByEmail(email);
             if (student == null) return NotFound($"No Student was found with that email: {email}");
-            return Ok(student);
+            var mapped = mapper.Map<StudentDTO>(student);
+
+            return Ok(mapped);
             //}
             //catch (Exception ex)
             //{

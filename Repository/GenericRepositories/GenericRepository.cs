@@ -227,5 +227,10 @@ namespace ELearning_App.Repository.GenericRepositories
         //{
         //    return await _context.Set<T>().CountAsync(criteria);
         //}
+        public async Task AddMultipleAsync(List<TEntity> entity)
+        {
+            await unitOfWork.Context.Set<TEntity>().AddRangeAsync(entity);
+            await unitOfWork.Commit();
+        }
     }
 }

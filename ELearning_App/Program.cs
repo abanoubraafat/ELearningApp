@@ -121,7 +121,7 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseStaticFiles();
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

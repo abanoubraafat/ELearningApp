@@ -21,7 +21,6 @@ namespace ELearning_App.Controllers
             this.questionRepository = questionRepository;
         }
 
-        // GET: api/Badgees
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QuestionChoice>>> GetQuestionChoices()
         {
@@ -31,7 +30,7 @@ namespace ELearning_App.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Controller: BadgeController , Action: GetBadges , Message: {ex.Message}");
+                Log.Error($"Controller: QuestionChoicesController , Action: GetQuestionChoices , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally
@@ -40,7 +39,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Badgees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<QuestionChoice>> GetQuestionChoice(int id)
         {
@@ -53,7 +51,7 @@ namespace ELearning_App.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Controller: BadgeController , Action: GetBadge , Message: {ex.Message}");
+                Log.Error($"Controller: QuestionChoicesController , Action: GetQuestionChoice , Message: {ex.Message}");
                 return NotFound();
             }
             finally
@@ -62,8 +60,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Badgees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestionChoice(int id, QuestionChoiceDTO dto)
         {
@@ -82,7 +78,7 @@ namespace ELearning_App.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Controller: BadgeController , Action: PutBadge , Message: {ex.Message}");
+                Log.Error($"Controller: QuestionChoicesController , Action: PutQuestionChoice , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally
@@ -91,8 +87,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Badgees
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<QuestionChoice>> PostQuestionChoice(QuestionChoiceDTO dto)
         {
@@ -106,7 +100,7 @@ namespace ELearning_App.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Controller: BadgeController , Action: PostBadge , Message: {ex.Message}");
+                Log.Error($"Controller: QuestionChoicesController , Action: PostQuestionChoice , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally
@@ -115,7 +109,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Badgees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestionChoice(int id)
         {
@@ -128,7 +121,7 @@ namespace ELearning_App.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Controller: BadgeController , Action: DeleteBadge , Message: {ex.Message}");
+                Log.Error($"Controller: QuestionChoicesController , Action: DeleteQuestionChoice , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally
@@ -136,6 +129,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+
         [HttpGet("GetQuestionChoicesByQuestionId/{questionId}")]
         public async Task<ActionResult<IEnumerable<QuestionChoice>>> GetQuestionChoicesByQuestionId(int questionId)
         {
@@ -151,13 +145,41 @@ namespace ELearning_App.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Controller: BadgeController , Action: GetQuestionChoicesByQuestionId , Message: {ex.Message}");
+                Log.Error($"Controller: QuestionChoicesController , Action: GetQuestionChoicesByQuestionId , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally
             {
                 Log.CloseAndFlush();
             }
+        }
+
+        [HttpPost("PostMultipleQuestionChoices")]
+        public async Task<ActionResult> PostMultipleQuestionChoices(List<QuestionChoiceDTO> questionChoices)
+        {
+            try
+            {
+                for (int i = 0; i < questionChoices.Count(); i++)
+                {
+                    var isValidQuestionId = await questionRepository.IsValidQuestionId(questionChoices[i].QuestionId);
+                    if (!isValidQuestionId)
+                        questionChoices.Remove(questionChoices[i]);
+                }
+                var mapped = mapper.Map<List<QuestionChoice>>(questionChoices);
+                await service.AddMultipleAsync(mapped);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionChoicesController , Action: PostMultipleQuestionChoices , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
+
         }
     }
 }

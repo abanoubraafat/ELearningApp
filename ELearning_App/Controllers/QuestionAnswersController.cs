@@ -198,6 +198,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        
         [HttpGet("GetQuestionAnswerByQuestionIdByStudentId/{studentId}/{questionId}")]
         public async Task<ActionResult<IEnumerable<QuestionAnswer>>> GetQuestionAnswerByQuestionIdByStudentId(int questionId, int studentId)
         {
@@ -223,6 +224,38 @@ namespace ELearning_App.Controllers
             {
                 Log.CloseAndFlush();
             }
+        }
+        
+        [HttpPost("PostMultipleQuestionAnswers")]
+        public async Task<ActionResult> PostMultipleQuestionAnswers(List<QuestionAnswerDTO> questionAnswers)
+        {
+            try
+            {
+                for (int i = 0; i < questionAnswers.Count; i++)
+                {
+                    var isValidStudentId = await studentRepository.IsValidStudentId(questionAnswers[i].StudentId);
+                    var isValidQuestionId = await questionRepository.IsValidQuestionId(questionAnswers[i].QuestionId);
+                    var isNotValidQuestionAnswer = await service.IsNotValidQuestionAnswer(questionAnswers[i].StudentId, questionAnswers[i].QuestionId);
+                    if (!isValidStudentId || !isValidQuestionId || isNotValidQuestionAnswer)
+                    {
+                        questionAnswers.Remove(questionAnswers[i]);
+                    }
+                }
+                var mapped = mapper.Map<List<QuestionAnswer>>(questionAnswers);
+
+                await service.AddMultipleAsync(mapped);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionAnswersController , Action: PostMultipleQuestionAnswers , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
     }
 }

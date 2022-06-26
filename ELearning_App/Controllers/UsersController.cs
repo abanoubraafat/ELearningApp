@@ -94,7 +94,7 @@ namespace ELearning_App.Controllers
                 {
                     user.FirstName = dto.FirstName;
                     user.LastName = dto.LastName;
-                    user.ProfilePic = dto.ProfilePic;
+                    //user.ProfilePic = dto.ProfilePic;
                     //user.EmailAddress = dto.EmailAddress;
                     if (!user.Password.Equals(dto.Password))
                         user.Password = service.CreatePasswordHash(dto.Password);
@@ -108,7 +108,7 @@ namespace ELearning_App.Controllers
                 {
                     user.FirstName = dto.FirstName;
                     user.LastName = dto.LastName;
-                    user.ProfilePic = dto.ProfilePic;
+                    //user.ProfilePic = dto.ProfilePic;
                     user.EmailAddress = dto.EmailAddress;
                     if (!user.Password.Equals(dto.Password))
                         user.Password = service.CreatePasswordHash(dto.Password);

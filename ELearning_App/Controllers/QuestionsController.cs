@@ -57,7 +57,8 @@ namespace ELearning_App.Controllers
                 var question = await service.GetByIdAsync(id);
                 if (question == null)
                     return NotFound($"Invalid questionId {id}");
-                return Ok();
+                var mapped = mapper.Map<QuestionDTO>(question);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -88,7 +89,9 @@ namespace ELearning_App.Controllers
                 question.correctAnswer = dto.correctAnswer;
                 question.ShowDate = dto.ShowDate;
                 //question.QuizId = dto.QuizId;
-                return Ok(await service.Update(question));
+                var q = await service.Update(question);
+                var mapped = mapper.Map<QuestionDTO>(q);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -112,7 +115,9 @@ namespace ELearning_App.Controllers
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId: {dto.QuizId}");
                 var question = mapper.Map<Question>(dto);
-                return Ok(await service.AddAsync(question));
+                var q = await service.AddAsync(question);
+                var mapped = mapper.Map<QuestionDTO>(q);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -134,7 +139,9 @@ namespace ELearning_App.Controllers
                 var question = await service.GetByIdAsync(id);
                 if (question == null)
                     return NotFound($"Invalid questionId: {id}");
-                return Ok(await service.Delete(id));
+                var q = await service.Delete(id);
+                var mapped = mapper.Map<QuestionDTO>(q);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -147,7 +154,7 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("GetQuestionsByQuizId/{quizId}")]
-        public async Task<ActionResult<IEnumerable<QuestionDetailsDTO>>> GetQuestionsByQuizId(int quizId)
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsByQuizId(int quizId)
         {
             try
             {
@@ -156,13 +163,13 @@ namespace ELearning_App.Controllers
                 var questions = await service.GetQuestionsByQuizId(quizId);
                 if (questions.Count() == 0)
                     return NotFound();
-                var questionsWithChoices = mapper.Map<IEnumerable<QuestionDetailsDTO>>(questions);
-                foreach(var questionWithChoice in questionsWithChoices)
-                {
-                    questionWithChoice.QuestionChoices = await questionChoiceRepository.GetQuestionChoicesByQuestionId(questionWithChoice.Id);
-                }
+                //var questionsWithChoices = mapper.Map<IEnumerable<QuestionDetailsDTO>>(questions);
+                //foreach(var questionWithChoice in questionsWithChoices)
+                //{
+                //    questionWithChoice.QuestionChoices = await questionChoiceRepository.GetQuestionChoicesByQuestionId(questionWithChoice.Id);
+                //}
                 
-                return Ok(questionsWithChoices);
+                return Ok(questions);
             }
             catch (Exception ex)
             {

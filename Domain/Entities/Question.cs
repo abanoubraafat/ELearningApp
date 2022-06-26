@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -38,5 +39,7 @@ namespace ELearning_App.Domain.Entities
 
         // one to many (Question-> QuestionAnswer)
         //public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; } = new HashSet<QuestionAnswer>();
+        public virtual ICollection<QuestionChoice> QuestionChoices { get; set; }
+
     }
 }

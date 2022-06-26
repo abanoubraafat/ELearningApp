@@ -30,6 +30,6 @@ namespace ELearning_App.Repository.GenericRepositories
         Task<bool> IsValidFk(Expression<Func<TEntity, bool>> criteria);
 
         //Task<bool> isValidFk(Expression<Func<TEntity, bool>> criteria, int id);
-
+        Task AddMultipleAsync(List<TEntity> entity);
     }
 }
