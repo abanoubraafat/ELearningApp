@@ -236,7 +236,7 @@ namespace ELearning_App.Domain.Context
         public virtual DbSet<Assignment> Assignments { get; set; }
         public virtual DbSet<AssignmentAnswer> AssignmentAnswers{ get; set; }
         //public virtual DbSet <AssignmentFeedback> AssignmentFeedbacks { get; set; }
-        public virtual DbSet<AssignmentGrade> AssignmentGrades { get; set; }
+        //public virtual DbSet<AssignmentGrade> AssignmentGrades { get; set; }
 
         public virtual DbSet<Quiz> Quizzes{ get; set; }
         //public virtual DbSet<QuizAnswer> QuizAnswers { get; set; }

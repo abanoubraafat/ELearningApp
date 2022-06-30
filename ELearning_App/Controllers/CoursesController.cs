@@ -22,15 +22,15 @@ namespace ELearning_App.Controllers
         private readonly IMapper mapper;
         private readonly ITeacherRepository teacherRepository;
         IStudentRepository studentRepository;
-        IUnitOfWork unitOfWork;
-        public CoursesController(ICourseRepository _service, IMapper mapper, ITeacherRepository teacherRepository, IStudentRepository studentRepository, IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _host;
+        public CoursesController(ICourseRepository _service, IMapper mapper, ITeacherRepository teacherRepository, IStudentRepository studentRepository, IWebHostEnvironment _host)
         {
             service = _service;
             new Logger();
             this.mapper = mapper;
             this.teacherRepository = teacherRepository;
             this.studentRepository = studentRepository;
-            this.unitOfWork = unitOfWork;
+            this._host = _host;
         }
 
         // GET: api/Courses
@@ -76,15 +76,22 @@ namespace ELearning_App.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<IActionResult> PutCourse(int id, UpdateCourseDTO dto)
         {
             try
             {
-                var isValidTeacherId = await teacherRepository.IsValidTeacherId(course.TeacherId);
+                var isValidTeacherId = await teacherRepository.IsValidTeacherId(dto.TeacherId);
                 if (!isValidTeacherId)
                     return BadRequest("No Teacher with that id");
-                var c = await service.GetByIdAsync(id);
-                if (c == null) return NotFound();
+                var course = await service.GetByIdAsync(id);
+                if (course == null) return NotFound();
+                if(dto.CourseImage != null && !dto.CourseImage.Equals(course.CourseImage))
+                {
+                    return BadRequest("for updating the picture use the specified endpoint for that");
+                }
+                course.CourseName = dto.CourseName;
+                course.CourseDescription = dto.CourseDescription;
+                //course.TeacherId = dto.TeacherId;
                 return Ok(await service.Update(course));
             }
             catch (Exception ex)
@@ -102,7 +109,7 @@ namespace ELearning_App.Controllers
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(CourseDTO dto)
+        public async Task<ActionResult<Course>> PostCourse([FromForm] CourseDTO dto)
         {
             try
             {
@@ -110,7 +117,28 @@ namespace ELearning_App.Controllers
                 if(!isValidTeacherId)
                     return BadRequest("No Teacher with that id");
                 var course = mapper.Map<Course>(dto);
-                return Ok(await service.AddAsync(course));
+                if (dto.CourseImage != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.CourseImage.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                    if (dto.CourseImage.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for pictures is 5MB!");
+                    var img = dto.CourseImage;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.CourseImage.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    return Ok(await service.AddAsync(course));
+                }
+                else
+                {
+                    return Ok(await service.AddAsync(course));
+                }
+
             }
             catch (Exception ex)
             {
@@ -311,151 +339,98 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: GetCoursesByStudentId , Message: {ex.Message}");
-                return StatusCode(500);
+                return NotFound();
             }
             finally
             {
                 Log.CloseAndFlush();
             }
         }
-        //[HttpGet("Students/{studentId}/JoinCourse/{courseId}")]
-        //public async Task<ActionResult<Course>> JoinCourse(int studentId, int courseId)
-        //{
-        //    try
-        //    {
-        //      return(await service.JoinCourse(studentId, courseId));
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetCourse , Message: {ex.Message}");
-        //        return NotFound();
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        // api/GetCoursesByTeacherId/5
-        //[HttpGet("GetNotGradedAnswers/{id}")]
-        //public async Task<ActionResult<IEnumerable<Course>>> GetNotGradedAnswers([FromRoute] int id)
+        //[HttpGet("Last5CoursesJoined/{studentId}")]
+        //public async Task<ActionResult<IEnumerable<CourseDetailsDTO>>> Last5CoursesJoined(int studentId)
         //{
-        //    try
-        //    {
-        //        return Ok(await service.GetNotGradedAnswersByCourseId(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetCoursesByTeacherId , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
+        //    //try
+        //    //{
+        //        var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+        //        if (!isValidStudentId) return BadRequest($"Invalid studentId :{studentId}");
+        //        var last5CoursesJoined = await service.Last5CoursesJoined(studentId);
+        //        //foreach(var course in last5CoursesJoined)
+        //        //    if(course == null)
+        //        var mapped = mapper.Map<CourseDetailsDTO>(last5CoursesJoined);
+        //        return Ok(mapped);
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    Log.Error($"Controller: CoursesController , Action: Last5CoursesJoined , Message: {ex.Message}");
+        //    //    return StatusCode(500);
+        //    //}
+        //    //finally
+        //    //{
+        //    //    Log.CloseAndFlush();
+        //    //}
         //}
-        //[HttpGet("Courses/{id}/Announcements")]
-        //public async Task<ActionResult> GetByIdWithAnnouncements([FromRoute] int id)
+        //[HttpGet("Last5CoursesCreated/{teacherId}")]
+        //public async Task<ActionResult<List<Course>>> Last5CoursesCreated(int teacherId)
         //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithAnnouncements(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithAnnouncements , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
+        //    //try
+        //    //{
+        //    var isValidTeacherId = await teacherRepository.IsValidTeacherId(teacherId);
+        //    if (!isValidTeacherId) return BadRequest($"Invalid teacherId :{teacherId}");
+        //    var last5CoursesCreated = await service.Last5CoursesCreated(teacherId);
+        //    //for (int i = 0; i < last5CoursesCreated.Count(); i++)
+        //    //    if (last5CoursesCreated[i] == null)
+        //    //        last5CoursesCreated.Remove(last5CoursesCreated[i]);
+        //     return Ok(last5CoursesCreated);
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    Log.Error($"Controller: CoursesController , Action: Last5CoursesJoined , Message: {ex.Message}");
+        //    //    return StatusCode(500);
+        //    //}
+        //    //finally
+        //    //{
+        //    //    Log.CloseAndFlush();
+        //    //}
         //}
-        //[HttpGet("Courses/{id}/Assignments")]
-        //public async Task<ActionResult> GetByIdWithAssignments([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithAssignments(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithAssignments , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("Courses/{id}/Quizes")]
-        //public async Task<ActionResult> GetByIdWithQuizes([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithQuizes(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithQuizes , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("Courses/{id}/Lessons")]
-        //public async Task<ActionResult> GetByIdWithLessons([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithLessons(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithLessons , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
+        [HttpPut("update-photo/{id}")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        {
+            try
+            {
+                var course = await service.GetByIdAsync(id);
+                if (course == null) return NotFound($"No Course was found with Id: {id}");
+                if (dto.File != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
 
-        //[HttpGet("Courses/{id}/LatestPassedLesson")]
-        //public async Task<ActionResult> GetByIdWithLatestPassedLesson([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithLatestPassedLesson(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithLatestPassedLesson , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("Courses/{id1}/Ass/{id2}")]
-        //public async Task<ActionResult> GetCoursesByAssId(int id1, int id2)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetCoursesByAssId(id1, id2));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: CoursesController , Action: GetByIdWithLatestPassedLesson , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
+                    if (dto.File.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for pictures is 5MB!");
+                    var img = dto.File;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    return Ok(await service.Update(course));
+                }
+                else
+                {
+                    return BadRequest("image can't be null;");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: CoursesController , Action: UpdateFile , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
     }
 }

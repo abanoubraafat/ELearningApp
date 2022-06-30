@@ -11,7 +11,7 @@ namespace ELearning_App.Helpers
                 //.BeforeMap((src, dest) => src.Id = dest.Id);
             CreateMap<AssignmentAnswerDTO, AssignmentAnswer>();
             //CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
-            CreateMap<AssignmentGradeDTO, AssignmentGrade>();
+            //CreateMap<AssignmentGradeDTO, AssignmentGrade>().Reverse();
             CreateMap<BadgeDTO, Badge>();
             CreateMap<ContentDTO, Content>();
             CreateMap<CourseDTO, Course>();
@@ -34,13 +34,12 @@ namespace ELearning_App.Helpers
             CreateMap<Course, CourseDetailsDTO>().ReverseMap();
             CreateMap<QuestionChoiceDTO, QuestionChoice>().ReverseMap();
             CreateMap<AssignmentAnswer, AssignmentAnswerDetailsDTO>();
-            CreateMap<QuestionAnswer, QuestionAnswerDetailsDTO>();
+            //CreateMap<QuestionAnswer, QuestionAnswerDetailsDTO>();
             //CreateMap<QuizAnswer, QuizAnswerDetailsDTO>();
 
             CreateMap<Assignment, AssignmentDTO>();
             CreateMap<AssignmentAnswer, AssignmentAnswerDTO>();
             //CreateMap<AssignmentFeedback, AssignmentFeedbackDTO>();
-            CreateMap<AssignmentGrade, AssignmentGradeDTO>();
             CreateMap<Badge, BadgeDTO>();
             CreateMap<Content, ContentDTO>();
             CreateMap<Course, CourseDTO>();
@@ -62,7 +61,7 @@ namespace ELearning_App.Helpers
             CreateMap<Resource, ResourceDTO>();
 
             CreateMap<AssignmentAnswerDetailsDTO, AssignmentAnswer>();
-            CreateMap<QuestionAnswerDetailsDTO, QuestionAnswer>();
+            //CreateMap<QuestionAnswerDetailsDTO, QuestionAnswer>();
             //CreateMap<QuizAnswerDetailsDTO, QuizAnswer>();
 
 

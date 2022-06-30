@@ -16,8 +16,8 @@ namespace ELearning_App.Controllers
         private readonly ICourseRepository courseService;
         private readonly IAssignmentAnswerRepository assignmentAnswerRepository;
         private readonly IStudentRepository studentRepository;
-        private readonly IAssignmentGradeRepository assignmentGradeRepository;
-        public AssignmentsController(IAssignmentRepository _service, IMapper mapper, ICourseRepository courseService, IAssignmentAnswerRepository assignmentAnswerRepository, IStudentRepository studentRepository, IAssignmentGradeRepository assignmentGradeRepository)
+        private readonly IWebHostEnvironment _host;
+        public AssignmentsController(IAssignmentRepository _service, IMapper mapper, ICourseRepository courseService, IAssignmentAnswerRepository assignmentAnswerRepository, IStudentRepository studentRepository, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
@@ -25,7 +25,8 @@ namespace ELearning_App.Controllers
             this.courseService = courseService;
             this.assignmentAnswerRepository = assignmentAnswerRepository;
             this.studentRepository = studentRepository;
-            this.assignmentGradeRepository = assignmentGradeRepository;
+            _host = host;
+
         }
 
         // GET: api/Assignmentes
@@ -35,7 +36,7 @@ namespace ELearning_App.Controllers
             try
             {
                 var a = await service.GetAllAsync();
-            return Ok(a);
+                return Ok(a);
             }
             catch (Exception ex)
             {
@@ -73,20 +74,21 @@ namespace ELearning_App.Controllers
         // PUT: api/Assignmentes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAssignment(int id, AssignmentDTO dto)
+        public async Task<IActionResult> UpdateAssignment(int id, UpdateAssignmentDTO dto)
         {
             try
             {
                 var isValidCourseId = await courseService.IsValidCourseId(dto.CourseId);
                 if (!isValidCourseId)
                     return BadRequest("Invalid CourseId!");
-
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No Assignment was found with Id: {id}");
-                //var r = mapper.Map<Assignment>(dto);
                 assignment.Title = dto.Title;
                 assignment.Description = dto.Description;
-                assignment.FilePath = dto.FilePath;
+                if(dto.FilePath !=null && !dto.FilePath.Equals(assignment.FilePath))
+                {
+                    return BadRequest("for updating the file use the specified endpoint for that");
+                }
                 assignment.StartDate = dto.StartDate;
                 assignment.EndTime = dto.EndTime;
                 assignment.Grade = dto.Grade;
@@ -107,7 +109,7 @@ namespace ELearning_App.Controllers
         // POST: api/Assignmentes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Assignment>> AddAssignment(AssignmentDTO dto)
+        public async Task<ActionResult<Assignment>> AddAssignment([FromForm] AssignmentDTO dto)
         {
             try
             {
@@ -115,7 +117,24 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest("Invalid CourseId!");
                 var r = mapper.Map<Assignment>(dto);
-                return Ok(await service.AddAsync(r));
+                if (dto.FilePath != null)
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.FilePath.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                    var img = dto.FilePath;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.FilePath.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    r.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    return Ok(await service.AddAsync(r));
+                }
+                else
+                {
+                    return Ok(await service.AddAsync(r));
+                }
             }
             catch (Exception ex)
             {
@@ -176,7 +195,7 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("GetAssignmentsByCourseIdForStudent/{courseId}/{studentId}")]
-        public async Task<ActionResult<IEnumerable<Assignment>>> GetAssignmentsByCourseIdForStudent(int courseId, int studentId)
+        public async Task<ActionResult<IEnumerable<AssignmentDetailsDTO>>> GetAssignmentsByCourseIdForStudent(int courseId, int studentId)
         {
             try
             {
@@ -184,7 +203,7 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest("Invalid CourseId!");
                 var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
-                if(!isValidStudentId)
+                if (!isValidStudentId)
                     return BadRequest("Invalid StudentId!");
                 var a = await service.GetAssignmentsByCourseIdForStudent(courseId);
                 if (!a.Any())
@@ -193,8 +212,8 @@ namespace ELearning_App.Controllers
                 foreach (var i in assignments)
                 {
                     i.Submitted = await assignmentAnswerRepository.IsSubmittedAssignmentAnswer(i.Id, studentId);
-                    i.AssignedGrade = await assignmentGradeRepository.GetIntAssignmentGrade(i.Id, studentId);
-                }  
+                    i.AssignedGrade = await assignmentAnswerRepository.GetIntAssignmentGrade(i.Id, studentId);
+                }
                 return Ok(assignments);
             }
             catch (Exception ex)
@@ -207,58 +226,41 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        //// GET: api/Assignmentes/5
-        //[HttpGet("Courses/{id1}/Assignments/{id2}")]
-        //public async Task<ActionResult<Assignment>> GetByIdWithCourses(int id1, int id2)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithCourses(id1, id2));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentController , Action: GetByIdWithCourses , Message: {ex.Message}");
-        //        return NotFound();
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("Assignments/GetAllWithAssignmentAnswers")]
-        //public async Task<ActionResult<Assignment>> GetAllWithAssignmentAnswers()
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetAllWithAssignmentAnswers());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentController , Action: GetAllWithAssignmentAnswers , Message: {ex.Message}");
-        //        return NotFound();
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("Assignments/GetByIdWithAssignmentAnswers/{id}")]
-        //public async Task<ActionResult<Assignment>> GetByIdWithAssignmentAnswers(int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithAssignmentAnswers(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentController , Action: GetByIdWithAssignmentAnswers , Message: {ex.Message}");
-        //        return NotFound();
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-
+        [HttpPut(template: "update-file/{id}")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        {
+            try
+            {
+                var assignment = await service.GetByIdAsync(id);
+                if (assignment == null) return NotFound($"No Assignment was found with Id: {id}");
+                if (dto.File != null)
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                    var img = dto.File;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    assignment.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    return Ok(await service.Update(assignment));
+                }
+                else
+                {
+                    return BadRequest("file can't be null;");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentController , Action: UpdateFile , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
     }
 }

@@ -101,9 +101,14 @@ namespace ELearning_App.Repository.Repositories
             var jwtSecurityToken = await CreateJwtToken(user);
             loginResponse.IsAuthenticated = true;
             loginResponse.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            loginResponse.Email = user.EmailAddress;
+            loginResponse.EmailAddress = user.EmailAddress;
             loginResponse.ExpiresOn = jwtSecurityToken.ValidTo;
             loginResponse.Role = user.Role;
+            loginResponse.Id = user.Id;
+            loginResponse.FirstName = user.FirstName;
+            loginResponse.LastName = user.LastName;
+            loginResponse.Phone = user.Phone;
+            loginResponse.ProfilePic = user.ProfilePic;
             if(user.RefreshTokens.Any(t => t.IsActive))
             {
                 var activeRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
@@ -167,8 +172,13 @@ namespace ELearning_App.Repository.Repositories
             var jwtToken = await CreateJwtToken(user);
             loginResponse.IsAuthenticated = true;
             loginResponse.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-            loginResponse.Email = user.EmailAddress;
+            loginResponse.EmailAddress = user.EmailAddress;
+            loginResponse.Id = user.Id;
             loginResponse.Role = user.Role;
+            loginResponse.FirstName = user.FirstName;
+            loginResponse.LastName = user.LastName;
+            loginResponse.Phone = user.Phone;
+            loginResponse.ProfilePic = user.ProfilePic;
             loginResponse.RefreshToken = newRefreshToken.Token;
             loginResponse.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
             loginResponse.ExpiresOn = jwtToken.ValidTo;

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs
 {
-    public class RevokeToken
+    public class AssignedGradeSetterDTO
     {
-        public string? Token { get; set; }
+        public int Id { get; set; }
+        public int AssignedGrade { get; set; }
     }
 }

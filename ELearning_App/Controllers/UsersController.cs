@@ -24,8 +24,8 @@ namespace ELearning_App.Controllers
         private readonly ITeacherRepository teacherService;
         private readonly IParentRepository parentService;
         private readonly IMapper mapper;
-
-        public UsersController(IUserRepository _service, IMapper mapper, IStudentRepository studentService, ITeacherRepository teacherService, IParentRepository parentService)
+        private readonly IWebHostEnvironment _host;
+        public UsersController(IUserRepository _service, IMapper mapper, IStudentRepository studentService, ITeacherRepository teacherService, IParentRepository parentService, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
@@ -33,10 +33,11 @@ namespace ELearning_App.Controllers
             this.studentService = studentService;
             this.teacherService = teacherService;
             this.parentService = parentService;
+            _host = host;
         }
 
         //GET: api/LoginInfoes
-       [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             try
@@ -78,7 +79,7 @@ namespace ELearning_App.Controllers
         // PUT: api/LoginInfoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserDTO dto)
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserDTO dto)
         {
 
             try
@@ -96,6 +97,8 @@ namespace ELearning_App.Controllers
                     user.LastName = dto.LastName;
                     //user.ProfilePic = dto.ProfilePic;
                     //user.EmailAddress = dto.EmailAddress;
+                    if(dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
+                        return BadRequest("for updating the picture use the specified endpoint for that");
                     if (!user.Password.Equals(dto.Password))
                         user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
@@ -109,6 +112,8 @@ namespace ELearning_App.Controllers
                     user.FirstName = dto.FirstName;
                     user.LastName = dto.LastName;
                     //user.ProfilePic = dto.ProfilePic;
+                    if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
+                        return BadRequest("for updating the picture use the specified endpoint for that");
                     user.EmailAddress = dto.EmailAddress;
                     if (!user.Password.Equals(dto.Password))
                         user.Password = service.CreatePasswordHash(dto.Password);
@@ -183,17 +188,14 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                //var user = await service.GetByEmailAsync(email);
-                //if (user == null) return NotFound($"Invalid email : {email}");
-                //bool isValidPassword = service.VerifyPassword(password, user.Password);
                 var ExistingEmailAdress = await service.IsNotAvailableUserEmail(loginRequest.EmailAddress);
                 if (!ExistingEmailAdress)
                     return NotFound($"Invalid email : {loginRequest.EmailAddress}");
                 if (await service.Login(loginRequest) == null)
                     return BadRequest($"Invalid password");
                 var result = await service.Login(loginRequest);
-                if (!string.IsNullOrEmpty(result.RefreshToken))
-                    SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+                //if (!string.IsNullOrEmpty(result.RefreshToken))
+                //    SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -218,24 +220,22 @@ namespace ELearning_App.Controllers
         }
         //refreshs the security token the front send if security token is expired
         [HttpGet("refreshToken")]
-        public async Task<IActionResult> RefreshToken()
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
-
+            //var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = model.RefreshToken;
             var result = await service.RefreshTokenAsync(refreshToken);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result);
-
-            SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
-
+            //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
             return Ok(result);
         }
         //revoke the refresh token (if the user logged out for ex)
-        [HttpPost("revokeToken")]
-        public async Task<IActionResult> RevokeToken([FromBody] RevokeToken model)
+        [HttpPost("revokeRefreshToken")]
+        public async Task<IActionResult> RevokeRefreshToken([FromBody] RefreshTokenDTO model)
         {
-            var token = model.Token ?? Request.Cookies["refreshToken"];
+            var token = model.RefreshToken;
 
             if (string.IsNullOrEmpty(token))
                 return BadRequest("Token is required!");
@@ -265,8 +265,8 @@ namespace ELearning_App.Controllers
         {
             var exist = await service.IsNotAvailableUserEmail(email);
             if (exist)
-                return Ok();
-            return BadRequest();
+                return BadRequest();
+            return Ok();
         }
         [HttpGet("GetByEmail/{email}")]
         public async Task<ActionResult<User>> GetByEmail(string email)
@@ -296,35 +296,44 @@ namespace ELearning_App.Controllers
         //        Log.CloseAndFlush();
         //    }
         //}
+        [HttpPut("update-photo/{id}")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        {
+            try
+            {
+                var user = await service.GetByIdAsync(id);
+                if (user == null) return NotFound($"No Course was found with Id: {id}");
+                if (dto.File != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                    if (dto.File.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for pictures is 5MB!");
+                    var img = dto.File;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    return Ok(await service.Update(user));
+                }
+                else
+                {
+                    return BadRequest("image can't be null;");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentController , Action: UpdateFile , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
     }
 }
-
-
-// DELETE: api/LoginInfoes/5
-
-//        [HttpGet("GetByIdWithToDoLists/{id}")]
-//        public async Task<ActionResult<LoginInfo>> GetByIdWithToDoLists(int id)
-//        {
-//            try
-//            {
-//                return Ok(await service.GetByIdWithToDoLists(id));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: LoginInfoController , Action: GetByIdWithToDoLists , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
-//        //[HttpPost("AddOne")]
-//        //public async Task<IActionResult> AddOne()
-//        //{
-//        //    var book = service.AddLoginInfo(new LoginInfo {emailAddress = "a@b.com", password ="123", type = 1 });
-//        //    return  Ok(await book);
-//        //}
-
-//    }
-//}

@@ -18,13 +18,14 @@ namespace ELearning_App.Controllers
         private IContentRepository service { get; }
         private readonly IMapper mapper;
         private readonly ILessonRepository lessonRepository;
-
-        public ContentsController(IContentRepository _service, IMapper mapper, ILessonRepository lessonRepository)
+        private readonly IWebHostEnvironment _host;
+        public ContentsController(IContentRepository _service, IMapper mapper, ILessonRepository lessonRepository, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
             this.mapper = mapper;
             this.lessonRepository = lessonRepository;
+            _host = host;
         }
 
         // GET: api/Contentes
@@ -70,7 +71,7 @@ namespace ELearning_App.Controllers
         // PUT: api/Contentes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContent(int id, ContentDTO dto)
+        public async Task<IActionResult> PutContent(int id, UpdateContentDTO dto)
         {
 
             try
@@ -81,7 +82,10 @@ namespace ELearning_App.Controllers
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound();
                 content.FileName = dto.FileName;
-                content.Path = dto.Path;
+                if (dto.Path != null && !dto.Path.Equals(content.Path))
+                {
+                    return BadRequest("for updating the file use the specified endpoint for that");
+                }
                 content.ShowDate = dto.ShowDate;
                 content.LessonId = dto.LessonId;
                 return Ok(await service.Update(content));
@@ -100,14 +104,24 @@ namespace ELearning_App.Controllers
         // POST: api/Contentes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Content>> PostContent(ContentDTO dto)
+        public async Task<ActionResult<Content>> PostContent([FromForm] ContentDTO dto)
         {
             try
             {
                 var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if(!isValidLessonId)
                     return BadRequest("Invalid LessonId");
+                if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.Path.FileName).ToLower()))
+                    return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
                 var c = mapper.Map<Content>(dto);
+                var img = dto.Path;
+                var randomName = Guid.NewGuid() + Path.GetExtension(dto.Path.FileName);
+                var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
+                using (FileStream fileStream = new(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(fileStream);
+                }
+                c.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
                 return Ok(await service.AddAsync(c));
             }
             catch (Exception ex)
@@ -158,6 +172,42 @@ namespace ELearning_App.Controllers
             {
                 Log.Error($"Controller: ContentController , Action: GetContentsByLessonId , Message: {ex.Message}");
                 return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("update-file/{id}")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        {
+            try
+            {
+                var content = await service.GetByIdAsync(id);
+                if (content == null) return NotFound($"No Content was found with Id: {id}");
+                if (dto.File != null)
+                {
+                    if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
+                    var img = dto.File;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    content.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
+                    return Ok(await service.Update(content));
+                }
+                else
+                {
+                    return BadRequest("file can't be null;");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ContentsController , Action: UpdateFile , Message: {ex.Message}");
+                return NotFound();
             }
             finally
             {

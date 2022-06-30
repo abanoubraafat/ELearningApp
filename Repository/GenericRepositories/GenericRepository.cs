@@ -232,5 +232,11 @@ namespace ELearning_App.Repository.GenericRepositories
             await unitOfWork.Context.Set<TEntity>().AddRangeAsync(entity);
             await unitOfWork.Commit();
         }
+        public async Task<List<TEntity>> UpdateMultiple(List<TEntity> entity)
+        {
+            unitOfWork.Context.Set<TEntity>().UpdateRange(entity);
+            await unitOfWork.Commit();
+            return entity;
+        }
     }
 }

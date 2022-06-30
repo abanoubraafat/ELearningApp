@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DTOs
+namespace Domain.DTOs.UpdateDTOs
 {
-    public class CourseDetailsDTO : CourseDTO
+    public class UpdateCourseDTO :CourseDTO
     {
-        public string TeacherFirstName { get; set; }
-        public string TeacherLastName { get; set; }
         public new string? CourseImage { get; set; }
     }
 }

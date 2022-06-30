@@ -31,5 +31,6 @@ namespace ELearning_App.Repository.GenericRepositories
 
         //Task<bool> isValidFk(Expression<Func<TEntity, bool>> criteria, int id);
         Task AddMultipleAsync(List<TEntity> entity);
+        Task<List<TEntity>> UpdateMultiple(List<TEntity> entity);
     }
 }

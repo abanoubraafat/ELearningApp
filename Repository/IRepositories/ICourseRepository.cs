@@ -26,6 +26,7 @@ namespace ELearning_App.Repository.IRepositories
         Task<string> JoinCourseForStudent(int studentId, int courseId);
         Task<bool> IsValidCourseId(int id);
         Task<string> DropCourseForStudent(int studentId, int courseId);
-
+        //Task<IEnumerable<Course>> Last5CoursesJoined(int studentId);
+        //Task<List<Course>> Last5CoursesCreated(int teacherId);
     }
 }

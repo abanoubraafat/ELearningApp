@@ -21,15 +21,16 @@ namespace ELearning_App.Controllers
         private IStudentRepository studentRepository { get; }
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
-        //private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
-        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        private readonly IWebHostEnvironment _host;
+
+        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository, IWebHostEnvironment _host)
         {
             service = _service;
             new Logger();
             this.studentRepository = studentRepository;
             this.mapper = mapper;
             this.userRepository = userRepository;
-            //_env = env;
+            this._host = _host;
         }
 
         // GET: api/Parents
@@ -99,7 +100,7 @@ namespace ELearning_App.Controllers
         // POST: api/Parents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Parent>> PostParent(/*[FromForm]*/ ParentDTO dto)
+        public async Task<ActionResult<Parent>> PostParent([FromForm] ParentDTO dto)
         {
             try
             {
@@ -110,28 +111,29 @@ namespace ELearning_App.Controllers
                     return BadRequest("Make sure the Role field is 'Parent'");
                 string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
                 dto.Password = hashedPassword;
-                //var imagePath = @"\Upload\Images\";
-                //var uploadPath = _env.WebRootPath + imagePath;
-                //if (!Directory.Exists(uploadPath))
-                //    Directory.CreateDirectory(uploadPath);
-                //var uniqFileName = Guid.NewGuid().ToString();
-                //var fileName = Path.GetFileName(uniqFileName + "." + dto.ProfilePic.FileName.Split(".")[1].ToLower());
-                //string fullPath = uploadPath + fileName;
-                //imagePath += @"\";
-                //var filePath = @"..\" + Path.Combine(imagePath, fileName);
-                //using (var fileStream = new FileStream(fullPath, FileMode.Create))
-                //{
-                //    await dto.ProfilePic.CopyToAsync(fileStream);
-                //}
-                //using var dataStream = new MemoryStream();
+                var parent = mapper.Map<Parent>(dto);
+                if (dto.ProfilePic != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
 
-                //await dto.ProfilePic.CopyToAsync(dataStream);
-                //string imagePath = Path.GetFileName(dto.ProfilePic.FileName);
-                //dto.ProfilePic.SaveAs()
-                var mapped = mapper.Map<Parent>(dto);
-                //mapped.ProfilePic = fullPath;  
-                
-                return Ok(await service.AddAsync(mapped));
+                    if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for profile picture is 5MB!");
+                    var img = dto.ProfilePic;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.ProfilePic.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    parent.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    return Ok(await service.AddAsync(parent));
+                }
+                else
+                {
+                    return Ok(await service.AddAsync(parent));
+                }
+                    
             }
             catch (Exception ex)
             {
@@ -235,5 +237,26 @@ namespace ELearning_App.Controllers
         //        Log.CloseAndFlush();
         //    }
         //}
+
+        //var imagePath = @"\Upload\Images\";
+        //var uploadPath = _env.WebRootPath + imagePath;
+        //if (!Directory.Exists(uploadPath))
+        //    Directory.CreateDirectory(uploadPath);
+        //var uniqFileName = Guid.NewGuid().ToString();
+        //var fileName = Path.GetFileName(uniqFileName + "." + dto.ProfilePic.FileName.Split(".")[1].ToLower());
+        //string fullPath = uploadPath + fileName;
+        //imagePath += @"\";
+        //var filePath = @"..\" + Path.Combine(imagePath, fileName);
+        //using (var fileStream = new FileStream(fullPath, FileMode.Create))
+        //{
+        //    await dto.ProfilePic.CopyToAsync(fileStream);
+        //}
+        //using var dataStream = new MemoryStream();
+
+        //await dto.ProfilePic.CopyToAsync(dataStream);
+        //string imagePath = Path.GetFileName(dto.ProfilePic.FileName);
+        //dto.ProfilePic.SaveAs()
+        //mapped.ProfilePic = fullPath;  
+
     }
 }

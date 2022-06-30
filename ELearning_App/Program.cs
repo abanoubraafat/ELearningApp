@@ -64,7 +64,7 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<IAssignmentAnswerRepository, AssignmentAnswerRepository>();
 //builder.Services.AddScoped<IAssignmentFeedbackRepository, AssignmentFeedbackRepository>();
-builder.Services.AddScoped<IAssignmentGradeRepository, AssignmentGradeRepository>();
+//builder.Services.AddScoped<IAssignmentGradeRepository, AssignmentGradeRepository>();
 builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
 builder.Services.AddScoped<IContentRepository, ContentRepository>();
 builder.Services.AddScoped<IFeatureRepository, FeatureRepository>();
@@ -80,31 +80,6 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
 builder.Services.AddScoped<IQuestionChoiceRepository, QuestionChoiceRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
-
-
-////builder.Services.AddScoped<ILoginInfoService, LoginInfoService>();
-//builder.Services.AddScoped<IParentService, ParentService>();
-//builder.Services.AddScoped<IStudentService, StudentService>();
-//builder.Services.AddScoped<ITeacherService, TeacherService>();
-//builder.Services.AddScoped<ICourseService, CourseService>();
-//builder.Services.AddScoped<IAssignmentService, AssignmentService>();
-//builder.Services.AddScoped<IAssignmentAnswerService, AssignmentAnswerService>();
-//builder.Services.AddScoped<IAssignmentFeedbackService, AssignmentFeedbackService>();
-//builder.Services.AddScoped<IAssignmentGradeService, AssignmentGradeService>();
-//builder.Services.AddScoped<IBadgeService, BadgeService>();
-//builder.Services.AddScoped<IContentService, ContentService>();
-//builder.Services.AddScoped<IFeatureService, FeatureService>();
-//builder.Services.AddScoped<IQuizService, QuizService>();
-//builder.Services.AddScoped<IQuizAnswerService, QuizAnswerService>();
-//builder.Services.AddScoped<IQuizGradeService, QuizGradeService>();
-//builder.Services.AddScoped<IToDoListService, ToDoListService>();
-//builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
-//builder.Services.AddScoped<ILatestPassedLessonService, LatestPassedLessonService>();
-//builder.Services.AddScoped<ILessonService, LessonService>();
-//builder.Services.AddScoped<INoteService, NoteService>();
-//builder.Services.AddScoped<IQuestionService, QuestionService>();
-//builder.Services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
-//builder.Services.AddScoped<IResourceService, ResourceService>();
 
 var app = builder.Build();
 

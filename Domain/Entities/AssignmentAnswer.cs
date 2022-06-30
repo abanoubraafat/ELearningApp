@@ -11,6 +11,7 @@ namespace ELearning_App.Domain.Entities
         public string FileName { get; set; }
         public string PDF { get; set; } //as link URL
         public DateTime SubmitDate { get; set; }
+        public int? AssignedGrade { get; set; }
 
         //public DateTime SubmitTime { get; set; }
         //Relationships:

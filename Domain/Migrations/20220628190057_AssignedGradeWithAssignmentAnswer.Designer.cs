@@ -4,6 +4,7 @@ using ELearning_App.Domain.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ELearningContext))]
-    partial class ELearningContextModelSnapshot : ModelSnapshot
+    [Migration("20220628190057_AssignedGradeWithAssignmentAnswer")]
+    partial class AssignedGradeWithAssignmentAnswer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,6 +133,27 @@ namespace Domain.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("AssignmentAnswers");
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AssignmentAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Grade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentAnswerId");
+
+                    b.ToTable("AssignmentGrades");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>
@@ -601,6 +624,17 @@ namespace Domain.Migrations
                     b.Navigation("Assignment");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
+                {
+                    b.HasOne("ELearning_App.Domain.Entities.AssignmentAnswer", "AssignmentAnswer")
+                        .WithMany()
+                        .HasForeignKey("AssignmentAnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssignmentAnswer");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>

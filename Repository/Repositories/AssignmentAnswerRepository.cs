@@ -59,41 +59,22 @@ namespace ELearning_App.Repository.Repositories
             return await IsValidFk(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
         }
 
-        //public async Task<bool> IsValidAssignmentIdFk(int assignmentId)
-        //{
-        //    var isValid = await unitOfWork.Context.Assignments.AnyAsync(a => a.Id == assignmentId);
-        //    return isValid;
-        //}
+        public async Task<List<AssignmentAnswer>> GetAssignmentAnswersByListOfIds(int[] ids)
+        {
+            return await unitOfWork.Context.AssignmentAnswers.Where(a => ids.Contains(a.Id)).ToListAsync();
+        }
 
-        //public Task<bool> IsValidStudentIdFk(int assignmentId)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public IQueryable<AssignmentAnswer> GetNotGradedAnswers()
-        //{
-        //    return unitOfWork.Context.AssignmentAnswers.Where(a => a.AssignmentGrade == null);
-        //}
+        public async Task<int?> GetIntAssignmentGrade(int assignmentId, int studentId)
+        {
+            var a = await unitOfWork.Context.AssignmentAnswers.SingleOrDefaultAsync(a => a.AssignmentId == assignmentId && a.StudentId == studentId);
+            if (a == null)
+                return null;
+            else
+            {
+                var assignmentgrade = a.AssignedGrade;
+                return assignmentgrade;
+            }
+        }
 
-        //public IQueryable<AssignmentAnswer> GetByIdWithGrade(int id)
-        //{
-        //    return unitOfWork.Context.AssignmentAnswers
-        //        .Where(a => a.Id == id)
-        //        .Include(a => a.AssignmentGrade);
-        //}
-
-        //public IQueryable<AssignmentAnswer> GetByIdWithFeedback(int id)
-        //{
-        //    return unitOfWork.Context.AssignmentAnswers.Where(a => a.Id == id).Include(a => a.AssignmentFeedback);
-        //}
-
-        //public IQueryable<AssignmentAnswer> GetByIdWithBadge(int id)
-        //{
-        //    return unitOfWork.Context.AssignmentAnswers.Where(a => a.Id == id).Include(a => a.Badge);
-        //}
-
-        //public async Task<bool> isValidAssignmentAnswerFk(int id)
-        //{
-        //    return await unitOfWork.Context.AssignmentAnswers.AnyAsync(a => a.Id == id);
-        //}
     }
 }

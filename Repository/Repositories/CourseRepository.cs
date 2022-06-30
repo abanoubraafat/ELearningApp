@@ -64,16 +64,6 @@ namespace ELearning_App.Repository.Repositories
         {
             return await unitOfWork.Context.Courses.Include(c => c.Teacher)
                 .Where(c => c.Students.Any(s => s.Id == id))
-                //.Select(c => new Course
-                //{
-                //    Id = c.Id,
-                //    CourseName = c.CourseName,
-                //    //CourseDescription = c.CourseDescription,
-                //    CourseImage = c.CourseImage,
-                //    //Students = c.Students,
-                //    TeacherId = c.TeacherId,
-                //    Teacher = c.Teacher
-                //})
                 .ToListAsync();
         }
 
@@ -103,6 +93,30 @@ namespace ELearning_App.Repository.Repositories
             //else
             //    return false;
         }
+
+        //public async Task<IEnumerable<Course>> Last5CoursesJoined(int studentId)
+        //{
+        //    return await unitOfWork.Context.Courses.Include(c => c.Teacher)
+        //        .Where(c => c.Students.Any(s => s.Id == studentId))
+        //        .TakeLast(5)
+        //        .ToListAsync();
+        //}
+
+        //public async Task<List<Course>> Last5CoursesCreated(int teacherId)
+        //{
+        //    return await unitOfWork.Context.Courses
+        //        .Where(c => c.TeacherId == teacherId)
+        //        .Select(c => new Course
+        //        {
+        //            Id = c.Id,
+        //            CourseName = c.CourseName,
+        //            CourseImage = c.CourseImage,
+        //            TeacherId = c.TeacherId
+        //        })
+        //        .OrderByDescending(c => c.Id)
+        //        .Take(5)
+        //        .ToListAsync();
+        //}
 
 
 

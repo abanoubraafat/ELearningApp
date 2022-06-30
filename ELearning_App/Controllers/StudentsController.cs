@@ -21,11 +21,8 @@ namespace ELearning_App.Controllers
         private readonly IUserRepository userRepository;
         private readonly ICourseRepository courseRepository;
         private readonly IParentRepository parentRepository;
-        [Obsolete]
-        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _host;
-
-        [Obsolete]
-        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment host)
+        private readonly IWebHostEnvironment _host;
+        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
@@ -103,7 +100,6 @@ namespace ELearning_App.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Obsolete]
         public async Task<ActionResult<Student>> PostStudent([FromForm] StudentDTO dto)
         {
 
@@ -116,22 +112,28 @@ namespace ELearning_App.Controllers
                     return BadRequest("Make sure the Role field is 'Student'");
                 string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
                 dto.Password = hashedPassword;
-                if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
-                    return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
-
-                if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
-                    return BadRequest("Max allowed size for profile picture is 5MB!");
                 var student = mapper.Map<Student>(dto);
-                ////////////////ProfilePic//////////////////
-                var img = dto.ProfilePic;
-                var filePath = Path.Combine(_host.WebRootPath + "/Pictures/ProfilePictures", img.FileName);
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                if (dto.ProfilePic != null)
                 {
-                    await img.CopyToAsync(fileStream);
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                    if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for profile picture is 5MB!");
+                    var img = dto.ProfilePic;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.ProfilePic.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    student.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    return Ok(await service.AddAsync(student));
                 }
-                student.ProfilePic = @"\\Abanoub\wwwroot\Pictures\ProfilePictures\" + img.FileName;
-                ////////////////////////////////////////////
-                return Ok(await service.AddAsync(student));
+                else
+                {
+                    return Ok(await service.AddAsync(student));
+                }
             }
             catch (Exception ex)
             {

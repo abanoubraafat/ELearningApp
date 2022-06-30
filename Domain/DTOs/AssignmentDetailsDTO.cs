@@ -12,7 +12,7 @@ namespace Domain.DTOs
         public string Title { get; set; }
         public DateTime? EndTime { get; set; }
         public bool Submitted { get; set; }
-        public int AssignedGrade { get; set; }
+        public int? AssignedGrade { get; set; }
         
     }
 }
