@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Domain.DTOs
         public int Id { get; set; }
         public string CourseName { get; set; }
         public string? CourseDescription { get; set; }
-        public string? CourseImage { get; set; }
+        public IFormFile? CourseImage { get; set; }
         public int TeacherId { get; set; }
 
     }

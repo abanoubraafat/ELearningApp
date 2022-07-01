@@ -27,7 +27,7 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<IEnumerable<Question>> GetQuestionsByQuizId(int quizId)
         {
-            return await unitOfWork.Context.Questions.Where(q => q.QuizId == quizId).ToListAsync();
+            return await unitOfWork.Context.Questions.Where(q => q.QuizId == quizId).Include(q => q.QuestionChoices).ToListAsync();
         }
         //public IQueryable<Question> GetByIdWithAnswers(int id)
         //{

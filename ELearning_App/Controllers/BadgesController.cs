@@ -23,7 +23,6 @@ namespace ELearning_App.Controllers
             new Logger();
         }
 
-        // GET: api/Badgees
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Badge>>> GetBadges()
         {
@@ -42,7 +41,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Badgees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Badge>> GetBadge(int id)
         {
@@ -63,8 +61,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Badgees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBadge(int id, Badge b)
         {
@@ -88,14 +84,13 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Badgees
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Badge>> PostBadge(Badge b)
         {
             try
             {
-                return Ok(await service.AddAsync(b));
+                await service.AddAsync(b);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -108,13 +103,13 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Badgees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBadge(int id)
         {
             try
             {
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

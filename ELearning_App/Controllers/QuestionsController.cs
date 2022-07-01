@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ELearning_App.Domain.Entities;
 using ELearning_App.Helpers;
 using Serilog;
+using Repository.IRepositories;
 
 namespace ELearning_App.Controllers
 {
@@ -18,15 +19,16 @@ namespace ELearning_App.Controllers
         private IQuestionRepository service { get; }
         private readonly IQuizRepository quizRepository;
         private readonly IMapper mapper;
-        public QuestionsController(IQuestionRepository _service, IQuizRepository quizRepository, IMapper mapper)
+        private readonly IQuestionChoiceRepository questionChoiceRepository;
+        public QuestionsController(IQuestionRepository _service, IQuizRepository quizRepository, IMapper mapper, IQuestionChoiceRepository questionChoiceRepository)
         {
             service = _service;
             this.quizRepository = quizRepository;
             new Logger();
             this.mapper = mapper;
+            this.questionChoiceRepository = questionChoiceRepository;
         }
 
-        // GET: api/Questiones
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
         {
@@ -45,7 +47,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Questiones/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Question>> GetQuestion(int id)
         {
@@ -54,7 +55,8 @@ namespace ELearning_App.Controllers
                 var question = await service.GetByIdAsync(id);
                 if (question == null)
                     return NotFound($"Invalid questionId {id}");
-                return Ok();
+                var mapped = mapper.Map<QuestionDTO>(question);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -67,8 +69,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Questiones/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestion(int id, QuestionDTO dto)
         {
@@ -85,7 +85,9 @@ namespace ELearning_App.Controllers
                 question.correctAnswer = dto.correctAnswer;
                 question.ShowDate = dto.ShowDate;
                 //question.QuizId = dto.QuizId;
-                return Ok(await service.Update(question));
+                var q = await service.Update(question);
+                var mapped = mapper.Map<QuestionDTO>(q);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -98,8 +100,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Questiones
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Question>> PostQuestion(QuestionDTO dto)
         {
@@ -109,7 +109,8 @@ namespace ELearning_App.Controllers
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId: {dto.QuizId}");
                 var question = mapper.Map<Question>(dto);
-                return Ok(await service.AddAsync(question));
+                await service.AddAsync(question);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -122,7 +123,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Questiones/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestion(int id)
         {
@@ -131,7 +131,8 @@ namespace ELearning_App.Controllers
                 var question = await service.GetByIdAsync(id);
                 if (question == null)
                     return NotFound($"Invalid questionId: {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -143,7 +144,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("GetQuestionsByQuizId/{id}")]
+        [HttpGet("GetQuestionsByQuizId/{quizId}")]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsByQuizId(int quizId)
         {
             try
@@ -153,6 +154,12 @@ namespace ELearning_App.Controllers
                 var questions = await service.GetQuestionsByQuizId(quizId);
                 if (questions.Count() == 0)
                     return NotFound();
+                //var questionsWithChoices = mapper.Map<IEnumerable<QuestionDetailsDTO>>(questions);
+                //foreach(var questionWithChoice in questionsWithChoices)
+                //{
+                //    questionWithChoice.QuestionChoices = await questionChoiceRepository.GetQuestionChoicesByQuestionId(questionWithChoice.Id);
+                //}
+                
                 return Ok(questions);
             }
             catch (Exception ex)
@@ -165,6 +172,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        #region Old Services
         //[HttpGet("GetByIdWithAnswers/{id}")]
         //public async Task<ActionResult<Question>> GetByIdWithAnswers(int id)
         //{
@@ -181,6 +189,7 @@ namespace ELearning_App.Controllers
         //    {
         //        Log.CloseAndFlush();
         //    }
-        //}
+        //} 
+        #endregion
     }
 }

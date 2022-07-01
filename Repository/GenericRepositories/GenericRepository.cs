@@ -23,19 +23,19 @@ namespace ELearning_App.Repository.GenericRepositories
             unitOfWork.Commit();
             return entity;
         }
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public async Task/*<TEntity>*/ AddAsync(TEntity entity)
         {
             await unitOfWork.Context.Set<TEntity>().AddAsync(entity);
             await unitOfWork.Commit();
-            return entity;
+            //return entity;
         }
 
-        public async Task<TEntity> Delete(int id)
+        public async Task/*<TEntity>*/ Delete(int id)
         {
             TEntity entity = await GetByIdAsync(id);
             unitOfWork.Context.Set<TEntity>().Remove(entity);
             await unitOfWork.Commit();
-            return entity;
+            //return entity;
         }
 
         public IQueryable<TEntity> GetAll()
@@ -227,5 +227,16 @@ namespace ELearning_App.Repository.GenericRepositories
         //{
         //    return await _context.Set<T>().CountAsync(criteria);
         //}
+        public async Task AddMultipleAsync(List<TEntity> entity)
+        {
+            await unitOfWork.Context.Set<TEntity>().AddRangeAsync(entity);
+            await unitOfWork.Commit();
+        }
+        public async Task<List<TEntity>> UpdateMultiple(List<TEntity> entity)
+        {
+            unitOfWork.Context.Set<TEntity>().UpdateRange(entity);
+            await unitOfWork.Commit();
+            return entity;
+        }
     }
 }

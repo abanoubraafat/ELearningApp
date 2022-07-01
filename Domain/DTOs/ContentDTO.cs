@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Domain.DTOs
     {
         public long Id { get; set; }
         public string FileName { get; set; }
-        public string Path { get; set; } 
+        public IFormFile Path { get; set; } 
         public DateTime ShowDate { get; set; } 
         public int LessonId { get; set; }
     }

@@ -191,7 +191,7 @@ publish/
 # checkin your Azure Web App publish settings, but sensitive information contained
 # in these scripts will be unencrypted
 PublishScripts/
-
+ELearning_App/wwwroot/
 # NuGet Packages
 *.nupkg
 # NuGet Symbol Packages
@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ELearning_App/wwwroot/Pictures/ProfilePictures

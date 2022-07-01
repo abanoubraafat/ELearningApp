@@ -10,6 +10,7 @@ using ELearning_App.Domain.Entities;
 using ELearning_App.Helpers;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using ELearning_App.Repository.UnitOfWork;
 
 namespace ELearning_App.Controllers
 {
@@ -22,10 +23,9 @@ namespace ELearning_App.Controllers
         private readonly IStudentRepository studentService;
         private readonly ITeacherRepository teacherService;
         private readonly IParentRepository parentService;
-
         private readonly IMapper mapper;
-
-        public UsersController(IUserRepository _service, IMapper mapper, IStudentRepository studentService, ITeacherRepository teacherService, IParentRepository parentService)
+        private readonly IWebHostEnvironment _host;
+        public UsersController(IUserRepository _service, IMapper mapper, IStudentRepository studentService, ITeacherRepository teacherService, IParentRepository parentService, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
@@ -33,10 +33,11 @@ namespace ELearning_App.Controllers
             this.studentService = studentService;
             this.teacherService = teacherService;
             this.parentService = parentService;
+            _host = host;
         }
 
         //GET: api/LoginInfoes
-       [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             try
@@ -78,7 +79,7 @@ namespace ELearning_App.Controllers
         // PUT: api/LoginInfoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserDTO dto)
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserDTO dto)
         {
 
             try
@@ -94,9 +95,13 @@ namespace ELearning_App.Controllers
                 {
                     user.FirstName = dto.FirstName;
                     user.LastName = dto.LastName;
-                    user.ProfilePic = dto.ProfilePic;
+                    //user.ProfilePic = dto.ProfilePic;
                     //user.EmailAddress = dto.EmailAddress;
-                    if (!user.Password.Equals(dto.Password))
+                    if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
+                        return BadRequest("for updating the picture use the specified endpoint for that");
+                    //if (!service.VerifyPassword(dto.Password, user.Password))
+                    //    user.Password = service.CreatePasswordHash(dto.Password);
+                    if(dto.Password != null)
                         user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
                     //user.Role = dto.Role;
@@ -108,9 +113,11 @@ namespace ELearning_App.Controllers
                 {
                     user.FirstName = dto.FirstName;
                     user.LastName = dto.LastName;
-                    user.ProfilePic = dto.ProfilePic;
+                    //user.ProfilePic = dto.ProfilePic;
+                    if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
+                        return BadRequest("for updating the picture use the specified endpoint for that");
                     user.EmailAddress = dto.EmailAddress;
-                    if (!user.Password.Equals(dto.Password))
+                    if (dto.Password != null)
                         user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
                     //user.Role = dto.Role;
@@ -159,14 +166,15 @@ namespace ELearning_App.Controllers
             //    Log.CloseAndFlush();
             //}
             //}
-            [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
                 var user = await service.GetByIdAsync(id);
                 if (user == null) return NotFound($"Invalid userId : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -179,20 +187,19 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             try
             {
-                //var user = await service.GetByEmailAsync(email);
-                //if (user == null) return NotFound($"Invalid email : {email}");
-                //bool isValidPassword = service.VerifyPassword(password, user.Password);
-                var ExistingEmailAdress = await service.IsNotAvailableUserEmail(email);
+                var ExistingEmailAdress = await service.IsNotAvailableUserEmail(loginRequest.EmailAddress);
                 if (!ExistingEmailAdress)
-                    return NotFound($"Invalid email : {email}");
-                if (await service.Login(email, password) == null)
+                    return NotFound($"Invalid email : {loginRequest.EmailAddress}");
+                if (await service.Login(loginRequest) == null)
                     return BadRequest($"Invalid password");
-                else
-                    return Ok(await service.Login(email, password));
+                var result = await service.Login(loginRequest);
+                //if (!string.IsNullOrEmpty(result.RefreshToken))
+                //    SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -203,6 +210,71 @@ namespace ELearning_App.Controllers
             {
                 Log.CloseAndFlush();
             }
+        }
+        private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = expires.ToLocalTime()
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+        //refreshs the security token the front send if security token is expired
+        [HttpGet("refreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
+        {
+            //var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = model.RefreshToken;
+            var result = await service.RefreshTokenAsync(refreshToken);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result);
+            //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+            return Ok(result);
+        }
+        //revoke the refresh token (if the user logged out for ex)
+        [HttpPost("revokeRefreshToken")]
+        public async Task<IActionResult> RevokeRefreshToken([FromBody] RefreshTokenDTO model)
+        {
+            var token = model.RefreshToken;
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Token is required!");
+
+            var result = await service.RevokeTokenAsync(token);
+
+            if (!result)
+                return BadRequest("Token is invalid!");
+
+            return Ok();
+        }
+
+        [HttpPost("LoginTest")]
+        public async Task<ActionResult<User>> LoginTest(LoginRequest loginRequest)
+        {
+            var ExistingEmailAdress = await service.IsNotAvailableUserEmail(loginRequest.EmailAddress);
+            if (!ExistingEmailAdress)
+                return NotFound($"Invalid email : {loginRequest.EmailAddress}");
+            var user = await service.LoginTest(loginRequest);
+            if (user == null)
+                return BadRequest($"Invalid password");
+            return Ok(user);
+
+        }
+        [HttpGet("EmailExists/{email}")]
+        public async Task<ActionResult> EmailExists(string email)
+        {
+            var exist = await service.IsNotAvailableUserEmail(email);
+            if (exist)
+                return BadRequest();
+            return Ok();
+        }
+        [HttpGet("GetByEmail/{email}")]
+        public async Task<ActionResult<User>> GetByEmail(string email)
+        {
+            return Ok(await service.GetByEmailAsync(email));
         }
         //[HttpPost("changePassword")]
         //public async Task<IActionResult> ChangePassword(string email, string oldPassword, string newPassword)
@@ -227,35 +299,55 @@ namespace ELearning_App.Controllers
         //        Log.CloseAndFlush();
         //    }
         //}
+        [HttpPut("update-photo/{id}")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        {
+            try
+            {
+                var user = await service.GetByIdAsync(id);
+                if (user == null) return NotFound($"No Course was found with Id: {id}");
+                if (dto.File != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                    if (dto.File.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for pictures is 5MB!");
+                    var img = dto.File;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    return Ok(await service.Update(user));
+                }
+                else
+                {
+                    return BadRequest("image can't be null;");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentController , Action: UpdateFile , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        #region ChangePassword EndPoint
+        //[HttpPut("change-password")]
+        //public async Task<IActionResult> UpdatePassword(int id, ChangePasswordDTO password)
+        //{
+        //    var user = service.GetById(id);
+        //    if (user == null) return NotFound($"Invalid Id: {id}");
+        //    user.Password = service.CreatePasswordHash(password);
+        //    await service.Update(user);
+        //    return Ok();
+        //} 
+        #endregion
     }
 }
-
-
-// DELETE: api/LoginInfoes/5
-
-//        [HttpGet("GetByIdWithToDoLists/{id}")]
-//        public async Task<ActionResult<LoginInfo>> GetByIdWithToDoLists(int id)
-//        {
-//            try
-//            {
-//                return Ok(await service.GetByIdWithToDoLists(id));
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Error($"Controller: LoginInfoController , Action: GetByIdWithToDoLists , Message: {ex.Message}");
-//                return StatusCode(500);
-//            }
-//            finally
-//            {
-//                Log.CloseAndFlush();
-//            }
-//        }
-//        //[HttpPost("AddOne")]
-//        //public async Task<IActionResult> AddOne()
-//        //{
-//        //    var book = service.AddLoginInfo(new LoginInfo {emailAddress = "a@b.com", password ="123", type = 1 });
-//        //    return  Ok(await book);
-//        //}
-
-//    }
-//}

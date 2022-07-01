@@ -27,7 +27,6 @@ namespace ELearning_App.Controllers
             this.questionRepository = questionRepository;
         }
 
-        // GET: api/QuestionAnsweres
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QuestionAnswer>>> GetQuestionAnswers()
         {
@@ -46,7 +45,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/QuestionAnsweres/5
         [HttpGet("{id}")]
         public async Task<ActionResult<QuestionAnswer>> GetQuestionAnswer(int id)
         {
@@ -68,8 +66,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/QuestionAnsweres/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestionAnswer(int id, QuestionAnswerDTO dto)
         {
@@ -101,8 +97,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/QuestionAnsweres
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<QuestionAnswer>> PostQuestionAnswer(QuestionAnswerDTO dto)
         {
@@ -118,7 +112,8 @@ namespace ELearning_App.Controllers
                 if (isNotValidQuestionAnswer)
                     return BadRequest($"There's already a QuestionAnswer assigned by student :{dto.StudentId} to question {dto.QuestionId}");
                 var mapped = mapper.Map<QuestionAnswer>(dto);
-                return Ok(await service.AddAsync(mapped));
+                await service.AddAsync(mapped);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -131,7 +126,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/QuestionAnsweres/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestionAnswer(int id)
         {
@@ -140,7 +134,8 @@ namespace ELearning_App.Controllers
                 var questionAnswer = await service.GetByIdAsync(id);
                 if (questionAnswer == null)
                     return NotFound($"Invalid questionAnswerId : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -198,6 +193,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        
         [HttpGet("GetQuestionAnswerByQuestionIdByStudentId/{studentId}/{questionId}")]
         public async Task<ActionResult<IEnumerable<QuestionAnswer>>> GetQuestionAnswerByQuestionIdByStudentId(int questionId, int studentId)
         {
@@ -223,6 +219,38 @@ namespace ELearning_App.Controllers
             {
                 Log.CloseAndFlush();
             }
+        }
+        
+        [HttpPost("PostMultipleQuestionAnswers")]
+        public async Task<ActionResult> PostMultipleQuestionAnswers(List<QuestionAnswerDTO> questionAnswers)
+        {
+            try
+            {
+                for (int i = 0; i < questionAnswers.Count; i++)
+                {
+                    var isValidStudentId = await studentRepository.IsValidStudentId(questionAnswers[i].StudentId);
+                    var isValidQuestionId = await questionRepository.IsValidQuestionId(questionAnswers[i].QuestionId);
+                    var isNotValidQuestionAnswer = await service.IsNotValidQuestionAnswer(questionAnswers[i].StudentId, questionAnswers[i].QuestionId);
+                    if (!isValidStudentId || !isValidQuestionId || isNotValidQuestionAnswer)
+                    {
+                        questionAnswers.Remove(questionAnswers[i]);
+                    }
+                }
+                var mapped = mapper.Map<List<QuestionAnswer>>(questionAnswers);
+
+                await service.AddMultipleAsync(mapped);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuestionAnswersController , Action: PostMultipleQuestionAnswers , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
     }
 }

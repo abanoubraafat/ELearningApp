@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -14,6 +15,7 @@ namespace ELearning_App.Domain.Entities
 
         // one to one (Badge -> AssignmentAnswer)
         public int AssignmentAnswerId { get; set; }
+        [JsonIgnore]
         public virtual AssignmentAnswer AssignmentAnswer { get; set; }
     }
 }

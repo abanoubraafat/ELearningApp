@@ -10,9 +10,17 @@
 
   <ItemGroup>
     <Compile Remove="Services\**" />
+    <Compile Remove="wwwroot\Courses\**" />
+    <Compile Remove="wwwroot\Pictures\**" />
     <Content Remove="Services\**" />
+    <Content Remove="wwwroot\Courses\**" />
+    <Content Remove="wwwroot\Pictures\**" />
     <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="wwwroot\Courses\**" />
+    <EmbeddedResource Remove="wwwroot\Pictures\**" />
     <None Remove="Services\**" />
+    <None Remove="wwwroot\Courses\**" />
+    <None Remove="wwwroot\Pictures\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +45,9 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="wwwroot\Images\" />
+    <Folder Include="wwwroot\Files\" />
+    <Folder Include="wwwroot\Content\" />
   </ItemGroup>
 
   <ItemGroup>

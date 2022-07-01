@@ -21,7 +21,8 @@ namespace ELearning_App.Controllers
         private readonly IUserRepository userRepository;
         private readonly ICourseRepository courseRepository;
         private readonly IParentRepository parentRepository;
-        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository)
+        private readonly IWebHostEnvironment _host;
+        public StudentsController(IStudentRepository _service, IMapper mapper, IUserRepository userRepository, ICourseRepository courseRepository, IParentRepository parentRepository, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
@@ -29,8 +30,10 @@ namespace ELearning_App.Controllers
             this.userRepository = userRepository;
             this.courseRepository = courseRepository;
             this.parentRepository = parentRepository;
+            _host = host;
         }
 
+        #region Old Services
         //// GET: api/Students
         //[HttpGet]
         //public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
@@ -95,14 +98,14 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        // POST: api/Students
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        #endregion
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(StudentDTO dto)
+        public async Task<ActionResult<Student>> PostStudent([FromForm] StudentDTO dto)
         {
 
             try
-            {
+            { 
                 var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
                 if (isNotAvailableUserEmail)
                     return BadRequest("There's already an account with the same Email address");
@@ -111,7 +114,24 @@ namespace ELearning_App.Controllers
                 string hashedPassword = userRepository.CreatePasswordHash(dto.Password);
                 dto.Password = hashedPassword;
                 var student = mapper.Map<Student>(dto);
-                return Ok(await service.AddAsync(student));
+                if (dto.ProfilePic != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                    if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for profile picture is 5MB!");
+                    var img = dto.ProfilePic;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.ProfilePic.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    student.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                }
+                await service.AddAsync(student);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -124,13 +144,17 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("/Email/{email}")]
-        public async Task<ActionResult<Student>> GetStudentByEmail(string email)
+        public async Task<ActionResult<StudentDTO>> GetStudentByEmail(string email)
         {
             //try
             //{
             var isValidStudentEmail = await service.IsValidStudentEmail(email);
             if (!isValidStudentEmail) return NotFound("Invalid Email");
-            return Ok(await service.GetStudentByEmail(email));
+            var student = await service.GetStudentByEmail(email);
+            if (student == null) return NotFound($"No Student was found with that email: {email}");
+            var mapped = mapper.Map<StudentDTO>(student);
+
+            return Ok(mapped);
             //}
             //catch (Exception ex)
             //{
@@ -189,6 +213,7 @@ namespace ELearning_App.Controllers
             }
         }
 
+        #region Old Services 2
         // DELETE: api/Students/5
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteStudent(int id)
@@ -315,6 +340,7 @@ namespace ELearning_App.Controllers
         //    {
         //        Log.CloseAndFlush();
         //    }
-        //}
+        //} 
+        #endregion
     }
 }

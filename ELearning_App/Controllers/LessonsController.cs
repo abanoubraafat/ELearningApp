@@ -25,7 +25,6 @@ namespace ELearning_App.Controllers
             this.courseRepository = courseRepository;
         }
 
-        // GET: api/Lessones
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetLessons()
         {
@@ -44,7 +43,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Lessones/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Lesson>> GetLesson(int id)
         {
@@ -65,8 +63,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Lessones/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutLesson(int id, LessonDTO dto)
         {
@@ -93,8 +89,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Lessones
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Lesson>> PostLesson(LessonDTO dto)
         {
@@ -103,7 +97,8 @@ namespace ELearning_App.Controllers
                 var isValidCourseId = await courseRepository.IsValidCourseId(dto.CourseId);
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
                 var l = mapper.Map<Lesson>(dto);
-                return Ok(await service.AddAsync(l));
+                await service.AddAsync(l);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -116,7 +111,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Lessones/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLesson(int id)
         {
@@ -124,7 +118,8 @@ namespace ELearning_App.Controllers
             {
                 var lesson = await service.GetByIdAsync(id);
                 if (lesson == null) return NotFound($"No Lesson With this id : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -158,6 +153,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        #region Old Services
         //            [HttpGet("GetByIdWithContent/{id}")]
         //            public async Task<ActionResult<IEnumerable<Lesson>>> GetByIdWithContent(int id)
         //            {
@@ -210,6 +206,7 @@ namespace ELearning_App.Controllers
         //                }
 
         //             }
-        //    }
+        //    } 
+        #endregion
     }
 }

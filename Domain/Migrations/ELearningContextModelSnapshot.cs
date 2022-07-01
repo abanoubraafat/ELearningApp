@@ -104,6 +104,9 @@ namespace Domain.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("AssignedGrade")
+                        .HasColumnType("int");
+
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
@@ -128,27 +131,6 @@ namespace Domain.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("AssignmentAnswers");
-                });
-
-            modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AssignmentAnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Grade")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssignmentAnswerId");
-
-                    b.ToTable("AssignmentGrades");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>
@@ -583,7 +565,7 @@ namespace Domain.Migrations
             modelBuilder.Entity("Domain.Entities.QuestionChoice", b =>
                 {
                     b.HasOne("ELearning_App.Domain.Entities.Question", "Question")
-                        .WithMany()
+                        .WithMany("QuestionChoices")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -619,17 +601,6 @@ namespace Domain.Migrations
                     b.Navigation("Assignment");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("ELearning_App.Domain.Entities.AssignmentGrade", b =>
-                {
-                    b.HasOne("ELearning_App.Domain.Entities.AssignmentAnswer", "AssignmentAnswer")
-                        .WithMany()
-                        .HasForeignKey("AssignmentAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssignmentAnswer");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>
@@ -758,6 +729,43 @@ namespace Domain.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ELearning_App.Domain.Entities.User", b =>
+                {
+                    b.OwnsMany("Domain.Entities.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<int>("UserId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
+
+                            b1.Property<DateTime>("CreatedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ExpiresOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime?>("RevokedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("UserId", "Id");
+
+                            b1.ToTable("RefreshToken");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("RefreshTokens");
+                });
+
             modelBuilder.Entity("ParentStudent", b =>
                 {
                     b.HasOne("ELearning_App.Domain.Entities.Parent", null)
@@ -798,6 +806,11 @@ namespace Domain.Migrations
                         .HasForeignKey("ELearning_App.Domain.Entities.Teacher", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ELearning_App.Domain.Entities.Question", b =>
+                {
+                    b.Navigation("QuestionChoices");
                 });
 #pragma warning restore 612, 618
         }

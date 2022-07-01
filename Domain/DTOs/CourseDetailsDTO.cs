@@ -10,5 +10,6 @@ namespace Domain.DTOs
     {
         public string TeacherFirstName { get; set; }
         public string TeacherLastName { get; set; }
+        public new string? CourseImage { get; set; }
     }
 }

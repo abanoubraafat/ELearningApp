@@ -25,28 +25,28 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<Student> GetStudentByEmail(string email)
         {
-            return await unitOfWork.Context.Students.FirstAsync(s => s.EmailAddress == email);
+            return await unitOfWork.Context.Students.FirstOrDefaultAsync(s => s.EmailAddress == email);
         }
 
         public async Task<IEnumerable<Student>> GetStudentsByCourseId(int courseId)
         {
             return await unitOfWork.Context.Students
                 .Where(s => s.Courses.Any(c => c.Id == courseId))
-                .Include(s => s.Courses)
                 .Select(s => new Student
                 {
                     Id = s.Id,
+                    EmailAddress = s.EmailAddress,
                     FirstName = s.FirstName,
                     LastName = s.LastName,
-                    EmailAddress = s.EmailAddress,
-                    Courses = s.Courses
+                    Phone = s.Phone,
+                    ProfilePic = s.ProfilePic
                 })
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Student>> GetStudentsByParentId(int parentId)
         {
-            return await unitOfWork.Context.Students.Include(s => s.Parents)
+            return await unitOfWork.Context.Students
                 .Where(s => s.Parents.Any(p => p.Id == parentId))
                 .Select(s => new Student
                 {
@@ -55,8 +55,7 @@ namespace ELearning_App.Repository.Repositories
                     FirstName = s.FirstName,
                     LastName= s.LastName,
                     Phone = s.Phone,
-                    ProfilePic = s.ProfilePic,
-                    Parents = s.Parents
+                    ProfilePic = s.ProfilePic
                 })
                 .ToListAsync();
         }

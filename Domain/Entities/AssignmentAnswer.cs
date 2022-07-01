@@ -11,18 +11,19 @@ namespace ELearning_App.Domain.Entities
         public string FileName { get; set; }
         public string PDF { get; set; } //as link URL
         public DateTime SubmitDate { get; set; }
+        public int? AssignedGrade { get; set; }
 
         //public DateTime SubmitTime { get; set; }
         //Relationships:
 
         // (Assignment --> AssignmentAnswer) --> one to many 
         public int AssignmentId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Assignment Assignment { get; set; }
 
         // (Student --> AssignmentAnswer) --> one to many
         public int StudentId { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore]
         public virtual Student Student { get; set;}
 
 

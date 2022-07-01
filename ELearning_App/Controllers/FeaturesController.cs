@@ -106,7 +106,8 @@ namespace ELearning_App.Controllers
                 var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
                 if (!isValidStudentId) return BadRequest("Invalid studentId");
                 var feature = mapper.Map<Feature>(dto);
-                return Ok(await service.AddAsync(feature));
+                await service.AddAsync(feature);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -127,7 +128,8 @@ namespace ELearning_App.Controllers
             {
                 var feature = await service.GetByIdAsync(id);
                 if (feature == null) return NotFound();
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

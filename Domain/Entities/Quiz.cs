@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -22,6 +23,7 @@ namespace ELearning_App.Domain.Entities
 
         // (Course --> Quiz) one to many
         public int CourseId { get; set; }
+        [JsonIgnore]
         public virtual Course Course { get; set; }
 
         // (Quiz --> QuizAnswer) one to many

@@ -2,6 +2,7 @@
 using ELearning_App.Helpers;
 using ELearning_App.Repository.IRepositories;
 using ELearning_App.Repository.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Serilog;
 
 namespace ELearning_App.Controllers
 {
+    //[Authorize/*(Roles = "Teacher")*/]
     [Route("api/[controller]")]
     [ApiController]
     public class AssignmentAnswersController : ControllerBase
@@ -17,19 +19,17 @@ namespace ELearning_App.Controllers
         private readonly IAssignmentRepository assignmentRepository;
         private readonly IStudentRepository studentRepository;
         private readonly IMapper mapper;
-        private readonly IUnitOfWork unitOfWork;
-
-        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _host;
+        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository, IMapper mapper, IWebHostEnvironment host)
         {
             service = _service;
             new Logger();
             this.assignmentRepository = assignmentRepository;
             this.studentRepository = studentRepository;
             this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
+            _host = host;
         }
 
-        // GET: api/AssignmentAnsweres
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssignmentAnswer>>> GetAssignmentAnswers()
         {
@@ -48,7 +48,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/AssignmentAnsweres/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AssignmentAnswer>> GetAssignmentAnswer(int id)
         {
@@ -70,10 +69,8 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/AssignmentAnsweres/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] AssignmentAnswerDTO a)
+        public async Task<IActionResult> PutAssignmentAnswer(int id, [FromBody] UpdateAssignmentAnswerDTO a)
         {
 
             try
@@ -88,9 +85,14 @@ namespace ELearning_App.Controllers
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
                 //var aa = mapper.Map<AssignmentAnswer>(a);
                 assignment.FileName = a.FileName;
-                assignment.PDF = a.PDF;
+                //assignment.PDF = a.PDF;
+                if (a.PDF != null && !a.PDF.Equals(assignment.PDF))
+                {
+                    return BadRequest("for updating the file use the specified endpoint for that");
+                }
                 assignment.SubmitDate = a.SubmitDate;
                 assignment.AssignmentId = a.AssignmentId;
+                assignment.AssignedGrade = a.AssignedGrade;
                 //assignment.StudentId = a.StudentId;
                 return Ok(await service.Update(assignment));
             }
@@ -105,10 +107,8 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/AssignmentAnsweres
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer(AssignmentAnswerDTO a)
+        public async Task<ActionResult<AssignmentAnswer>> PostAssignmentAnswer([FromForm] AssignmentAnswerDTO a)
         {
             try
             {
@@ -117,12 +117,25 @@ namespace ELearning_App.Controllers
                 var isNotValidAssignmentAnswerWithStudentId = await service.IsNotValidAssignmentAnswerWithStudentId(a.StudentId, a.AssignmentId);
                 if (!isValidAssignmentId)
                     return BadRequest($"Invalid AssignmentId : {a.AssignmentId}");
-                else if (!isValidStudentId)
+                if (!isValidStudentId)
                     return BadRequest($"Invalid StudentId : {a.StudentId}");
-                else if (isNotValidAssignmentAnswerWithStudentId)
+                if (isNotValidAssignmentAnswerWithStudentId)
                     return BadRequest($"There's already an existing Assignment Answer with this StudentId :{a.StudentId}, to this assignment");
+
+                if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(a.PDF.FileName).ToLower()))
+                    return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                a.AssignedGrade = null;
                 var aa = mapper.Map<AssignmentAnswer>(a);
-                return Ok(await service.AddAsync(aa));
+                var img = a.PDF;
+                var randomName = Guid.NewGuid() + Path.GetExtension(a.PDF.FileName);
+                var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                using (FileStream fileStream = new(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(fileStream);
+                }
+                aa.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                await service.AddAsync(aa);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -135,7 +148,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/AssignmentAnsweres/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAssignmentAnswer(int id)
         {
@@ -144,7 +156,8 @@ namespace ELearning_App.Controllers
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null)
                     return NotFound($"No AssignmentAnswer was found with Id: {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -210,76 +223,136 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        //// GET: api/AssignmentAnsweres
-        //[HttpGet("GetNotGradedAnswers")]
-        //public async Task<ActionResult<IEnumerable<AssignmentAnswer>>> GetNotGradedAnswers()
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetNotGradedAnswers());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentAnswerController , Action: GetNotGradedAnswers , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("GetByIdWithGrade/{id}")]
-        //public async Task<ActionResult<AssignmentAnswer>> GetByIdWithGrade(int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithGrade(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentAnswerController , Action: GetByIdWithGrade , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("GetByIdWithFeedback/{id}")]
-        //public async Task<ActionResult<AssignmentAnswer>> GetByIdWithFeedback(int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithFeedback(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentAnswerController , Action: GetByIdWithFeedback , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
-        //[HttpGet("GetByIdWithBadge/{id}")]
-        //public async Task<ActionResult<AssignmentAnswer>> GetByIdWithBadge(int id)
-        //{
-        //    try
-        //    {
-        //        return Ok(await service.GetByIdWithBadge(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: AssignmentAnswerController , Action: GetByIdWithBadge , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
 
+        //[HttpPut("UpdateAssignmentAnswersAssignedGrade")]
+        //public async Task<IActionResult> UpdateAssignmentAnswersAssignedGrade([FromQuery] int[] ids, [FromBody] List<UpdateAssignmentAnswerDTO> a)
+        //{
 
+        //    try
+        //    {
+        //        if (ids.Length != a.Count)
+        //            return BadRequest("Number of Ids must be equal to number of updates objects");
+        //        var assignmentAnswers = await service.GetAssignmentAnswersByListOfIds(ids);
+        //        for(int i = 0; i< assignmentAnswers.Count; i++)
+        //        {
+        //            if (assignmentAnswers[i] == null)
+        //                return NotFound($"Invalid id :{ids[i]}");
+        //            var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(assignmentAnswers[i].AssignmentId);
+        //            var isValidStudentId = await studentRepository.IsValidStudentId(assignmentAnswers[i].StudentId);
+        //            if (!isValidAssignmentId)
+        //                return BadRequest($"Invalid AssignmentId : {assignmentAnswers[i].AssignmentId}");
+        //            else if (!isValidStudentId)
+        //                return BadRequest($"Invalid StudentId : {assignmentAnswers[i].StudentId}");
+        //            assignmentAnswers[i].FileName = a[i].FileName;
+        //            if (a[i].PDF != null && !a[i].PDF.Equals(assignmentAnswers[i].PDF))
+        //            {
+        //                return BadRequest("for updating the file use the specified endpoint for that");
+        //            }
+        //            assignmentAnswers[i].SubmitDate = a[i].SubmitDate;
+        //            assignmentAnswers[i].AssignmentId = a[i].AssignmentId;
+        //            assignmentAnswers[i].AssignedGrade = a[i].AssignedGrade;
+        //        }
+               
+        //        return Ok(await service.UpdateMultiple(assignmentAnswers));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
+        //        return StatusCode(500);
+        //    }
+        //    finally
+        //    {
+        //        Log.CloseAndFlush();
+        //    }
+        //}
+        [HttpPut(template: "update-file/{id}")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        {
+            try
+            {
+                var assignmentAnswer = await service.GetByIdAsync(id);
+                if (assignmentAnswer == null) return NotFound($"No Assignment was found with Id: {id}");
+                if (dto.File != null)
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                    var img = dto.File;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    assignmentAnswer.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    return Ok(await service.Update(assignmentAnswer));
+                }
+                else
+                {
+                    return BadRequest("file can't be null;");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentAnswersController , Action: UpdateFile , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+
+        [HttpPut("Add/Update/AssignmentAnswers/MultipleAssignedGrades")]
+        public async Task<IActionResult> UpdateAssignmentAnswersMultipleAssignedGrades(MultipleAssignedGradeSetterDTO dto)
+        {
+
+            try
+            {
+                if (dto.Ids.Length != dto.AssignedGrades.Length)
+                    return BadRequest("Number of Ids must be equal to number of updates objects");
+                var assignmentAnswers = await service.GetAssignmentAnswersByListOfIds(dto.Ids);
+                if (assignmentAnswers == null)
+                    return NotFound("No AssignmentAnswers was found with these Ids");
+                if (assignmentAnswers.Count != dto.AssignedGrades.Length)
+                    return BadRequest("Found AssignmentAnswers are not equal to assignedGrades");
+                for (int i = 0; i < assignmentAnswers.Count; i++)
+                {
+                    assignmentAnswers[i].AssignedGrade = dto.AssignedGrades[i];
+                }
+
+                return Ok(await service.UpdateMultiple(assignmentAnswers));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("Add/Update/AssignmentAnswers/AssignedGrade")]
+        public async Task<IActionResult> UpdateAssignmentAnswersAssignedGrades(AssignedGradeSetterDTO dto)
+        {
+
+            try
+            {
+                var answer = service.GetById(dto.Id);
+                if (answer == null) return NotFound($"Invalid assignmentId : {dto.Id}");
+                answer.AssignedGrade = dto.AssignedGrade;
+
+                return Ok(await service.Update(answer));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentAnswerController , Action: UpdateAssignmentAnswersAssignedGrades , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -31,10 +33,13 @@ namespace ELearning_App.Domain.Entities
         //public virtual Lesson Lesson { get; set; }
         //// RelationShips:
         public int QuizId { get; set; }
+        [JsonIgnore]
         public virtual Quiz Quiz { get; set; }
 
 
         // one to many (Question-> QuestionAnswer)
         //public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; } = new HashSet<QuestionAnswer>();
+        public virtual ICollection<QuestionChoice> QuestionChoices { get; set; }
+
     }
 }

@@ -27,7 +27,6 @@ namespace ELearning_App.Controllers
             this.userRepository = userRepository;
         }
 
-        // GET: api/ToDoListes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ToDoList>>> GetToDoLists()
         {
@@ -46,7 +45,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/ToDoListes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ToDoList>> GetToDoList(int id)
         {
@@ -67,8 +65,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/ToDoListes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutToDoList(int id, ToDoListDTO dto)
         {
@@ -100,30 +96,28 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/ToDoListes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<ToDoList>> PostToDoList(ToDoListDTO dto)
         {
-            //try
-            //{
-            var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
+            try
+            {
+                var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
             if (!isValidUserId) return BadRequest("Invalid UserId");
             var t = mapper.Map<ToDoList>(dto);
-            return Ok(await service.AddAsync(t));
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error($"Controller: ToDoListController , Action: PostToDoList , Message: {ex.Message}");
-            //    return StatusCode(500);
-            //}
-            //finally
-            //{
-            //    Log.CloseAndFlush();
-            //}
+                await service.AddAsync(t);
+            return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ToDoListController , Action: PostToDoList , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
-        // DELETE: api/ToDoListes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoList(int id)
         {
@@ -131,7 +125,8 @@ namespace ELearning_App.Controllers
             {
                 var toDoList = await service.GetByIdAsync(id);
                 if (toDoList == null) return NotFound($"Invalid ToDoListId : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -143,12 +138,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        //[HttpPost("AddOne")]
-        //public async Task<IActionResult> AddOne()
-        //{
-        //    var book = service.AddToDoList(new ToDoList { Notes ="", Date = new DateTime().Date, Time = new DateTime().Date, Done = true, Urgent=false, important = false, LoginInfoId = 5 });
-        //    return Ok(await book);
-        //}
+        
         [HttpGet("GetToDoListsByUserId/{userId}")]
         public async Task<ActionResult<IEnumerable<ToDoList>>> GetToDoListsByUserId(int userId)
         {

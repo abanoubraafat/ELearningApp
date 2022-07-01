@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ELearning_App.Domain.Entities
 {
@@ -9,6 +11,7 @@ namespace ELearning_App.Domain.Entities
         public int Id { get; set; }
         [EmailAddress]
         public string EmailAddress { get; set; }
+        [JsonIgnore]
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -25,6 +28,7 @@ namespace ELearning_App.Domain.Entities
         // Relationships:
         // (loginInfo(users) --> ToDoList) one to many  , users ->(Student & Teacher)
         //public virtual ICollection<ToDoList> ToDoLists { get; set; } = new HashSet<ToDoList> ();
-
+        [JsonIgnore]
+        public List<RefreshToken>? RefreshTokens { get; set; }
     }
 }
