@@ -26,7 +26,6 @@ namespace ELearning_App.Controllers
             this.courseRepository = courseRepository;
         }
 
-        // GET: api/Quizes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Quiz>>> GetQuizzes()
         {
@@ -45,7 +44,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Quizes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Quiz>> GetQuiz(int id)
         {
@@ -67,8 +65,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Quizes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuiz(int id, QuizDTO q)
         {
@@ -101,8 +97,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Quizes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Quiz>> PostQuiz(QuizDTO q)
         {
@@ -112,7 +106,8 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest($"Invalid courseId: {q.CourseId}");
                 var quiz = mapper.Map<Quiz>(q);
-                return Ok(await service.AddAsync(quiz));
+                await service.AddAsync(quiz);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -125,7 +120,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Quizes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuiz(int id)
         {
@@ -134,7 +128,8 @@ namespace ELearning_App.Controllers
                 var quiz = await service.GetByIdAsync(id);
                 if (quiz == null)
                     return NotFound($"Invalid quizId : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -170,6 +165,7 @@ namespace ELearning_App.Controllers
             }
         }
 
+        #region Old EndPoints
         //[HttpGet("GetByIdWithAnswers/{id}")]
         //public async Task<ActionResult<Quiz>> GetByIdWithAnswers(int id)
         //{
@@ -186,6 +182,7 @@ namespace ELearning_App.Controllers
         //    {
         //        Log.CloseAndFlush();
         //    }
-        //}
+        //} 
+        #endregion
     }
 }

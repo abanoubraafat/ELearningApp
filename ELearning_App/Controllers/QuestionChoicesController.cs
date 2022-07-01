@@ -96,7 +96,8 @@ namespace ELearning_App.Controllers
                 if (!isValidQuestionId)
                     return BadRequest($"Invalid questionId: {dto.QuestionId}");
                 var mapped = mapper.Map<QuestionChoice>(dto);
-                return Ok(await service.AddAsync(mapped));
+                await service.AddAsync(mapped);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -117,7 +118,8 @@ namespace ELearning_App.Controllers
                 var questionChoice = await service.GetByIdAsync(id);
                 if (questionChoice == null)
                     return NotFound($"Invalid questionChoice : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

@@ -124,13 +124,10 @@ namespace ELearning_App.Controllers
                         await img.CopyToAsync(fileStream);
                     }
                     teacher.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
-                    return Ok(await service.AddAsync(teacher));
                 }
-                else
-                {
-                    return Ok(await service.AddAsync(teacher));
-                }
-                
+                await service.AddAsync(teacher);
+                return Ok();
+
             }
             catch (Exception ex)
             {

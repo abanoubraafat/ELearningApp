@@ -132,13 +132,9 @@ namespace ELearning_App.Controllers
                         await img.CopyToAsync(fileStream);
                     }
                     course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
-                    return Ok(await service.AddAsync(course));
                 }
-                else
-                {
-                    return Ok(await service.AddAsync(course));
-                }
-
+                await service.AddAsync(course);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -160,7 +156,8 @@ namespace ELearning_App.Controllers
 
                 var course = await service.GetByIdAsync(id);
                 if (course == null) return NotFound();
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

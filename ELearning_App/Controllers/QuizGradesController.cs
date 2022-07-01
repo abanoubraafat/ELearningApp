@@ -28,7 +28,6 @@ namespace ELearning_App.Controllers
             this.studentRepository = studentRepository;
         }
 
-        // GET: api/QuizGradees
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QuizGrade>>> GetQuizGrades()
         {
@@ -50,7 +49,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/QuizGradees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<QuizGrade>> GetQuizGrade(int id)
         {
@@ -72,8 +70,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/QuizGradees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuizGrade(int id, QuizGradeDTO dto)
         {
@@ -105,8 +101,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/QuizGradees
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<QuizGrade>> PostQuizGrade(QuizGradeDTO dto)
         {
@@ -125,7 +119,8 @@ namespace ELearning_App.Controllers
                 if(dto.Grade == 0) //automatically set the grade if value entered by the user = 0, manyally otherwise.
                     dto.Grade = grade;
                 var mapped = mapper.Map<QuizGrade>(dto);
-                return Ok(await service.AddAsync(mapped));
+                await service.AddAsync(mapped);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -138,7 +133,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/QuizGradees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuizGrade(int id)
         {
@@ -147,7 +141,8 @@ namespace ELearning_App.Controllers
                 var quizGrade = await service.GetByIdAsync(id);
                 if (quizGrade == null)
                     return NotFound($"Invalid quizGradeId : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

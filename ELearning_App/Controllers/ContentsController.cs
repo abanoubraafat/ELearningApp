@@ -28,7 +28,6 @@ namespace ELearning_App.Controllers
             _host = host;
         }
 
-        // GET: api/Contentes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Content>>> GetContents()
         {
@@ -47,7 +46,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Contentes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Content>> GetContent(int id)
         {
@@ -68,8 +66,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Contentes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContent(int id, UpdateContentDTO dto)
         {
@@ -101,8 +97,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Contentes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Content>> PostContent([FromForm] ContentDTO dto)
         {
@@ -122,7 +116,8 @@ namespace ELearning_App.Controllers
                     await img.CopyToAsync(fileStream);
                 }
                 c.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
-                return Ok(await service.AddAsync(c));
+                await service.AddAsync(c);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -135,7 +130,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Contentes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContent(int id)
         {
@@ -143,7 +137,8 @@ namespace ELearning_App.Controllers
             {
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound();
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

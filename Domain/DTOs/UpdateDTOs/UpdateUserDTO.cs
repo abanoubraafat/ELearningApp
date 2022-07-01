@@ -9,5 +9,7 @@ namespace Domain.DTOs.UpdateDTOs
     public class UpdateUserDTO: UserDTO
     {
         public new string? ProfilePic { get; set; }
+        public new string? Password { get; set; }
+
     }
 }

@@ -97,9 +97,11 @@ namespace ELearning_App.Controllers
                     user.LastName = dto.LastName;
                     //user.ProfilePic = dto.ProfilePic;
                     //user.EmailAddress = dto.EmailAddress;
-                    if(dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
+                    if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
                         return BadRequest("for updating the picture use the specified endpoint for that");
-                    if (!user.Password.Equals(dto.Password))
+                    //if (!service.VerifyPassword(dto.Password, user.Password))
+                    //    user.Password = service.CreatePasswordHash(dto.Password);
+                    if(dto.Password != null)
                         user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
                     //user.Role = dto.Role;
@@ -115,7 +117,7 @@ namespace ELearning_App.Controllers
                     if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
                         return BadRequest("for updating the picture use the specified endpoint for that");
                     user.EmailAddress = dto.EmailAddress;
-                    if (!user.Password.Equals(dto.Password))
+                    if (dto.Password != null)
                         user.Password = service.CreatePasswordHash(dto.Password);
                     user.Phone = dto.Phone;
                     //user.Role = dto.Role;
@@ -171,7 +173,8 @@ namespace ELearning_App.Controllers
             {
                 var user = await service.GetByIdAsync(id);
                 if (user == null) return NotFound($"Invalid userId : {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -335,5 +338,16 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        #region ChangePassword EndPoint
+        //[HttpPut("change-password")]
+        //public async Task<IActionResult> UpdatePassword(int id, ChangePasswordDTO password)
+        //{
+        //    var user = service.GetById(id);
+        //    if (user == null) return NotFound($"Invalid Id: {id}");
+        //    user.Password = service.CreatePasswordHash(password);
+        //    await service.Update(user);
+        //    return Ok();
+        //} 
+        #endregion
     }
 }

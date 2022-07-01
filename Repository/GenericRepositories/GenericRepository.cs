@@ -23,19 +23,19 @@ namespace ELearning_App.Repository.GenericRepositories
             unitOfWork.Commit();
             return entity;
         }
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public async Task/*<TEntity>*/ AddAsync(TEntity entity)
         {
             await unitOfWork.Context.Set<TEntity>().AddAsync(entity);
             await unitOfWork.Commit();
-            return entity;
+            //return entity;
         }
 
-        public async Task<TEntity> Delete(int id)
+        public async Task/*<TEntity>*/ Delete(int id)
         {
             TEntity entity = await GetByIdAsync(id);
             unitOfWork.Context.Set<TEntity>().Remove(entity);
             await unitOfWork.Commit();
-            return entity;
+            //return entity;
         }
 
         public IQueryable<TEntity> GetAll()

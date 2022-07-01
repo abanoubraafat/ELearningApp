@@ -33,6 +33,7 @@ namespace ELearning_App.Controllers
             this._host = _host;
         }
 
+        #region Old Services
         // GET: api/Parents
         //[HttpGet]
         //public async Task<ActionResult<IEnumerable<Parent>>> GetParents()
@@ -97,8 +98,8 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        // POST: api/Parents
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        #endregion
+        
         [HttpPost]
         public async Task<ActionResult<Parent>> PostParent([FromForm] ParentDTO dto)
         {
@@ -127,12 +128,9 @@ namespace ELearning_App.Controllers
                         await img.CopyToAsync(fileStream);
                     }
                     parent.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
-                    return Ok(await service.AddAsync(parent));
                 }
-                else
-                {
-                    return Ok(await service.AddAsync(parent));
-                }
+                await service.AddAsync(parent);
+                return Ok();
                     
             }
             catch (Exception ex)
@@ -173,6 +171,7 @@ namespace ELearning_App.Controllers
             }
         }
 
+        #region Old Services 2
         //public async Task<ActionResult<Parent>> AddStudentsByEmail(int parentId, string studentEmail)
         //{
         //    var student = await studentRepository.FindAllAsync(s => s.EmailAddress == studentEmail);
@@ -256,7 +255,8 @@ namespace ELearning_App.Controllers
         //await dto.ProfilePic.CopyToAsync(dataStream);
         //string imagePath = Path.GetFileName(dto.ProfilePic.FileName);
         //dto.ProfilePic.SaveAs()
-        //mapped.ProfilePic = fullPath;  
+        //mapped.ProfilePic = fullPath;   
+        #endregion
 
     }
 }

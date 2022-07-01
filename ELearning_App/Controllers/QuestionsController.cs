@@ -29,7 +29,6 @@ namespace ELearning_App.Controllers
             this.questionChoiceRepository = questionChoiceRepository;
         }
 
-        // GET: api/Questiones
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
         {
@@ -48,7 +47,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Questiones/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Question>> GetQuestion(int id)
         {
@@ -71,8 +69,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Questiones/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestion(int id, QuestionDTO dto)
         {
@@ -104,8 +100,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Questiones
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Question>> PostQuestion(QuestionDTO dto)
         {
@@ -115,9 +109,8 @@ namespace ELearning_App.Controllers
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId: {dto.QuizId}");
                 var question = mapper.Map<Question>(dto);
-                var q = await service.AddAsync(question);
-                var mapped = mapper.Map<QuestionDTO>(q);
-                return Ok(mapped);
+                await service.AddAsync(question);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -130,7 +123,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Questiones/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestion(int id)
         {
@@ -139,9 +131,8 @@ namespace ELearning_App.Controllers
                 var question = await service.GetByIdAsync(id);
                 if (question == null)
                     return NotFound($"Invalid questionId: {id}");
-                var q = await service.Delete(id);
-                var mapped = mapper.Map<QuestionDTO>(q);
-                return Ok(mapped);
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -181,6 +172,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        #region Old Services
         //[HttpGet("GetByIdWithAnswers/{id}")]
         //public async Task<ActionResult<Question>> GetByIdWithAnswers(int id)
         //{
@@ -197,6 +189,7 @@ namespace ELearning_App.Controllers
         //    {
         //        Log.CloseAndFlush();
         //    }
-        //}
+        //} 
+        #endregion
     }
 }

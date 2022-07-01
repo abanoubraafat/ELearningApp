@@ -29,7 +29,6 @@ namespace ELearning_App.Controllers
 
         }
 
-        // GET: api/Assignmentes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Assignment>>> GetAssignments()
         {
@@ -49,7 +48,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // GET: api/Assignmentes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Assignment>> GetAssignment(int id)
         {
@@ -71,8 +69,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // PUT: api/Assignmentes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAssignment(int id, UpdateAssignmentDTO dto)
         {
@@ -106,8 +102,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // POST: api/Assignmentes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Assignment>> AddAssignment([FromForm] AssignmentDTO dto)
         {
@@ -129,12 +123,10 @@ namespace ELearning_App.Controllers
                         await img.CopyToAsync(fileStream);
                     }
                     r.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
-                    return Ok(await service.AddAsync(r));
                 }
-                else
-                {
-                    return Ok(await service.AddAsync(r));
-                }
+                await service.AddAsync(r);
+                return Ok();
+
             }
             catch (Exception ex)
             {
@@ -147,7 +139,6 @@ namespace ELearning_App.Controllers
             }
         }
 
-        // DELETE: api/Assignmentes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAssignment(int id)
         {
@@ -156,10 +147,8 @@ namespace ELearning_App.Controllers
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null)
                     return NotFound($"No Assignment was found with Id: {id}");
-                //var delete = await service.Delete(id);
-                //var x = mapper.Map<AssignmentDTO>(delete);
-                var a = await service.Delete(id);
-                return Ok(a);
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {

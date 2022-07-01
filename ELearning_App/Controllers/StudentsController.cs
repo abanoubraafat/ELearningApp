@@ -33,6 +33,7 @@ namespace ELearning_App.Controllers
             _host = host;
         }
 
+        #region Old Services
         //// GET: api/Students
         //[HttpGet]
         //public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
@@ -97,8 +98,8 @@ namespace ELearning_App.Controllers
         //    }
         //}
 
-        // POST: api/Students
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        #endregion
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent([FromForm] StudentDTO dto)
         {
@@ -128,12 +129,9 @@ namespace ELearning_App.Controllers
                         await img.CopyToAsync(fileStream);
                     }
                     student.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
-                    return Ok(await service.AddAsync(student));
                 }
-                else
-                {
-                    return Ok(await service.AddAsync(student));
-                }
+                await service.AddAsync(student);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -215,6 +213,7 @@ namespace ELearning_App.Controllers
             }
         }
 
+        #region Old Services 2
         // DELETE: api/Students/5
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteStudent(int id)
@@ -341,6 +340,7 @@ namespace ELearning_App.Controllers
         //    {
         //        Log.CloseAndFlush();
         //    }
-        //}
+        //} 
+        #endregion
     }
 }

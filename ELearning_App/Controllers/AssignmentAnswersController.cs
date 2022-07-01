@@ -134,7 +134,8 @@ namespace ELearning_App.Controllers
                     await img.CopyToAsync(fileStream);
                 }
                 aa.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
-                return Ok(await service.AddAsync(aa));
+                await service.AddAsync(aa);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -155,7 +156,8 @@ namespace ELearning_App.Controllers
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null)
                     return NotFound($"No AssignmentAnswer was found with Id: {id}");
-                return Ok(await service.Delete(id));
+                await service.Delete(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -222,47 +224,47 @@ namespace ELearning_App.Controllers
             }
         }
 
-        [HttpPut("UpdateAssignmentAnswersAssignedGrade")]
-        public async Task<IActionResult> UpdateAssignmentAnswersAssignedGrade([FromQuery] int[] ids, [FromBody] List<UpdateAssignmentAnswerDTO> a)
-        {
+        //[HttpPut("UpdateAssignmentAnswersAssignedGrade")]
+        //public async Task<IActionResult> UpdateAssignmentAnswersAssignedGrade([FromQuery] int[] ids, [FromBody] List<UpdateAssignmentAnswerDTO> a)
+        //{
 
-            try
-            {
-                if (ids.Length != a.Count)
-                    return BadRequest("Number of Ids must be equal to number of updates objects");
-                var assignmentAnswers = await service.GetAssignmentAnswersByListOfIds(ids);
-                for(int i = 0; i< assignmentAnswers.Count; i++)
-                {
-                    if (assignmentAnswers[i] == null)
-                        return NotFound($"Invalid id :{ids[i]}");
-                    var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(assignmentAnswers[i].AssignmentId);
-                    var isValidStudentId = await studentRepository.IsValidStudentId(assignmentAnswers[i].StudentId);
-                    if (!isValidAssignmentId)
-                        return BadRequest($"Invalid AssignmentId : {assignmentAnswers[i].AssignmentId}");
-                    else if (!isValidStudentId)
-                        return BadRequest($"Invalid StudentId : {assignmentAnswers[i].StudentId}");
-                    assignmentAnswers[i].FileName = a[i].FileName;
-                    if (a[i].PDF != null && !a[i].PDF.Equals(assignmentAnswers[i].PDF))
-                    {
-                        return BadRequest("for updating the file use the specified endpoint for that");
-                    }
-                    assignmentAnswers[i].SubmitDate = a[i].SubmitDate;
-                    assignmentAnswers[i].AssignmentId = a[i].AssignmentId;
-                    assignmentAnswers[i].AssignedGrade = a[i].AssignedGrade;
-                }
+        //    try
+        //    {
+        //        if (ids.Length != a.Count)
+        //            return BadRequest("Number of Ids must be equal to number of updates objects");
+        //        var assignmentAnswers = await service.GetAssignmentAnswersByListOfIds(ids);
+        //        for(int i = 0; i< assignmentAnswers.Count; i++)
+        //        {
+        //            if (assignmentAnswers[i] == null)
+        //                return NotFound($"Invalid id :{ids[i]}");
+        //            var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(assignmentAnswers[i].AssignmentId);
+        //            var isValidStudentId = await studentRepository.IsValidStudentId(assignmentAnswers[i].StudentId);
+        //            if (!isValidAssignmentId)
+        //                return BadRequest($"Invalid AssignmentId : {assignmentAnswers[i].AssignmentId}");
+        //            else if (!isValidStudentId)
+        //                return BadRequest($"Invalid StudentId : {assignmentAnswers[i].StudentId}");
+        //            assignmentAnswers[i].FileName = a[i].FileName;
+        //            if (a[i].PDF != null && !a[i].PDF.Equals(assignmentAnswers[i].PDF))
+        //            {
+        //                return BadRequest("for updating the file use the specified endpoint for that");
+        //            }
+        //            assignmentAnswers[i].SubmitDate = a[i].SubmitDate;
+        //            assignmentAnswers[i].AssignmentId = a[i].AssignmentId;
+        //            assignmentAnswers[i].AssignedGrade = a[i].AssignedGrade;
+        //        }
                
-                return Ok(await service.UpdateMultiple(assignmentAnswers));
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
-                return StatusCode(500);
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
+        //        return Ok(await service.UpdateMultiple(assignmentAnswers));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
+        //        return StatusCode(500);
+        //    }
+        //    finally
+        //    {
+        //        Log.CloseAndFlush();
+        //    }
+        //}
         [HttpPut(template: "update-file/{id}")]
         public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
         {
