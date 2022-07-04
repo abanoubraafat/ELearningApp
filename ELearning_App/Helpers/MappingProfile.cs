@@ -13,10 +13,10 @@ namespace ELearning_App.Helpers
             CreateMap<Assignment, GetAssignmentDTO>().ReverseMap();
             //CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
             //CreateMap<AssignmentGradeDTO, AssignmentGrade>().Reverse();
-            CreateMap<BadgeDTO, Badge>();
+            //CreateMap<BadgeDTO, Badge>();
             CreateMap<ContentDTO, Content>();
             CreateMap<CourseDTO, Course>();
-            CreateMap<FeatureDTO, Feature>();
+            //CreateMap<FeatureDTO, Feature>();
             //CreateMap<LatestPassedLessonDTO, LatestPassedLesson>();
             CreateMap<LessonDTO, Lesson>();
             //CreateMap<NoteDTO, Note>();
@@ -31,7 +31,7 @@ namespace ELearning_App.Helpers
             CreateMap<ToDoListDTO, ToDoList>();
             CreateMap<UserDTO, User>();
             //CreateMap<AnnouncementDTO, Announcement>();
-            CreateMap<ResourceDTO, Resource>();
+            //CreateMap<ResourceDTO, Resource>();
             CreateMap<Course, CourseDetailsDTO>().ReverseMap();
             CreateMap<QuestionChoiceDTO, QuestionChoice>().ReverseMap();
             CreateMap<AssignmentAnswer, AssignmentAnswerDetailsDTO>();
@@ -41,10 +41,10 @@ namespace ELearning_App.Helpers
             CreateMap<Assignment, AssignmentDTO>();
             CreateMap<AssignmentAnswer, AssignmentAnswerDTO>();
             //CreateMap<AssignmentFeedback, AssignmentFeedbackDTO>();
-            CreateMap<Badge, BadgeDTO>();
+            //CreateMap<Badge, BadgeDTO>();
             CreateMap<Content, ContentDTO>();
             CreateMap<Course, CourseDTO>();
-            CreateMap<Feature, FeatureDTO>();
+            //CreateMap<Feature, FeatureDTO>();
             //CreateMap<LatestPassedLesson, LatestPassedLessonDTO>();
             CreateMap<Lesson, LessonDTO>();
             //CreateMap<Note, NoteDTO>();
@@ -59,7 +59,7 @@ namespace ELearning_App.Helpers
             CreateMap<ToDoList, ToDoListDTO>();
             CreateMap<User, UserDTO>();
             //CreateMap<Announcement, AnnouncementDTO>();
-            CreateMap<Resource, ResourceDTO>();
+            //CreateMap<Resource, ResourceDTO>();
 
             CreateMap<AssignmentAnswerDetailsDTO, AssignmentAnswer>();
             //CreateMap<QuestionAnswerDetailsDTO, QuestionAnswer>();

@@ -232,7 +232,7 @@ namespace ELearning_App.Domain.Context
         public virtual DbSet<Content> Content { get; set; }
         //public virtual DbSet<Note> Notes { get; set; }
         //public virtual DbSet<LatestPassedLesson> LatestPassedLessons { get; set; }
-        public virtual DbSet<Badge> Badges { get; set; }
+        //public virtual DbSet<Badge> Badges { get; set; }
         public virtual DbSet<Assignment> Assignments { get; set; }
         public virtual DbSet<AssignmentAnswer> AssignmentAnswers{ get; set; }
         //public virtual DbSet <AssignmentFeedback> AssignmentFeedbacks { get; set; }
@@ -246,8 +246,8 @@ namespace ELearning_App.Domain.Context
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual DbSet<QuestionChoice> QuestionChoices { get; set; }
         //public virtual DbSet<Announcement> Announcements { get; set; }
-        public virtual DbSet<Feature> Features { get; set; }
-        public virtual DbSet <Resource> Resources { get; set; }
+        //public virtual DbSet<Feature> Features { get; set; }
+        //public virtual DbSet <Resource> Resources { get; set; }
         public virtual DbSet <ToDoList> ToDoLists { get; set; }
 
 

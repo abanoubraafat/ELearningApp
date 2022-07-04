@@ -15,6 +15,7 @@ namespace Domain.DTOs
         public bool Submitted { get; set; }
         public int TotalPoints { get; set; }
         public string? FilePath { get; set; }
+        public string? Description { get; set; }
         public int? AssignedGrade { get; set; }
         [JsonIgnore]
         public int AssignmentAnswerId { get; set; }
