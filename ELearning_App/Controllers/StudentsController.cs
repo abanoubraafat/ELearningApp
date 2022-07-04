@@ -105,7 +105,9 @@ namespace ELearning_App.Controllers
         {
 
             try
-            { 
+            {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
                 if (isNotAvailableUserEmail)
                     return BadRequest("There's already an account with the same Email address");
@@ -175,8 +177,7 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest($"No Teacher with that id: {courseId}");
                 var students = await service.GetStudentsByCourseId(courseId);
-                if (students.Count() == 0) return NotFound("No Students with that courseId");
-
+                //if (!students.Any()) return NotFound("No Students with that courseId");
                 return Ok(students);
         }
             catch (Exception ex)
@@ -199,7 +200,7 @@ namespace ELearning_App.Controllers
                 if (!isValidParentId)
                     return BadRequest($"No Parent with that id: {parentId}");
                 var students = await service.GetStudentsByParentId(parentId);
-                if (students.Count() == 0) return NotFound($"No Students with that parentId :{parentId}");
+                //if (!students.Any()) return NotFound($"No Students with that parentId :{parentId}");
                 return Ok(students);
             }
             catch (Exception ex)

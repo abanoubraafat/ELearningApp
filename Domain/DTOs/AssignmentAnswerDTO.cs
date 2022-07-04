@@ -10,7 +10,7 @@ namespace Domain.DTOs
     public class AssignmentAnswerDTO
     {
         public int Id { get; set; }
-        public string FileName { get; set; }
+        //public string FileName { get; set; }
         public IFormFile PDF { get; set; }
         public DateTime SubmitDate { get; set; }
         //public DateTime SubmitTime { get; set; } 

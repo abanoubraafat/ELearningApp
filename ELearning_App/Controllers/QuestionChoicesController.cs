@@ -92,6 +92,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidQuestionId = await questionRepository.IsValidQuestionId(dto.QuestionId);
                 if (!isValidQuestionId)
                     return BadRequest($"Invalid questionId: {dto.QuestionId}");
@@ -141,8 +143,8 @@ namespace ELearning_App.Controllers
                 var choices = await service.GetQuestionChoicesByQuestionId(questionId);
                 if (!isValidQuestionId)
                     return BadRequest($"Invalid questionId : {questionId}");
-                if (choices.Count() == 0)
-                    return NotFound($"There're No Choices with such questionId :{questionId}");
+                //if (!choices.Any())
+                //    return NotFound($"There're No Choices with such questionId :{questionId}");
                 return Ok(choices);
             }
             catch (Exception ex)

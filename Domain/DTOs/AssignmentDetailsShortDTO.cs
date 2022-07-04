@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs
 {
-    public class AssignmentDetailsDTO
+    public class AssignmentDetailsShortDTO
     {
-        public int Id { get; set; }
+        public int AssignmentId { get; set; }
         public string Title { get; set; }
-        public DateTime? EndTime { get; set; }
-        public bool Submitted { get; set; }
         public int TotalPoints { get; set; }
-        public string? FilePath { get; set; }
         public int? AssignedGrade { get; set; }
+        public bool Submitted { get; set; }
         [JsonIgnore]
         public int AssignmentAnswerId { get; set; }
-        
+
     }
 }

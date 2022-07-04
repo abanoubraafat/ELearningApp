@@ -51,7 +51,7 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                if (service.GetByIdAsync(id) == null)
+                if (await service.GetByIdAsync(id) == null)
                     return NotFound();
                 return Ok(await service.GetByIdAsync(id));
             }
@@ -103,6 +103,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
                 if (!isValidStudentId) return BadRequest("Invalid studentId");
                 var feature = mapper.Map<Feature>(dto);

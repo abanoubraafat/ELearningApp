@@ -58,8 +58,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                if (service.GetByIdAsync(id) == null)
-                    return NotFound();
+                if (await service.GetByIdAsync(id) == null)
+                    return NotFound($"No Course was found with that id: {id}");
                 return Ok(await service.GetByIdAsync(id));
             }
             catch (Exception ex)
@@ -113,6 +113,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidTeacherId = await teacherRepository.IsValidTeacherId(dto.TeacherId);
                 if(!isValidTeacherId)
                     return BadRequest("No Teacher with that id");
@@ -183,7 +185,7 @@ namespace ELearning_App.Controllers
 
                 var added = await service.JoinCourseForStudent(studentId, courseId);
                 if (added.Equals("Course Joined Succefully"))
-                    return Ok(added);
+                    return Ok();
                 else if (added.Equals("Already Joined"))
                     return BadRequest(added);
                 return BadRequest(added);
@@ -198,7 +200,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("{courseId}/DropCourse/{studentId}")]
+        [HttpDelete("{courseId}/DropCourse/{studentId}")]
         public async Task<ActionResult<Course>> DropCourseForStudent(int studentId, int courseId)
         {
             try
@@ -212,7 +214,7 @@ namespace ELearning_App.Controllers
 
                 var dropped = await service.DropCourseForStudent(studentId, courseId);
                 if (dropped.Equals("Dropped"))
-                    return Ok("Course Dropped Succefully");
+                    return Ok();
                 else
                     return BadRequest("Invalid studentId or courseId");
             }
@@ -227,6 +229,7 @@ namespace ELearning_App.Controllers
             }
         }
 
+        #region Old Services
         //[HttpGet("GetAllWithTeachers")]
         //public async Task<ActionResult<IEnumerable<Course>>> GetAllWithTeachers()
         //{
@@ -296,7 +299,8 @@ namespace ELearning_App.Controllers
         //    {
         //        Log.CloseAndFlush();
         //    }
-        //}
+        //} 
+        #endregion
         // api/GetCoursesByTeacherId/5
         [HttpGet("GetCoursesByTeacherId/{teacherId}")]
         public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByTeacherId(int teacherId)
@@ -307,7 +311,7 @@ namespace ELearning_App.Controllers
                 if (!isValidTeacherId)
                     return BadRequest($"No Teacher with that id: {teacherId}");
                 var courses = await service.GetCoursesByTeacherId(teacherId);
-                if (courses.Count() == 0) return NotFound("No Courses with that teacherId");
+                //if (!courses.Any()) return NotFound("No Courses with that teacherId");
                 return Ok(courses);
             }
             catch (Exception ex)
@@ -329,7 +333,7 @@ namespace ELearning_App.Controllers
                 if (!isValidStudentId)
                     return BadRequest($"No Student with that id: {studentId}");
                 var courses = await service.GetCoursesByStudentId(studentId);
-                if (courses.Count() == 0) return NotFound("No Courses with that studentId");
+                //if (!courses.Any()) return NotFound("No Courses with that studentId");
                 var mapped = mapper.Map<IEnumerable<CourseDetailsDTO>>(courses);
                 return Ok(mapped);
             }
@@ -344,6 +348,7 @@ namespace ELearning_App.Controllers
             }
         }
 
+        #region Old Services 2
         //[HttpGet("Last5CoursesJoined/{studentId}")]
         //public async Task<ActionResult<IEnumerable<CourseDetailsDTO>>> Last5CoursesJoined(int studentId)
         //{
@@ -389,7 +394,8 @@ namespace ELearning_App.Controllers
         //    //{
         //    //    Log.CloseAndFlush();
         //    //}
-        //}
+        //} 
+        #endregion
         [HttpPut("update-photo/{id}")]
         public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
         {

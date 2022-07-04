@@ -4,6 +4,7 @@ using ELearning_App.Domain.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ELearningContext))]
-    partial class ELearningContextModelSnapshot : ModelSnapshot
+    [Migration("20220703230641_EditGradesColumnsNames")]
+    partial class EditGradesColumnsNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,6 +111,10 @@ namespace Domain.Migrations
 
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PDF")
                         .IsRequired()
@@ -373,7 +379,7 @@ namespace Domain.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("AssignedGrade")
+                    b.Property<int>("AssignedGrade")
                         .HasColumnType("int");
 
                     b.Property<int>("QuizId")
@@ -698,7 +704,7 @@ namespace Domain.Migrations
             modelBuilder.Entity("ELearning_App.Domain.Entities.QuizGrade", b =>
                 {
                     b.HasOne("ELearning_App.Domain.Entities.Quiz", "Quiz")
-                        .WithMany("QuizGrades")
+                        .WithMany()
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -812,11 +818,6 @@ namespace Domain.Migrations
             modelBuilder.Entity("ELearning_App.Domain.Entities.Question", b =>
                 {
                     b.Navigation("QuestionChoices");
-                });
-
-            modelBuilder.Entity("ELearning_App.Domain.Entities.Quiz", b =>
-                {
-                    b.Navigation("QuizGrades");
                 });
 #pragma warning restore 612, 618
         }

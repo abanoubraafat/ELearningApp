@@ -12,5 +12,7 @@ namespace ELearning_App.Repository.IRepositories
         Task<QuizGrade> QuizGradeAdder(int studentId, int quizId);
         Task<bool> IsNotValidQuizGrade(int studentId, int quizId);
         Task<int> QuizGradeAdderInt(int studentId, int quizId);
+        Task<IEnumerable<QuizGrade>> GetQuizGradesByCourseId(int courseId, int studentId);
+
     }
 }

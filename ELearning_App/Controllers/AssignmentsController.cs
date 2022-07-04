@@ -30,12 +30,13 @@ namespace ELearning_App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Assignment>>> GetAssignments()
+        public async Task<ActionResult<IEnumerable<GetAssignmentDTO>>> GetAssignments()
         {
             try
             {
                 var a = await service.GetAllAsync();
-                return Ok(a);
+                var mapped = mapper.Map <IEnumerable<GetAssignmentDTO>> (a);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -49,14 +50,15 @@ namespace ELearning_App.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Assignment>> GetAssignment(int id)
+        public async Task<ActionResult<GetAssignmentDTO>> GetAssignment(int id)
         {
             try
             {
                 var a = await service.GetByIdAsync(id);
                 if (a == null)
                     return NotFound($"No Assignmetn was found with Id: {id}");
-                return Ok(a);
+                var mapped = mapper.Map<GetAssignmentDTO>(a);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -87,9 +89,10 @@ namespace ELearning_App.Controllers
                 }
                 assignment.StartDate = dto.StartDate;
                 assignment.EndTime = dto.EndTime;
-                assignment.Grade = dto.Grade;
+                assignment.TotalPoints = dto.TotalPoints;
                 assignment.CourseId = dto.CourseId;
-                return Ok(await service.Update(assignment));
+                var updated = await service.Update(assignment);
+                return Ok(mapper.Map<GetAssignmentDTO>(updated));
             }
             catch (Exception ex)
             {
@@ -161,7 +164,7 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpGet("GetAssignmentsByCourseId/{courseId}")]
-        public async Task<ActionResult<IEnumerable<Assignment>>> GetAssignmentsByCourseId(int courseId)
+        public async Task<ActionResult<IEnumerable<GetAssignmentDTO>>> GetAssignmentsByCourseId(int courseId)
         {
             try
             {
@@ -169,9 +172,10 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId)
                     return BadRequest("Invalid CourseId!");
                 var a = await service.GetAssignmentsByCourseId(courseId);
-                if (a.Count() == 0)
-                    return NotFound($"No Assignments were found with CourseId: {courseId}");
-                return Ok(a);
+                //if (!a.Any())
+                //    return NotFound($"No Assignments were found with CourseId: {courseId}");
+                var mapped = mapper.Map<IEnumerable<GetAssignmentDTO>>(a);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -194,16 +198,20 @@ namespace ELearning_App.Controllers
                 var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
                 if (!isValidStudentId)
                     return BadRequest("Invalid StudentId!");
-                var a = await service.GetAssignmentsByCourseIdForStudent(courseId);
-                if (!a.Any())
-                    return NotFound($"No Assignments were found with CourseId: {courseId}");
+                var a = await service.GetAssignmentsByCourseIdForStudent(courseId, studentId);
+                //if (!a.Any())
+                //    return NotFound($"No Assignments were found with CourseId: {courseId}");
                 var assignments = mapper.Map<IEnumerable<AssignmentDetailsDTO>>(a);
-                foreach (var i in assignments)
-                {
-                    i.Submitted = await assignmentAnswerRepository.IsSubmittedAssignmentAnswer(i.Id, studentId);
-                    i.AssignedGrade = await assignmentAnswerRepository.GetIntAssignmentGrade(i.Id, studentId);
+            foreach (var i in assignments)
+            {
+                    //i.Submitted = await assignmentAnswerRepository.IsSubmittedAssignmentAnswer(i.Id, studentId);
+                    //i.AssignedGrade = await assignmentAnswerRepository.GetIntAssignmentGrade(i.Id, studentId);
+                    if (i.AssignmentAnswerId != 0)
+                        i.Submitted = true;
+                    else
+                        i.Submitted = false;
                 }
-                return Ok(assignments);
+            return Ok(assignments);
             }
             catch (Exception ex)
             {
@@ -234,7 +242,8 @@ namespace ELearning_App.Controllers
                         await img.CopyToAsync(fileStream);
                     }
                     assignment.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
-                    return Ok(await service.Update(assignment));
+                    var updated = await service.Update(assignment);
+                    return Ok(mapper.Map<GetAssignmentDTO>(updated));
                 }
                 else
                 {
@@ -251,5 +260,38 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        [HttpGet("GetAssignmentGrades/ByCourseId/ByStudentId/ForTeacher/{courseId}/{studentId}")]
+        public async Task<ActionResult<IEnumerable<AssignmentDetailsShortDTO>>> GetAssignmentGradesByCourseIdForTeacher(int courseId, int studentId)
+        {
+            try
+            {
+                var isValidCourseId = await courseService.IsValidCourseId(courseId);
+                if (!isValidCourseId)
+                    return BadRequest("Invalid CourseId!");
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                if (!isValidStudentId)
+                    return BadRequest("Invalid StudentId!");
+                var a = await service.GetAssignmentsByCourseIdForStudent(courseId, studentId);
+                var assignments = mapper.Map<IEnumerable<AssignmentDetailsShortDTO>>(a);
+                foreach (var i in assignments)
+                {
+                    if (i.AssignmentAnswerId != 0)
+                        i.Submitted = true;
+                    else
+                        i.Submitted = false;
+                }
+                return Ok(assignments);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentController , Action: GetAssignmentGradesByCourseIdForTeacher , Message: {ex.Message}");
+                return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+
     }
 }

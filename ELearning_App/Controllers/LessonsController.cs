@@ -48,8 +48,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                if (service.GetByIdAsync(id) == null)
-                    return NotFound();
+                if (await service.GetByIdAsync(id) == null)
+                    return NotFound($"Invalid lessonId : {id}");
                 return Ok(await service.GetByIdAsync(id));
             }
             catch (Exception ex)
@@ -94,6 +94,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidCourseId = await courseRepository.IsValidCourseId(dto.CourseId);
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
                 var l = mapper.Map<Lesson>(dto);
@@ -140,7 +142,7 @@ namespace ELearning_App.Controllers
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
 
                 var a = await service.GetLessonsByCourseId(courseId);
-                if (a.Count() == 0) return NotFound($"No Lessons were found with CourseId: {courseId}");
+                //if (!a.Any()) return NotFound($"No Lessons were found with CourseId: {courseId}");
                 return Ok(a);
             }
             catch (Exception ex)

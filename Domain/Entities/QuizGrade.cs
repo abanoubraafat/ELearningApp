@@ -7,7 +7,7 @@ namespace ELearning_App.Domain.Entities
     public class QuizGrade
     {
         public int Id { get; set; }
-        public int Grade { get; set; }
+        public int? AssignedGrade { get; set; }
 
         //Relationships:
 

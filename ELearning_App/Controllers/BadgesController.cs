@@ -46,8 +46,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
-                if (service.GetByIdAsync(id) == null)
-                    return NotFound();
+                if (await service.GetByIdAsync(id) == null)
+                    return NotFound($"Invalid badgeId: {id}");
                 return Ok(await service.GetByIdAsync(id));
             }
             catch (Exception ex)
@@ -89,6 +89,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (b.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 await service.AddAsync(b);
                 return Ok();
             }

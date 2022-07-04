@@ -102,6 +102,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
                 var isValidQuestionId = await questionRepository.IsValidQuestionId(dto.QuestionId);
                 var isNotValidQuestionAnswer = await service.IsNotValidQuestionAnswer(dto.StudentId, dto.QuestionId);
@@ -179,8 +181,8 @@ namespace ELearning_App.Controllers
                 var answers = await service.GetQuestionAnswersByQuestionId(questionId);
                 if (!isValidQuestionId)
                     return BadRequest($"Invalid questionId : {questionId}");
-                if (answers.Count() == 0)
-                    return NotFound($"There're No QuestionAnswers with such questionId : {questionId}");
+                //if (!answers.Any())
+                //    return NotFound($"There're No QuestionAnswers with such questionId : {questionId}");
                 return Ok(answers);
             }
             catch (Exception ex)
@@ -195,7 +197,7 @@ namespace ELearning_App.Controllers
         }
         
         [HttpGet("GetQuestionAnswerByQuestionIdByStudentId/{studentId}/{questionId}")]
-        public async Task<ActionResult<IEnumerable<QuestionAnswer>>> GetQuestionAnswerByQuestionIdByStudentId(int questionId, int studentId)
+        public async Task<ActionResult<QuestionAnswer>> GetQuestionAnswerByQuestionIdByStudentId(int questionId, int studentId)
         {
             try
             {

@@ -10,6 +10,7 @@ namespace ELearning_App.Helpers
             CreateMap<AssignmentDTO, Assignment>();
                 //.BeforeMap((src, dest) => src.Id = dest.Id);
             CreateMap<AssignmentAnswerDTO, AssignmentAnswer>();
+            CreateMap<Assignment, GetAssignmentDTO>().ReverseMap();
             //CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
             //CreateMap<AssignmentGradeDTO, AssignmentGrade>().Reverse();
             CreateMap<BadgeDTO, Badge>();
@@ -63,13 +64,24 @@ namespace ELearning_App.Helpers
             CreateMap<AssignmentAnswerDetailsDTO, AssignmentAnswer>();
             //CreateMap<QuestionAnswerDetailsDTO, QuestionAnswer>();
             //CreateMap<QuizAnswerDetailsDTO, QuizAnswer>();
-
+            //CreateMap<QuizGrade, QuizGradeDetailsShortDTO>();
 
             //CreateMap<MovieDto, Movie>()
             //    .ForMember(src => src.Poster, opt => opt.Ignore());
-            CreateMap<Assignment, AssignmentDetailsDTO>().ReverseMap();
+            CreateMap<Assignment, AssignmentDetailsDTO>()
+                .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.AssignedGrade).FirstOrDefault()))
+                .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.Id).FirstOrDefault()));
             CreateMap<QuizGradeDetailsDTO, QuizGrade>().ReverseMap();
             CreateMap<Question, QuestionDetailsDTO>().ReverseMap();
+            CreateMap<Assignment, AssignmentDetailsShortDTO>()
+                .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.AssignedGrade).FirstOrDefault()))
+                .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.Id).FirstOrDefault()))
+                .ForMember(d => d.AssignmentId, o => o.MapFrom(s => s.Id));
+
+            CreateMap<Quiz, GetQuizDTO>();
+            CreateMap<Quiz, QuizDetailsShortDTO>()
+                .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.QuizGrades.Select(c => c.AssignedGrade).FirstOrDefault()))
+                .ForMember(d => d.QuizId, o => o.MapFrom(s => s.Id));
         }
     }
 }

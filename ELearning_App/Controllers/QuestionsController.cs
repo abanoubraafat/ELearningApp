@@ -105,6 +105,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidQuizId = await quizRepository.IsValidQuizId(dto.QuizId);
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId: {dto.QuizId}");
@@ -152,8 +154,8 @@ namespace ELearning_App.Controllers
                 var isValidQuizId = await quizRepository.IsValidQuizId(quizId);
                 if (!isValidQuizId) return BadRequest($"Invalid QuizId : {quizId}");
                 var questions = await service.GetQuestionsByQuizId(quizId);
-                if (questions.Count() == 0)
-                    return NotFound();
+                //if (!questions.Any())
+                //    return NotFound();
                 //var questionsWithChoices = mapper.Map<IEnumerable<QuestionDetailsDTO>>(questions);
                 //foreach(var questionWithChoice in questionsWithChoices)
                 //{

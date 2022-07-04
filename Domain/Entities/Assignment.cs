@@ -15,7 +15,7 @@ namespace ELearning_App.Domain.Entities
         // not nesseary 
         public DateTime? EndTime { get; set;}
         // -/10 for example from 10
-        public int? Grade { get; set; }
+        public int TotalPoints { get; set; }
         // not nesseary 
         //public DateTime ShowDate { get; set; }
 
@@ -25,6 +25,7 @@ namespace ELearning_App.Domain.Entities
         public int CourseId { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Course Course { get; set; }
+        public virtual ICollection<AssignmentAnswer> AssignmentAnswers { get; set; }
 
         // (Assignment --> AssignmentAnswer) --> one to many 
         //public virtual ICollection<AssignmentAnswer> AssignmentAnswers { get; set; } = new HashSet<AssignmentAnswer>();

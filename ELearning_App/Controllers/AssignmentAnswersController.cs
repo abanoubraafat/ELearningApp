@@ -55,7 +55,7 @@ namespace ELearning_App.Controllers
             {
                 var a = await service.GetByIdAsync(id);
                 if (a == null)
-                    return NotFound();         
+                    return NotFound($"Invalid assignmentAnswerId : {id}");         
                 return Ok(a);
             }
             catch (Exception ex)
@@ -84,7 +84,7 @@ namespace ELearning_App.Controllers
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
                 //var aa = mapper.Map<AssignmentAnswer>(a);
-                assignment.FileName = a.FileName;
+                //assignment.FileName = a.FileName;
                 //assignment.PDF = a.PDF;
                 if (a.PDF != null && !a.PDF.Equals(assignment.PDF))
                 {
@@ -112,6 +112,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (a.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(a.AssignmentId);
                 var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
                 var isNotValidAssignmentAnswerWithStudentId = await service.IsNotValidAssignmentAnswerWithStudentId(a.StudentId, a.AssignmentId);
@@ -178,8 +180,8 @@ namespace ELearning_App.Controllers
                 if (!isValidAssignmentId)
                     return BadRequest("Invalid AssignmentId!");
                 var a = await service.GetAssignmentAnswersByAssignmentId(assignmentId);
-                if (a.Count() == 0)
-                    return NotFound($"No Assignment was found with Id: {assignmentId}");
+                //if (!a.Any())
+                //    return NotFound($"No Assignment was found with Id: {assignmentId}");
                 var b = mapper.Map<IEnumerable<AssignmentAnswerDetailsDTO>>(a);
                 return Ok(b);
             }

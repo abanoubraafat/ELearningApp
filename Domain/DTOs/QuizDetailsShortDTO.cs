@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs
 {
-    public class QuizGradeDTO
+    public class QuizDetailsShortDTO
     {
-        public int Id { get; set; }
-        public int? AssignedGrade { get; set; }
         public int QuizId { get; set; }
-        public int StudentId { get; set; }
+        public string Title { get; set; }
+        public int TotalPoints { get; set; }
+        public int? AssignedGrade { get; set; }
     }
 }

@@ -52,7 +52,7 @@ namespace ELearning_App.Controllers
             try
             {
                 if (await service.GetByIdAsync(id) == null)
-                    return NotFound();
+                    return NotFound($"Invalid contentId : {id}");
                 return Ok(await service.GetByIdAsync(id));
             }
             catch (Exception ex)
@@ -102,6 +102,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if(!isValidLessonId)
                     return BadRequest("Invalid LessonId");
@@ -159,8 +161,8 @@ namespace ELearning_App.Controllers
                 if (!isValidLessonId)
                     return BadRequest("Invalid LessonId");
                 var content = await service.GetContentsByLessonId(lessonId);
-                if (content.Count() == 0)
-                    return NotFound($"No Content was found with lessonId : {lessonId}");
+                //if (!content.Any())
+                //    return NotFound($"No Content was found with lessonId : {lessonId}");
                 return Ok(content);
             }
             catch (Exception ex)

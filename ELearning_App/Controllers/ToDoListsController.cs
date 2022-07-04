@@ -101,6 +101,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidUserId = await userRepository.IsValidUserId(dto.UserId);
             if (!isValidUserId) return BadRequest("Invalid UserId");
             var t = mapper.Map<ToDoList>(dto);
@@ -147,7 +149,7 @@ namespace ELearning_App.Controllers
                 var isValidUserId = await userRepository.IsValidUserId(userId);
                 if (!isValidUserId) return BadRequest($"Invalid UserId {userId}");
                 var toDoLists = await service.GetToDoListsByUserId(userId);
-                if (toDoLists == null) return NotFound($"No ToDoLists found for this user : {userId}");
+                //if (toDoLists == null) return NotFound($"No ToDoLists found for this user : {userId}");
                 return Ok(toDoLists);
             }
             catch (Exception ex)
