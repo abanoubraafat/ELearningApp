@@ -87,16 +87,12 @@ namespace ELearning_App.Controllers
                 var user = await service.GetByIdAsync(id);
                 if (user == null)
                     return NotFound($"No User was found with this id: {id}");
-                //else if (!(dto.Role.Equals("Student") || dto.Role.Equals("Parent") || dto.Role.Equals("Teacher")))
-                //    return BadRequest("Role must be 'Student', 'Parent', or 'Teacher'");
                 else if (!dto.Role.Equals(user.Role))
                     return BadRequest("Role field Can't be changed");
                 else if (dto.EmailAddress.Equals(user.EmailAddress))
                 {
                     user.FirstName = dto.FirstName;
                     user.LastName = dto.LastName;
-                    //user.ProfilePic = dto.ProfilePic;
-                    //user.EmailAddress = dto.EmailAddress;
                     if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
                         return BadRequest("for updating the picture use the specified endpoint for that");
                     //if (!service.VerifyPassword(dto.Password, user.Password))
@@ -325,7 +321,7 @@ namespace ELearning_App.Controllers
                 }
                 else
                 {
-                    return BadRequest("image can't be null;");
+                    return BadRequest("photo field can't be empty");
                 }
             }
             catch (Exception ex)
@@ -349,5 +345,83 @@ namespace ELearning_App.Controllers
         //    return Ok();
         //} 
         #endregion
+
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> UpdateUserForm(int id,[FromForm] UserDTO dto)
+        {
+
+            try
+            {
+                var user = await service.GetByIdAsync(id);
+                if (user == null)
+                    return NotFound($"No User was found with this id: {id}");
+                else if (!dto.Role.Equals(user.Role))
+                    return BadRequest("Role field Can't be changed");
+                else if (dto.EmailAddress.Equals(user.EmailAddress))
+                {
+                    user.FirstName = dto.FirstName;
+                    user.LastName = dto.LastName;
+                    if (dto.ProfilePic != null)
+                    {
+                        if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
+                            return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                        if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
+                            return BadRequest("Max allowed size for pictures is 5MB!");
+                        var img = dto.ProfilePic;
+                        var randomName = Guid.NewGuid() + Path.GetExtension(dto.ProfilePic.FileName);
+                        var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                        using (FileStream fileStream = new(filePath, FileMode.Create))
+                        {
+                            await img.CopyToAsync(fileStream);
+                        }
+                        user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    }
+                        if (dto.Password != null)
+                        user.Password = service.CreatePasswordHash(dto.Password);
+                    user.Phone = dto.Phone;
+                    return Ok(await service.Update(user));
+                }
+                else if (await service.IsNotAvailableUserEmail(dto.EmailAddress))
+                    return BadRequest("There's already an account with the same Email address");
+                else
+                {
+                    user.FirstName = dto.FirstName;
+                    user.LastName = dto.LastName;
+                    if (dto.ProfilePic != null && !dto.ProfilePic.Equals(user.ProfilePic))
+                    {
+                        if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.ProfilePic.FileName).ToLower()))
+                            return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                        if (dto.ProfilePic.Length > PicturesConstraints.maxAllowedSize)
+                            return BadRequest("Max allowed size for pictures is 5MB!");
+                        var img = dto.ProfilePic;
+                        var randomName = Guid.NewGuid() + Path.GetExtension(dto.ProfilePic.FileName);
+                        var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                        using (FileStream fileStream = new(filePath, FileMode.Create))
+                        {
+                            await img.CopyToAsync(fileStream);
+                        }
+                        user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    }
+                    user.EmailAddress = dto.EmailAddress;
+                    if (dto.Password != null)
+                        user.Password = service.CreatePasswordHash(dto.Password);
+                    user.Phone = dto.Phone;
+                    return Ok(await service.Update(user));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: LoginInfoController , Action: PutLoginInfo , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+
     }
 }

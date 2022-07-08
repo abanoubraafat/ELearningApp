@@ -290,7 +290,7 @@ namespace ELearning_App.Controllers
                 }
                 else
                 {
-                    return BadRequest("file can't be null;");
+                    return Ok(new { message = "No Files Updated" });
                 }
             }
             catch (Exception ex)
@@ -349,6 +349,49 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: UpdateAssignmentAnswersAssignedGrades , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> PutAssignmentAnswerForm(int id, [FromForm] AssignmentAnswerDTO a)
+        {
+
+            try
+            {
+                var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(a.AssignmentId);
+                var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
+                if (!isValidAssignmentId)
+                    return BadRequest($"Invalid AssignmentId : {a.AssignmentId}");
+                else if (!isValidStudentId)
+                    return BadRequest($"Invalid StudentId : {a.StudentId}");
+                var assignment = await service.GetByIdAsync(id);
+                if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
+                if (a.PDF != null && !a.PDF.Equals(assignment.PDF))
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(a.PDF.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                    var img = a.PDF;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(a.PDF.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    assignment.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                }
+                assignment.SubmitDate = a.SubmitDate;
+                assignment.AssignmentId = a.AssignmentId;
+                assignment.AssignedGrade = a.AssignedGrade;
+                //assignment.StudentId = a.StudentId;
+                return Ok(await service.Update(assignment));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally

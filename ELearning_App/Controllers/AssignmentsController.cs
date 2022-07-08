@@ -247,7 +247,7 @@ namespace ELearning_App.Controllers
                 }
                 else
                 {
-                    return BadRequest("file can't be null;");
+                    return Ok(new { message = "No Files Updated" });
                 }
             }
             catch (Exception ex)
@@ -293,5 +293,63 @@ namespace ELearning_App.Controllers
             }
         }
 
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> UpdateAssignmentForm(int id,[FromForm] AssignmentDTO dto)
+        {
+            try
+            {
+                var isValidCourseId = await courseService.IsValidCourseId(dto.CourseId);
+                if (!isValidCourseId)
+                    return BadRequest("Invalid CourseId!");
+                var assignment = await service.GetByIdAsync(id);
+                if (assignment == null) return NotFound($"No Assignment was found with Id: {id}");
+                assignment.Title = dto.Title;
+                assignment.Description = dto.Description;
+                if (dto.FilePath != null && !dto.FilePath.Equals(assignment.FilePath))
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.FilePath.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                    var img = dto.FilePath;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.FilePath.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    assignment.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                }
+                assignment.StartDate = dto.StartDate;
+                assignment.EndTime = dto.EndTime;
+                assignment.TotalPoints = dto.TotalPoints;
+                assignment.CourseId = dto.CourseId;
+                var updated = await service.Update(assignment);
+                return Ok(mapper.Map<GetAssignmentDTO>(updated));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentController , Action: UpdateAssignment , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpGet("GetWithSubmitted/{assignmentId}/{studentId}")]
+        public async Task<ActionResult<GetAssignmentWithSubmitted>> GetAssignmentByIdWithSubmitted(int assignmentId, int studentId)
+        {
+            var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+            var assignment = await service.GetByIdAsync(assignmentId);
+            if (assignment == null) return NotFound($"Invalid assignmentId : {assignmentId}");
+            if (!isValidStudentId) return BadRequest($"Invalid studentId :{studentId}");
+            var assignmentWithSubmitted = await service.GetAssignmentAsync(assignmentId, studentId);
+            if (assignmentWithSubmitted == null) return NotFound("Invalid assignmentId or studentId");
+            var mapped = mapper.Map<GetAssignmentWithSubmitted>(assignmentWithSubmitted);
+            if (mapped.AssignmentAnswerId != 0)
+                mapped.Submitted = true;
+            else
+                mapped.Submitted = false;
+            return (mapped);
+        }
     }
 }

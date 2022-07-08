@@ -70,31 +70,31 @@ namespace ELearning_App.Controllers
         public async Task<IActionResult> PutContent(int id, UpdateContentDTO dto)
         {
 
-            try
-            {
+            //try
+            //{
                 var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if (!isValidLessonId)
                     return BadRequest("Invalid LessonId");
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound();
-                content.FileName = dto.FileName;
                 if (dto.Path != null && !dto.Path.Equals(content.Path))
                 {
                     return BadRequest("for updating the file use the specified endpoint for that");
                 }
                 content.ShowDate = dto.ShowDate;
                 content.LessonId = dto.LessonId;
+                content.Text = dto.Text;
                 return Ok(await service.Update(content));
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Controller: ContentController , Action: PutContent , Message: {ex.Message}");
-                return StatusCode(500);
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error($"Controller: ContentController , Action: PutContent , Message: {ex.Message}");
+            //    return StatusCode(500);
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
         }
 
         [HttpPost]
@@ -107,17 +107,21 @@ namespace ELearning_App.Controllers
                 var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if(!isValidLessonId)
                     return BadRequest("Invalid LessonId");
-                if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.Path.FileName).ToLower()))
-                    return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
                 var c = mapper.Map<Content>(dto);
-                var img = dto.Path;
-                var randomName = Guid.NewGuid() + Path.GetExtension(dto.Path.FileName);
-                var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
-                using (FileStream fileStream = new(filePath, FileMode.Create))
+                if (dto.Path != null)
                 {
-                    await img.CopyToAsync(fileStream);
+                    if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.Path.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
+                    var img = dto.Path;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.Path.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    c.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
                 }
-                c.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
+               
                 await service.AddAsync(c);
                 return Ok();
             }
@@ -198,13 +202,52 @@ namespace ELearning_App.Controllers
                 }
                 else
                 {
-                    return BadRequest("file can't be null;");
+                    return Ok(new { message = "No Files Updated" });
                 }
             }
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentsController , Action: UpdateFile , Message: {ex.Message}");
                 return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> PutContentForm(int id,[FromForm] ContentDTO dto)
+        {
+
+            try
+            {
+                var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
+                if (!isValidLessonId)
+                    return BadRequest("Invalid LessonId");
+                var content = await service.GetByIdAsync(id);
+                if (content == null) return NotFound();
+                if (dto.Path != null && !dto.Path.Equals(content.Path))
+                {
+                    if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.Path.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
+                    var img = dto.Path;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.Path.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    content.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
+                }
+                content.ShowDate = dto.ShowDate;
+                content.LessonId = dto.LessonId;
+                content.Text = dto.Text;
+                return Ok(await service.Update(content));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ContentController , Action: PutContent , Message: {ex.Message}");
+                return StatusCode(500);
             }
             finally
             {

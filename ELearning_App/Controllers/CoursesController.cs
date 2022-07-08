@@ -422,7 +422,7 @@ namespace ELearning_App.Controllers
                 }
                 else
                 {
-                    return BadRequest("image can't be null;");
+                    return BadRequest("photo field is required");
                 }
             }
             catch (Exception ex)
@@ -434,6 +434,47 @@ namespace ELearning_App.Controllers
             {
                 Log.CloseAndFlush();
             }
+        }
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> PutCourseForm(int id,[FromForm] CourseDTO dto)
+        {
+            try
+            {
+                var isValidTeacherId = await teacherRepository.IsValidTeacherId(dto.TeacherId);
+                if (!isValidTeacherId)
+                    return BadRequest("No Teacher with that id");
+                var course = await service.GetByIdAsync(id);
+                if (course == null) return NotFound();
+                if (dto.CourseImage != null)
+                {
+                    if (!PicturesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.CourseImage.FileName).ToLower()))
+                        return BadRequest("Only .png , .jpg and .jpeg images are allowed!");
+
+                    if (dto.CourseImage.Length > PicturesConstraints.maxAllowedSize)
+                        return BadRequest("Max allowed size for pictures is 5MB!");
+                    var img = dto.CourseImage;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.CourseImage.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Images", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
+                }
+                course.CourseName = dto.CourseName;
+                course.CourseDescription = dto.CourseDescription;
+                return Ok(await service.Update(course));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: CoursesController , Action: PutCourse , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
     }
 }

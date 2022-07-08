@@ -22,8 +22,8 @@ namespace ELearning_App.Controllers
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         private readonly IWebHostEnvironment _host;
-
-        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository, IWebHostEnvironment _host)
+        private readonly IParentStudentRepository parentStudentRepository;
+        public ParentsController(IParentRepository _service, IStudentRepository studentRepository, IMapper mapper, IUserRepository userRepository, IWebHostEnvironment _host, IParentStudentRepository parentStudentRepository)
         {
             service = _service;
             new Logger();
@@ -31,6 +31,7 @@ namespace ELearning_App.Controllers
             this.mapper = mapper;
             this.userRepository = userRepository;
             this._host = _host;
+            this.parentStudentRepository = parentStudentRepository;
         }
 
         #region Old Services
@@ -99,7 +100,7 @@ namespace ELearning_App.Controllers
         //}
 
         #endregion
-        
+
         [HttpPost]
         public async Task<ActionResult<Parent>> PostParent([FromForm] ParentDTO dto)
         {

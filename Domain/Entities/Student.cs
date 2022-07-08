@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -9,17 +10,15 @@ namespace ELearning_App.Domain.Entities
 
     public class Student : User
     {
-        // Relationships:
-        // one to one  -->   ( parent -> student) 
-        //public virtual Parent Parent { get; set; }
-        // Relationships:
-
-        //many to many  --> student -> Courses
+        
         [JsonIgnore]
         public virtual ICollection<Course> Courses { get; set; } = new HashSet<Course>();
         [JsonIgnore]
         public virtual ICollection<Parent> Parents { get; set; } = new HashSet<Parent>();
-
+        [JsonIgnore]
+        public List<ParentStudent> ParentStudents { get; set; }
+        [JsonIgnore]
+        public List<CourseStudent> CourseStudents { get; set; }
 
         // one to many (Student -> QuestionAnswer)
         //public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; } = new HashSet<QuestionAnswer>();

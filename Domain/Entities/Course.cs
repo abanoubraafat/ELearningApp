@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -25,6 +26,8 @@ namespace ELearning_App.Domain.Entities
         public int TeacherId { get; set; }
         [JsonIgnore]
         public virtual Teacher Teacher { get; set; }
+        [JsonIgnore]
+        public List<CourseStudent> CourseStudents { get; set; }
 
         // one to many (course -> lesson)
         //public virtual ICollection<Lesson> Lessons { get; set; }= new HashSet<Lesson>();
@@ -42,6 +45,6 @@ namespace ELearning_App.Domain.Entities
         //public virtual ICollection<Announcement> Announcements { get; set; } = new HashSet<Announcement>();
 
 
-       
+
     }
 }

@@ -82,6 +82,8 @@ namespace ELearning_App.Helpers
             CreateMap<Quiz, QuizDetailsShortDTO>()
                 .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.QuizGrades.Select(c => c.AssignedGrade).FirstOrDefault()))
                 .ForMember(d => d.QuizId, o => o.MapFrom(s => s.Id));
+            CreateMap<Assignment, GetAssignmentWithSubmitted>()
+                .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(a => a.Id).FirstOrDefault()));
         }
     }
 }

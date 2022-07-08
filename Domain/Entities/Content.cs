@@ -6,13 +6,13 @@ namespace ELearning_App.Domain.Entities
 {
     public class Content
     {
-        [Key]
-        public long Id { get; set; }
-        public string FileName { get; set; }
-        public string Path { get; set; } // stored as string not byte[]
-                                         // not nesseary 
+        
+        public int Id { get; set; }
+        //public string FileName { get; set; }
+        public string? Path { get; set; }
+        public string? Text { get; set; }                                 
         public DateTime ShowDate { get; set; } // available on ..
-
+        //string content
         //Relationships
 
         // (Lesson --> course_content_file) one to many

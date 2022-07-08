@@ -8,6 +8,6 @@ namespace Domain.DTOs.UpdateDTOs
 {
     public class UpdateContentDTO : ContentDTO
     {
-        public new string Path { get; set; }
+        public new string? Path { get; set; }
     }
 }

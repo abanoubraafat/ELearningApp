@@ -41,6 +41,13 @@ namespace ELearning_App.Repository.Repositories
                 //})
                 .ToListAsync();
         }
+        public async Task<Assignment> GetAssignmentAsync(int assignmentId, int studentId)
+        {
+            return await unitOfWork.Context.Assignments
+                .Where(a => a.Id == assignmentId)
+                .Include(a => a.AssignmentAnswers.Where(a => a.StudentId == studentId))
+                .FirstOrDefaultAsync();
+        }
 
         //public IQueryable<Assignment> GetByIdWithCourses(int id1, int id2)
         //{

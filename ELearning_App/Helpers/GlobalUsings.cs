@@ -7,4 +7,4 @@ global using Domain.Consts;
 //global using Domain.DTOs.GetDTOs;
 global using Domain.DTOs.UpdateDTOs;
 global using Domain.DTOs.GetDTOs;
-
+global using Repository.IRepositories;

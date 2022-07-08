@@ -4,6 +4,7 @@ using ELearning_App.Domain.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ELearningContext))]
-    partial class ELearningContextModelSnapshot : ModelSnapshot
+    [Migration("20220705155303_ParentStudentSeperateEntityMig")]
+    partial class ParentStudentSeperateEntityMig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,22 +24,17 @@ namespace Domain.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Domain.Entities.CourseStudent", b =>
+            modelBuilder.Entity("CourseStudent", b =>
                 {
-                    b.Property<int>("CourseId")
+                    b.Property<int>("CoursesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentId")
+                    b.Property<int>("StudentsId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsVerified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.HasKey("CoursesId", "StudentsId");
 
-                    b.HasKey("CourseId", "StudentId");
-
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentsId");
 
                     b.ToTable("CourseStudent");
                 });
@@ -154,51 +151,27 @@ namespace Domain.Migrations
                     b.ToTable("AssignmentAnswers");
                 });
 
-            modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AssignmentAnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssignmentAnswerId");
-
-                    b.ToTable("Badges");
-                });
-
             modelBuilder.Entity("ELearning_App.Domain.Entities.Content", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
 
                     b.Property<string>("Path")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ShowDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -488,23 +461,19 @@ namespace Domain.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("Domain.Entities.CourseStudent", b =>
+            modelBuilder.Entity("CourseStudent", b =>
                 {
-                    b.HasOne("ELearning_App.Domain.Entities.Course", "Course")
-                        .WithMany("CourseStudents")
-                        .HasForeignKey("CourseId")
+                    b.HasOne("ELearning_App.Domain.Entities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ELearning_App.Domain.Entities.Student", "Student")
-                        .WithMany("CourseStudents")
-                        .HasForeignKey("StudentId")
+                    b.HasOne("ELearning_App.Domain.Entities.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Domain.Entities.ParentStudent", b =>
@@ -565,17 +534,6 @@ namespace Domain.Migrations
                     b.Navigation("Assignment");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("ELearning_App.Domain.Entities.Badge", b =>
-                {
-                    b.HasOne("ELearning_App.Domain.Entities.AssignmentAnswer", "AssignmentAnswer")
-                        .WithMany()
-                        .HasForeignKey("AssignmentAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssignmentAnswer");
                 });
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Content", b =>
@@ -751,11 +709,6 @@ namespace Domain.Migrations
                     b.Navigation("AssignmentAnswers");
                 });
 
-            modelBuilder.Entity("ELearning_App.Domain.Entities.Course", b =>
-                {
-                    b.Navigation("CourseStudents");
-                });
-
             modelBuilder.Entity("ELearning_App.Domain.Entities.Question", b =>
                 {
                     b.Navigation("QuestionChoices");
@@ -773,8 +726,6 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("ELearning_App.Domain.Entities.Student", b =>
                 {
-                    b.Navigation("CourseStudents");
-
                     b.Navigation("ParentStudents");
                 });
 #pragma warning restore 612, 618
