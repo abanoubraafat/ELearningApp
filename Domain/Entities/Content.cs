@@ -9,8 +9,10 @@ namespace ELearning_App.Domain.Entities
         
         public int Id { get; set; }
         //public string FileName { get; set; }
-        public string? Path { get; set; }
-        public string? Text { get; set; }                                 
+        public string? VideoPath { get; set; }
+        public string? PdfPath { get; set; }
+        public string? Text { get; set; }
+        public string? Link { get; set; }
         public DateTime ShowDate { get; set; } // available on ..
         //string content
         //Relationships

@@ -81,6 +81,7 @@ builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>(
 builder.Services.AddScoped<IQuestionChoiceRepository, QuestionChoiceRepository>();
 //builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 builder.Services.AddScoped<IParentStudentRepository, ParentStudentRepository>();
+builder.Services.AddScoped<ICourseStudentRepository, CourseStudentRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -22,7 +22,21 @@ namespace Repository.Repositories
         {
             return await unitOfWork.Context.Set<ParentStudent>()
                 .Where(ps => ps.StudentId == studentId && ps.IsVerified == false)
+                .Include(ps => ps.Parent)
                 .ToListAsync();
+        }
+
+        public async Task VerifyAddParentToStudentRequest(int parentId, int studentId)
+        {
+            var request =
+                 await unitOfWork.Context.Set<ParentStudent>()
+                .Where(ps => ps.ParentId == parentId && ps.StudentId == studentId)
+                .FirstOrDefaultAsync();
+            if(request != null)
+            {
+                request.IsVerified = true;
+                await Update(request);
+            }
         }
     }
 }

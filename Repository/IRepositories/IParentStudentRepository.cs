@@ -8,6 +8,6 @@ namespace Repository.IRepositories
     {
         Task<bool> ExsistingParentStudentCompositeKey(int parentId, int studentId);
         Task<IEnumerable<ParentStudent>> GetUnVerifiedParentStudentRequests(int studentId);
-        //Task<bool> VerifyAddParentToStudentRequest();
+        Task VerifyAddParentToStudentRequest(int parentId, int studentId);
     }
 }

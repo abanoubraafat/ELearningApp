@@ -84,6 +84,11 @@ namespace ELearning_App.Helpers
                 .ForMember(d => d.QuizId, o => o.MapFrom(s => s.Id));
             CreateMap<Assignment, GetAssignmentWithSubmitted>()
                 .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(a => a.Id).FirstOrDefault()));
+            CreateMap<ParentStudent, ParentStudentsUnVerifiedRequestDTO>();
+            CreateMap<CourseStudent, CourseStudentUnVerifiedRequestsDTO>()
+                 .ForMember(d => d.CourseName, o => o.MapFrom(s => s.Course.CourseName))
+                 .ForMember(d => d.CourseImage, o => o.MapFrom(s => s.Course.CourseImage));
+
         }
     }
 }

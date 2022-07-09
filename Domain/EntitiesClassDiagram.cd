@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="ELearning_App.Domain.Entities.User">
-    <Position X="4" Y="6.75" Width="1.5" />
+    <Position X="4" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAGAAAAIAAAAAEAAAAAAAAAAAAAACAAAAIgAAAAg=</HashCode>
       <FileName>Entities\User.cs</FileName>
@@ -11,19 +11,21 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Teacher" Collapsed="true">
-    <Position X="6.5" Y="7.25" Width="1.5" />
+    <Position X="6.5" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Teacher.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Student">
-    <Position X="5.75" Y="10.75" Width="1.5" />
+    <Position X="5.75" Y="13.5" Width="1.5" />
     <InheritanceLine Type="ELearning_App.Domain.Entities.User" FixedToPoint="true">
       <Path>
-        <Point X="4.75" Y="9.2" />
-        <Point X="4.75" Y="11.095" />
-        <Point X="5.75" Y="11.095" />
+        <Point X="4.75" Y="11.95" />
+        <Point X="4.75" Y="12.325" />
+        <Point X="5.375" Y="12.325" />
+        <Point X="5.375" Y="13.845" />
+        <Point X="5.75" Y="13.845" />
       </Path>
     </InheritanceLine>
     <AssociationLine Name="Parents" Type="ELearning_App.Domain.Entities.Parent">
@@ -41,14 +43,14 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Parent">
-    <Position X="3.5" Y="11.5" Width="1.5" />
+    <Position X="3.5" Y="13.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Parent.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Course">
-    <Position X="9" Y="7.25" Width="1.5" />
+    <Position X="9" Y="10" Width="1.5" />
     <AssociationLine Name="Students" Type="ELearning_App.Domain.Entities.Student">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.511" Y="0.589" />
@@ -66,7 +68,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Lesson">
-    <Position X="11.5" Y="7.5" Width="1.5" />
+    <Position X="11.5" Y="10.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAGAAAAAAAgAEAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Lesson.cs</FileName>
@@ -76,14 +78,14 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Assignment">
-    <Position X="13.25" Y="10.25" Width="1.5" />
+    <Position X="13.25" Y="13" Width="1.5" />
     <AssociationLine Name="Course" Type="ELearning_App.Domain.Entities.Course" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="13.469" Y="10.25" />
-        <Point X="13.469" Y="9.356" />
-        <Point X="11.15" Y="9.356" />
-        <Point X="11.15" Y="9.125" />
-        <Point X="10.5" Y="9.125" />
+        <Point X="13.469" Y="13" />
+        <Point X="13.469" Y="12.106" />
+        <Point X="11.15" Y="12.106" />
+        <Point X="11.15" Y="11.875" />
+        <Point X="10.5" Y="11.875" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -98,7 +100,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.AssignmentAnswer">
-    <Position X="10.25" Y="10.25" Width="1.5" />
+    <Position X="10.25" Y="13" Width="1.5" />
     <AssociationLine Name="Assignment" Type="ELearning_App.Domain.Entities.Assignment">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.495" Y="0.05" />
@@ -106,11 +108,11 @@
     </AssociationLine>
     <AssociationLine Name="Student" Type="ELearning_App.Domain.Entities.Student" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="10.938" Y="12.315" />
-        <Point X="10.938" Y="12.584" />
-        <Point X="7.3" Y="12.584" />
-        <Point X="7.3" Y="12.175" />
-        <Point X="7.188" Y="12.175" />
+        <Point X="10.938" Y="15.065" />
+        <Point X="10.938" Y="15.334" />
+        <Point X="7.3" Y="15.334" />
+        <Point X="7.3" Y="14.925" />
+        <Point X="7.188" Y="14.925" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
         <Position X="1.184" Y="-0.768" Height="0.182" Width="1.012" />
@@ -126,9 +128,9 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ELearning_App.Domain.Entities.Content">
-    <Position X="14" Y="7.5" Width="1.5" />
+    <Position X="14" Y="10.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIACAAAAAAAAAEIAAAAACAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <HashCode>AIACAAAAAAAAAEAAAAAICAAAAAAAAAAAAAAASAAAQAA=</HashCode>
       <FileName>Entities\Content.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -166,7 +168,7 @@
       <Path>
         <Point X="5.25" Y="2.042" />
         <Point X="6" Y="2.042" />
-        <Point X="6" Y="10.75" />
+        <Point X="6" Y="13.5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.824" Y="1.448" />
@@ -198,7 +200,7 @@
         <Point X="8.281" Y="5.18" />
         <Point X="8.281" Y="10.25" />
         <Point X="6.938" Y="10.25" />
-        <Point X="6.938" Y="10.75" />
+        <Point X="6.938" Y="13.5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-0.901" Y="0.653" />
@@ -224,17 +226,17 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Domain.Entities.RefreshToken">
-    <Position X="1" Y="7.25" Width="1.5" />
+    <Position X="1" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAAAAAAIAAAAAAEAEAAAAAAAAAACAAAAAAAAAAABAAA=</HashCode>
       <FileName>Entities\RefreshToken.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Domain.Entities.ParentStudent">
-    <Position X="5" Y="13.5" Width="1.5" />
+    <Position X="1" Y="14" Width="1.5" />
     <AssociationLine Name="Student" Type="ELearning_App.Domain.Entities.Student">
       <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.799" Y="0.336" />
+        <Position X="0.961" Y="0.147" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -247,13 +249,13 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Domain.Entities.CourseStudent">
-    <Position X="8.25" Y="10.5" Width="1.5" />
+    <Position X="8.25" Y="13.25" Width="1.5" />
     <AssociationLine Name="Course" Type="ELearning_App.Domain.Entities.Course" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="9.109" Y="10.5" />
-        <Point X="9.109" Y="10.125" />
-        <Point X="9.562" Y="10.125" />
-        <Point X="9.562" Y="9.315" />
+        <Point X="9.109" Y="13.25" />
+        <Point X="9.109" Y="12.875" />
+        <Point X="9.562" Y="12.875" />
+        <Point X="9.562" Y="12.065" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -261,8 +263,8 @@
       <FileName>Entities\CourseStudent.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Course" />
       <Property Name="Student" />
+      <Property Name="Course" />
     </ShowAsAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />

@@ -14,12 +14,12 @@ namespace ELearning_App.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoListsController : ControllerBase
+    public class يسرسرسي : ControllerBase
     {
         private IToDoListRepository service { get; }
         private readonly IMapper mapper;
         private IUserRepository userRepository;
-        public ToDoListsController(IToDoListRepository _service, IMapper mapper, IUserRepository userRepository)
+        public يسرسرسي(IToDoListRepository _service, IMapper mapper, IUserRepository userRepository)
         {
             service = _service;
             new Logger();

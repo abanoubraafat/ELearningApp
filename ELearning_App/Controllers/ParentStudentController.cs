@@ -19,6 +19,8 @@ namespace ELearning_App.Controllers
             _parentRepository = parentRepository;
             this.service = service;
             this.mapper = mapper;
+            new Logger();
+
         }
         [HttpPost]
         public async Task<ActionResult<ParentStudent>> PostParentStudent(ParentStudentDTO dto)
@@ -41,12 +43,75 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ParentStudentController , Action: PostParentStudent , Message: {ex.Message}");
-                return StatusCode(500);
+                return StatusCode(404);
             }
             finally
             {
                 Log.CloseAndFlush();
             }
         }
+        [HttpGet("GetUnVerifiedParentStudentRequests/{studentId}")]
+        public async Task<ActionResult<IEnumerable<ParentStudentsUnVerifiedRequestDTO>>> GetUnVerifiedParentStudentRequests(int studentId)
+        {
+            try
+            {
+                var isValidStudentId = await _studentRepository.IsValidStudentId(studentId);
+                if (!isValidStudentId) return BadRequest($"Invalid studentId : {studentId}");
+                var requests = await service.GetUnVerifiedParentStudentRequests(studentId);
+                var mappedRequests = mapper.Map<IEnumerable<ParentStudentsUnVerifiedRequestDTO>>(requests);
+                return Ok(mappedRequests);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ParentStudentController , Action: GetUnVerifiedParentStudentRequests , Message: {ex.Message}");
+                return StatusCode(404);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("VerifyParentStudentRequest/{parentId}/{studentId}")]
+        public async Task<ActionResult> VerifyAddParentToStudentRequest(int parentId, int studentId)
+        {
+            try
+            {
+                var isValidStudentId = await _studentRepository.IsValidStudentId(studentId);
+                if (!isValidStudentId) return BadRequest($"Invalid studentId : {studentId}");
+                var isValidParentId = await _parentRepository.IsValidParentId(parentId);
+                if (!isValidParentId) return BadRequest($"Invalid parentId : {parentId}");
+                var exsistingParentStudentCompositeKey = await service.ExsistingParentStudentCompositeKey(parentId, studentId);
+                if (!exsistingParentStudentCompositeKey) return BadRequest("Invalid ParentStudentId");
+                await service.VerifyAddParentToStudentRequest(parentId, studentId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ParentStudentController , Action: VerifyAddParentToStudentRequest , Message: {ex.Message}");
+                return StatusCode(404);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
+        }
+        //[HttpPost("AddMultipleParentStudentReq")]
+        //public async Task<ActionResult> PostMultipleParentStudentReq(List<ParentStudentDTO> parentStudentDTO)
+        //{
+        //    List<ParentStudent> parentStudentList = new List<ParentStudent>();
+        //    for (int i = 0; i < parentStudentDTO.Count(); i++)
+        //    {
+        //        var isValidParentID = await _parentRepository.IsValidParentId(parentStudentDTO[i].ParentId);
+        //        var student = await _studentRepository.GetStudentByEmail(parentStudentDTO[i].StudentEmail);
+        //        var hasStudent = _parentRepository.HasStudent(parentStudentDTO[i].ParentId, student.Id);
+        //        if (isValidParentID && student != null && hasStudent.Equals("No"))
+        //        { 
+        //            parentStudentList.Add(new ParentStudent { ParentId = parentStudentDTO[i].ParentId, StudentId = student.Id });   
+        //        }
+        //    }
+        //    await service.AddMultipleAsync(parentStudentList);
+        //    return Ok();
+        //}
     }
 }
