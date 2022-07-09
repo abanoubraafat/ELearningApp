@@ -34,6 +34,17 @@ namespace ELearning_App.Repository.Repositories
             await Update(parent);
             return "Added";
         }
+
+        public async Task<string> HasStudent(int parentId, int studentId)
+        {
+            var parent = await unitOfWork.Context.Parents.Where(p => p.Id == parentId).FirstOrDefaultAsync();
+            var student = await unitOfWork.Context.Students.Where(s => s.Id == studentId).FirstOrDefaultAsync();
+            if (parent == null || student == null)
+                return "Invalid parentId or studentId";
+            else if (parent.Students.Any(s => s.Id == studentId))
+                return "Already Added";
+            return "No";
+        }
         //public IQueryable<Parent> GetAllWithStudentWithCoursesWithGrades()
         //{
         //    return unitOfWork.Context.Parents;

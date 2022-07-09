@@ -11,7 +11,7 @@ namespace Domain.DTOs
         public int Id { get; set; }
         public string Title { get; set; }
         public string? Instructions { get; set; }
-        public int Grade { get; set; } 
+        public int TotalPoints { get; set; } 
         public DateTime? PostTime { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

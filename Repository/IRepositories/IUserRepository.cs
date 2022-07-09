@@ -16,7 +16,7 @@ namespace ELearning_App.Repository.IRepositories
         Task<LoginResponse> Login(LoginRequest loginRequest);
         Task<LoginResponse> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);
-        Task<User> LoginTest(LoginRequest loginRequest);
+        Task<User?> LoginTest(LoginRequest loginRequest);
 
     }
 }

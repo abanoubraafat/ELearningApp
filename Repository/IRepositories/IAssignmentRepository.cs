@@ -10,8 +10,8 @@ namespace ELearning_App.Repository.IRepositories
         //IQueryable<Assignment> GetByIdWithAssignmentAnswers(int id);
         //IEnumerable<Assignment> GetAssignmentsByCourseId(int courseId);
         Task<IEnumerable<Assignment>> GetAssignmentsByCourseId(int courseId);
-        Task<IEnumerable<Assignment>> GetAssignmentsByCourseIdForStudent(int courseId);
+        Task<IEnumerable<Assignment>> GetAssignmentsByCourseIdForStudent(int courseId, int studentId);
         Task<bool> IsValidAssignmentId(int id);
-
+        Task<Assignment> GetAssignmentAsync(int assignmentId, int studentId);
     }
 }

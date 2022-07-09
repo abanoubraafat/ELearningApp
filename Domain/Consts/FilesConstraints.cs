@@ -10,6 +10,6 @@ namespace Domain.Consts
     {
         public static readonly List<string> allowedExtenstions = new List<string> 
         { ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xlsx", ".rar", ".zip", ".png", ".jpg", ".jpeg", ".txt", ".html", ".htm" };
-        public const long maxAllowedSize = 5242880;
+        //public const long maxAllowedSize = 5242880;
     }
 }

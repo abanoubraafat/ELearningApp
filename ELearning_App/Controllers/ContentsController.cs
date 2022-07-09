@@ -52,7 +52,7 @@ namespace ELearning_App.Controllers
             try
             {
                 if (await service.GetByIdAsync(id) == null)
-                    return NotFound();
+                    return NotFound($"Invalid contentId : {id}");
                 return Ok(await service.GetByIdAsync(id));
             }
             catch (Exception ex)
@@ -77,13 +77,14 @@ namespace ELearning_App.Controllers
                     return BadRequest("Invalid LessonId");
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound();
-                content.FileName = dto.FileName;
-                if (dto.Path != null && !dto.Path.Equals(content.Path))
+                if (dto.PdfPath != null && !dto.PdfPath.Equals(content.PdfPath) || dto.VideoPath != null && !dto.VideoPath.Equals(content.VideoPath))
                 {
                     return BadRequest("for updating the file use the specified endpoint for that");
                 }
                 content.ShowDate = dto.ShowDate;
                 content.LessonId = dto.LessonId;
+                content.Text = dto.Text;
+                content.Link = dto.Link;
                 return Ok(await service.Update(content));
             }
             catch (Exception ex)
@@ -102,20 +103,39 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
                 if(!isValidLessonId)
                     return BadRequest("Invalid LessonId");
-                if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.Path.FileName).ToLower()))
-                    return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
                 var c = mapper.Map<Content>(dto);
-                var img = dto.Path;
-                var randomName = Guid.NewGuid() + Path.GetExtension(dto.Path.FileName);
-                var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
-                using (FileStream fileStream = new(filePath, FileMode.Create))
+                if (dto.PdfPath != null)
                 {
-                    await img.CopyToAsync(fileStream);
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.PdfPath.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .html, .htm files are allowed!");
+                    var pdf = dto.PdfPath;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.PdfPath.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await pdf.CopyToAsync(fileStream);
+                    }
+                    c.PdfPath = @"\\Abanoub\wwwroot\Files\" + randomName;
                 }
-                c.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
+                if (dto.VideoPath != null)
+                {
+                    if (!VideosConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.VideoPath.FileName).ToLower()))
+                        return BadRequest("Only .mp4, .mkv files are allowed!");
+                    var vid = dto.VideoPath;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.VideoPath.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Videos", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await vid.CopyToAsync(fileStream);
+                    }
+                    c.VideoPath = @"\\Abanoub\wwwroot\Videos\" + randomName;
+                }
+
                 await service.AddAsync(c);
                 return Ok();
             }
@@ -159,8 +179,8 @@ namespace ELearning_App.Controllers
                 if (!isValidLessonId)
                     return BadRequest("Invalid LessonId");
                 var content = await service.GetContentsByLessonId(lessonId);
-                if (content.Count() == 0)
-                    return NotFound($"No Content was found with lessonId : {lessonId}");
+                //if (!content.Any())
+                //    return NotFound($"No Content was found with lessonId : {lessonId}");
                 return Ok(content);
             }
             catch (Exception ex)
@@ -174,35 +194,104 @@ namespace ELearning_App.Controllers
             }
         }
         [HttpPut("update-file/{id}")]
-        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateFileDTO dto)
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateVidPdfContentDTO dto)
         {
             try
             {
                 var content = await service.GetByIdAsync(id);
                 if (content == null) return NotFound($"No Content was found with Id: {id}");
-                if (dto.File != null)
+                if(dto.PdfPath != null || dto.VideoPath != null)
                 {
-                    if (!ContentConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.File.FileName).ToLower()))
-                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .mp4, .mp3 and .mkv files are allowed!");
-                    var img = dto.File;
-                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.File.FileName);
-                    var filePath = Path.Combine(_host.WebRootPath + "/Content", randomName);
-                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    if (dto.PdfPath != null)
                     {
-                        await img.CopyToAsync(fileStream);
+                        if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.PdfPath.FileName).ToLower()))
+                            return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .html, .htm files are allowed!");
+                        var pdf = dto.PdfPath;
+                        var randomName = Guid.NewGuid() + Path.GetExtension(dto.PdfPath.FileName);
+                        var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                        using (FileStream fileStream = new(filePath, FileMode.Create))
+                        {
+                            await pdf.CopyToAsync(fileStream);
+                        }
+                        content.PdfPath = @"\\Abanoub\wwwroot\Files\" + randomName;
                     }
-                    content.Path = @"\\Abanoub\wwwroot\Content\" + randomName;
+                    if (dto.VideoPath != null)
+                    {
+                        if (!VideosConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.VideoPath.FileName).ToLower()))
+                            return BadRequest("Only .mp4, .mkv files are allowed!");
+                        var vid = dto.VideoPath;
+                        var randomName = Guid.NewGuid() + Path.GetExtension(dto.VideoPath.FileName);
+                        var filePath = Path.Combine(_host.WebRootPath + "/Videos", randomName);
+                        using (FileStream fileStream = new(filePath, FileMode.Create))
+                        {
+                            await vid.CopyToAsync(fileStream);
+                        }
+                        content.PdfPath = @"\\Abanoub\wwwroot\Videos\" + randomName;
+                    }
                     return Ok(await service.Update(content));
                 }
                 else
                 {
-                    return BadRequest("file can't be null;");
+                    return Ok(new { message = "No Files Updated" });
                 }
             }
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentsController , Action: UpdateFile , Message: {ex.Message}");
                 return NotFound();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> PutContentForm(int id,[FromForm] ContentDTO dto)
+        {
+
+            try
+            {
+                var isValidLessonId = await lessonRepository.IsValidLessonId(dto.LessonId);
+                if (!isValidLessonId)
+                    return BadRequest("Invalid LessonId");
+                var content = await service.GetByIdAsync(id);
+                if (content == null) return NotFound();
+                if (dto.PdfPath != null)
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.PdfPath.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg, .txt, .html, .htm files are allowed!");
+                    var pdf = dto.PdfPath;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.PdfPath.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await pdf.CopyToAsync(fileStream);
+                    }
+                    content.PdfPath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                }
+                if (dto.VideoPath != null)
+                {
+                    if (!VideosConstraints.allowedExtenstions.Contains(Path.GetExtension(dto.VideoPath.FileName).ToLower()))
+                        return BadRequest("Only .mp4, .mkv files are allowed!");
+                    var vid = dto.VideoPath;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(dto.VideoPath.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Videos", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await vid.CopyToAsync(fileStream);
+                    }
+                    content.VideoPath = @"\\Abanoub\wwwroot\Videos\" + randomName;
+                }
+                content.ShowDate = dto.ShowDate;
+                content.LessonId = dto.LessonId;
+                content.Text = dto.Text;
+                content.Link = dto.Link;
+                return Ok(await service.Update(content));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: ContentController , Action: PutContent , Message: {ex.Message}");
+                return StatusCode(500);
             }
             finally
             {

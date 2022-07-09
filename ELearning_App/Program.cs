@@ -65,9 +65,9 @@ builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<IAssignmentAnswerRepository, AssignmentAnswerRepository>();
 //builder.Services.AddScoped<IAssignmentFeedbackRepository, AssignmentFeedbackRepository>();
 //builder.Services.AddScoped<IAssignmentGradeRepository, AssignmentGradeRepository>();
-builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
+//builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
 builder.Services.AddScoped<IContentRepository, ContentRepository>();
-builder.Services.AddScoped<IFeatureRepository, FeatureRepository>();
+//builder.Services.AddScoped<IFeatureRepository, FeatureRepository>();
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 //builder.Services.AddScoped<IQuizAnswerRepository, QuizAnswerRepository>();
 builder.Services.AddScoped<IQuizGradeRepository, QuizGradeRepository>();
@@ -79,8 +79,9 @@ builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
 builder.Services.AddScoped<IQuestionChoiceRepository, QuestionChoiceRepository>();
-builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
-
+//builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<IParentStudentRepository, ParentStudentRepository>();
+builder.Services.AddScoped<ICourseStudentRepository, CourseStudentRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -55,7 +55,7 @@ namespace ELearning_App.Controllers
             {
                 var a = await service.GetByIdAsync(id);
                 if (a == null)
-                    return NotFound();         
+                    return NotFound($"Invalid assignmentAnswerId : {id}");         
                 return Ok(a);
             }
             catch (Exception ex)
@@ -84,7 +84,7 @@ namespace ELearning_App.Controllers
                 var assignment = await service.GetByIdAsync(id);
                 if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
                 //var aa = mapper.Map<AssignmentAnswer>(a);
-                assignment.FileName = a.FileName;
+                //assignment.FileName = a.FileName;
                 //assignment.PDF = a.PDF;
                 if (a.PDF != null && !a.PDF.Equals(assignment.PDF))
                 {
@@ -112,6 +112,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (a.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(a.AssignmentId);
                 var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
                 var isNotValidAssignmentAnswerWithStudentId = await service.IsNotValidAssignmentAnswerWithStudentId(a.StudentId, a.AssignmentId);
@@ -178,8 +180,8 @@ namespace ELearning_App.Controllers
                 if (!isValidAssignmentId)
                     return BadRequest("Invalid AssignmentId!");
                 var a = await service.GetAssignmentAnswersByAssignmentId(assignmentId);
-                if (a.Count() == 0)
-                    return NotFound($"No Assignment was found with Id: {assignmentId}");
+                //if (!a.Any())
+                //    return NotFound($"No Assignment was found with Id: {assignmentId}");
                 var b = mapper.Map<IEnumerable<AssignmentAnswerDetailsDTO>>(a);
                 return Ok(b);
             }
@@ -288,7 +290,7 @@ namespace ELearning_App.Controllers
                 }
                 else
                 {
-                    return BadRequest("file can't be null;");
+                    return Ok(new { message = "No Files Updated" });
                 }
             }
             catch (Exception ex)
@@ -347,6 +349,49 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: UpdateAssignmentAnswersAssignedGrades , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpPut("form/{id}")]
+        public async Task<IActionResult> PutAssignmentAnswerForm(int id, [FromForm] AssignmentAnswerDTO a)
+        {
+
+            try
+            {
+                var isValidAssignmentId = await assignmentRepository.IsValidAssignmentId(a.AssignmentId);
+                var isValidStudentId = await studentRepository.IsValidStudentId(a.StudentId);
+                if (!isValidAssignmentId)
+                    return BadRequest($"Invalid AssignmentId : {a.AssignmentId}");
+                else if (!isValidStudentId)
+                    return BadRequest($"Invalid StudentId : {a.StudentId}");
+                var assignment = await service.GetByIdAsync(id);
+                if (assignment == null) return NotFound($"No AssignmentAnswer was found with Id: {id}");
+                if (a.PDF != null && !a.PDF.Equals(assignment.PDF))
+                {
+                    if (!FilesConstraints.allowedExtenstions.Contains(Path.GetExtension(a.PDF.FileName).ToLower()))
+                        return BadRequest("Only .pdf, .doc, .docx, .ppt, .pptx, .xlsx, .rar, .zip, .png, .jpg, .jpeg and .txt files are allowed!");
+                    var img = a.PDF;
+                    var randomName = Guid.NewGuid() + Path.GetExtension(a.PDF.FileName);
+                    var filePath = Path.Combine(_host.WebRootPath + "/Files", randomName);
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(fileStream);
+                    }
+                    assignment.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                }
+                assignment.SubmitDate = a.SubmitDate;
+                assignment.AssignmentId = a.AssignmentId;
+                assignment.AssignedGrade = a.AssignedGrade;
+                //assignment.StudentId = a.StudentId;
+                return Ok(await service.Update(assignment));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally

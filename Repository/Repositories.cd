@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ELearning_App.Repository.Repositories.AssignmentAnswerRepository" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAIAAAAQAAAAACAAAAEBAAAAAAEAoAAAAA=</HashCode>
+      <FileName>Repositories\AssignmentAnswerRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.AssignmentRepository" BaseTypeListCollapsed="true">
+    <Position X="6.25" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAQAAAACAAAAQCAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\AssignmentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.ContentRepository" BaseTypeListCollapsed="true">
+    <Position X="14" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAACEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\ContentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.CourseRepository" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAADAAAIAAgAgAAAAAAgAAIA=</HashCode>
+      <FileName>Repositories\CourseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.LessonRepository" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAACAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\LessonRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.ParentRepository" BaseTypeListCollapsed="true">
+    <Position X="14" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAACAAAAAAAgAAACAAAAAAAA=</HashCode>
+      <FileName>Repositories\ParentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.QuestionAnswerRepository" BaseTypeListCollapsed="true">
+    <Position X="16.75" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAQAAQIAAAAADAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\QuestionAnswerRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.QuestionRepository" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEgAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\QuestionRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.QuizGradeRepository" BaseTypeListCollapsed="true">
+    <Position X="6.25" Y="6.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAwAAAAAAAAAAAAAAEAAACAEBBAAAAAAAAAgEAEAAA=</HashCode>
+      <FileName>Repositories\QuizGradeRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.QuizRepository" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="7" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAACAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\QuizRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.StudentRepository" BaseTypeListCollapsed="true">
+    <Position X="17.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAICAQAAAEAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Repositories\StudentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.TeacherRepository" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\TeacherRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.ToDoListRepository" BaseTypeListCollapsed="true">
+    <Position X="17" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAACAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\ToDoListRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ELearning_App.Repository.Repositories.UserRepository" BaseTypeListCollapsed="true">
+    <Position X="14" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAgAAAAgAAACAoCIAAEAAAAAAAAQAACAAAI=</HashCode>
+      <FileName>Repositories\UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Repository.Repositories.QuestionChoiceRepository">
+    <Position X="6.25" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAACAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\QuestionChoiceRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

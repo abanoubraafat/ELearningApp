@@ -15,7 +15,7 @@ namespace Domain.DTOs
         public IFormFile? FilePath { get; set; }  
         public DateTime? StartDate { get; set; }
         public DateTime? EndTime { get; set; }
-        public int? Grade { get; set; }
+        public int TotalPoints { get; set; }
         public int CourseId { get; set; }
     }
 }

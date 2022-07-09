@@ -9,9 +9,12 @@ namespace Domain.DTOs
 {
     public class ContentDTO
     {
-        public long Id { get; set; }
-        public string FileName { get; set; }
-        public IFormFile Path { get; set; } 
+        public int Id { get; set; }
+        //public string FileName { get; set; }
+        public IFormFile? VideoPath { get; set; }
+        public IFormFile? PdfPath { get; set; }
+        public string? Text { get; set; }
+        public string? Link { get; set; }
         public DateTime ShowDate { get; set; } 
         public int LessonId { get; set; }
     }

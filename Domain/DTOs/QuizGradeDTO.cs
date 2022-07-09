@@ -9,7 +9,7 @@ namespace Domain.DTOs
     public class QuizGradeDTO
     {
         public int Id { get; set; }
-        public int Grade { get; set; }
+        public int? AssignedGrade { get; set; }
         public int QuizId { get; set; }
         public int StudentId { get; set; }
     }

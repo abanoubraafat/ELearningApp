@@ -8,6 +8,7 @@ namespace ELearning_App.Repository.IRepositories
         //IQueryable<Quiz> GetByIdWithAnswers(int id);
         Task<IEnumerable<Quiz>> GetQuizzesByCourseId(int courseId);
         Task<bool> IsValidQuizId(int id);
+        Task<IEnumerable<Quiz>> GetQuizGradesByCourseIdByStudentIdForTeacher(int courseId, int studentId);
 
     }
 }

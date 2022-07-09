@@ -19,13 +19,15 @@ namespace ELearning_App.Controllers
         private readonly IQuizRepository quizRepository;
         private readonly IStudentRepository studentRepository;
         private readonly IMapper mapper;
-        public QuizGradesController(IQuizGradeRepository _service, IMapper mapper, IQuizRepository quizRepository, IStudentRepository studentRepository)
+        private readonly ICourseRepository courseRepository;
+        public QuizGradesController(IQuizGradeRepository _service, IMapper mapper, IQuizRepository quizRepository, IStudentRepository studentRepository, ICourseRepository courseRepository)
         {
             service = _service;
             new Logger();
             this.mapper = mapper;
             this.quizRepository = quizRepository;
             this.studentRepository = studentRepository;
+            this.courseRepository = courseRepository;
         }
 
         [HttpGet]
@@ -34,8 +36,8 @@ namespace ELearning_App.Controllers
             try
             {
                 var quizGrades = await service.GetAllAsync();
-                if (!quizGrades.Any())
-                    return NotFound("No QuizGrades was found");
+                //if (!quizGrades.Any())
+                //    return NotFound("No QuizGrades was found");
                 return Ok(quizGrades);
             }
             catch (Exception ex)
@@ -85,7 +87,7 @@ namespace ELearning_App.Controllers
                     return BadRequest($"Invalid quizId : {dto.QuizId}");
                 if (quizGrade == null)
                     return NotFound($"Invalid quizGradeId : {id}");
-                quizGrade.Grade = dto.Grade;
+                quizGrade.AssignedGrade = dto.AssignedGrade;
                 //quizGrade.QuizId = dto.QuizId;
                 //quizGrade.StudentId = dto.StudentId;
                 return Ok(await service.Update(quizGrade));
@@ -106,6 +108,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isValidStudentId = await studentRepository.IsValidStudentId(dto.StudentId);
                 var isValidQuizId = await quizRepository.IsValidQuizId(dto.QuizId);
                 var isNotValidQuizGrade = await service.IsNotValidQuizGrade(dto.StudentId, dto.QuizId);
@@ -116,8 +120,8 @@ namespace ELearning_App.Controllers
                 if (isNotValidQuizGrade)
                     return BadRequest($"There's already a QuizGrade to student {dto.StudentId} of quiz {dto.QuizId}");
                 int grade = await service.QuizGradeAdderInt(dto.StudentId, dto.QuizId);
-                if(dto.Grade == 0) //automatically set the grade if value entered by the user = 0, manyally otherwise.
-                    dto.Grade = grade;
+                if(dto.AssignedGrade == null) //automatically set the grade if value entered by the user = 0, manyally otherwise.
+                    dto.AssignedGrade = grade;
                 var mapped = mapper.Map<QuizGrade>(dto);
                 await service.AddAsync(mapped);
                 return Ok();
@@ -163,8 +167,8 @@ namespace ELearning_App.Controllers
                 var quizGrades = await service.GetQuizGradesByQuizId(quizId);
                 if (!isValidQuizId)
                     return BadRequest($"Invalid quizId :{quizId}");
-                if (quizGrades.Count() == 0)
-                    return NotFound($"There're No QuizGrades with such quizId: {quizId}");
+                //if (quizGrades.Count() == 0)
+                //    return NotFound($"There're No QuizGrades with such quizId: {quizId}");
                 return Ok(mapper.Map<IEnumerable<QuizGradeDetailsDTO>>(quizGrades));
             }
             catch (Exception ex)
@@ -177,7 +181,7 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        [HttpGet("GetQuizGradeByQuizIdByStudentId/{studentId}/{quizId}")]
+        [HttpGet("GetQuizGradeByQuizIdByStudentIdForStudent/{studentId}/{quizId}")]
         public async Task<ActionResult<QuizGrade>> GetQuizGradeByQuizIdByStudentId(int quizId, int studentId)
         {
             try
@@ -229,5 +233,30 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
+        //[HttpGet("GetQuizGradesByCourseId/{courseId}/{studentId}")]
+        //public async Task<ActionResult<IEnumerable<QuizGrade>>> GetQuizGradesByCourseId(int courseId, int studentId)
+        //{
+        //    try
+        //    {
+        //        var isValidCourseId = await courseRepository.IsValidCourseId(courseId);
+        //        var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+        //        var grades = await service.GetQuizGradesByCourseId(courseId, studentId);
+        //        if (!isValidCourseId)
+        //            return BadRequest($"Invalid courseId :{courseId}");
+        //        if (!isValidStudentId)
+        //            return BadRequest($"Invalid studentId :{studentId}");
+        //        var mapped = mapper.Map<IEnumerable<QuizGradeDetailsShortDTO>>(grades);
+        //        return Ok(mapped);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"Controller: QuizGradeController , Action: GetQuizGradeByQuizIdByStudentId , Message: {ex.Message}");
+        //        return StatusCode(500);
+        //    }
+        //    finally
+        //    {
+        //        Log.CloseAndFlush();
+        //    }
+        //}
     }
 }

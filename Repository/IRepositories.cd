@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="ELearning_App.Repository.IRepositories.IAssignmentAnswerRepository">
+    <Position X="1.5" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAQAAAAAAAAAAEBAAAAAAEAoAAAAA=</HashCode>
+      <FileName>IRepositories\IAssignmentAnswerRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IAssignmentRepository">
+    <Position X="5.75" Y="0.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAQAAAAAAAAAQCAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IAssignmentRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IContentRepository">
+    <Position X="13" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IContentRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.ICourseRepository">
+    <Position X="19" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAIAAgAgAAAAAAgAAIA=</HashCode>
+      <FileName>IRepositories\ICourseRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.ILessonRepository">
+    <Position X="2.25" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\ILessonRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IParentRepository">
+    <Position X="13" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAACAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IParentRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IQuestionAnswerRepository">
+    <Position X="15.5" Y="2.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAQAAQIAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IQuestionAnswerRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IQuestionRepository">
+    <Position X="19" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IQuestionRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IQuizGradeRepository">
+    <Position X="2" Y="4.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAwAAAAAAAAAAAAAAEAAAAAEBAAAAAAAAAAgEAAAAA=</HashCode>
+      <FileName>IRepositories\IQuizGradeRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IQuizRepository">
+    <Position X="5.25" Y="4.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAACAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IQuizRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IStudentRepository">
+    <Position X="16.25" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAIAAQAAAEAAAAAAgAAAAAAA=</HashCode>
+      <FileName>IRepositories\IStudentRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.ITeacherRepository">
+    <Position X="19" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\ITeacherRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IToDoListRepository">
+    <Position X="16.25" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IToDoListRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ELearning_App.Repository.IRepositories.IUserRepository">
+    <Position X="13.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAgAAACAoAIAAEAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>IRepositories\IUserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Repository.IRepositories.IQuestionChoiceRepository">
+    <Position X="6" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>IRepositories\IQuestionChoiceRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

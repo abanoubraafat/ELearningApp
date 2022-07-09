@@ -10,12 +10,13 @@ namespace ELearning_App.Helpers
             CreateMap<AssignmentDTO, Assignment>();
                 //.BeforeMap((src, dest) => src.Id = dest.Id);
             CreateMap<AssignmentAnswerDTO, AssignmentAnswer>();
+            CreateMap<Assignment, GetAssignmentDTO>().ReverseMap();
             //CreateMap<AssignmentFeedbackDTO, AssignmentFeedback>();
             //CreateMap<AssignmentGradeDTO, AssignmentGrade>().Reverse();
-            CreateMap<BadgeDTO, Badge>();
+            //CreateMap<BadgeDTO, Badge>();
             CreateMap<ContentDTO, Content>();
             CreateMap<CourseDTO, Course>();
-            CreateMap<FeatureDTO, Feature>();
+            //CreateMap<FeatureDTO, Feature>();
             //CreateMap<LatestPassedLessonDTO, LatestPassedLesson>();
             CreateMap<LessonDTO, Lesson>();
             //CreateMap<NoteDTO, Note>();
@@ -30,7 +31,7 @@ namespace ELearning_App.Helpers
             CreateMap<ToDoListDTO, ToDoList>();
             CreateMap<UserDTO, User>();
             //CreateMap<AnnouncementDTO, Announcement>();
-            CreateMap<ResourceDTO, Resource>();
+            //CreateMap<ResourceDTO, Resource>();
             CreateMap<Course, CourseDetailsDTO>().ReverseMap();
             CreateMap<QuestionChoiceDTO, QuestionChoice>().ReverseMap();
             CreateMap<AssignmentAnswer, AssignmentAnswerDetailsDTO>();
@@ -40,10 +41,10 @@ namespace ELearning_App.Helpers
             CreateMap<Assignment, AssignmentDTO>();
             CreateMap<AssignmentAnswer, AssignmentAnswerDTO>();
             //CreateMap<AssignmentFeedback, AssignmentFeedbackDTO>();
-            CreateMap<Badge, BadgeDTO>();
+            //CreateMap<Badge, BadgeDTO>();
             CreateMap<Content, ContentDTO>();
             CreateMap<Course, CourseDTO>();
-            CreateMap<Feature, FeatureDTO>();
+            //CreateMap<Feature, FeatureDTO>();
             //CreateMap<LatestPassedLesson, LatestPassedLessonDTO>();
             CreateMap<Lesson, LessonDTO>();
             //CreateMap<Note, NoteDTO>();
@@ -58,18 +59,36 @@ namespace ELearning_App.Helpers
             CreateMap<ToDoList, ToDoListDTO>();
             CreateMap<User, UserDTO>();
             //CreateMap<Announcement, AnnouncementDTO>();
-            CreateMap<Resource, ResourceDTO>();
+            //CreateMap<Resource, ResourceDTO>();
 
             CreateMap<AssignmentAnswerDetailsDTO, AssignmentAnswer>();
             //CreateMap<QuestionAnswerDetailsDTO, QuestionAnswer>();
             //CreateMap<QuizAnswerDetailsDTO, QuizAnswer>();
-
+            //CreateMap<QuizGrade, QuizGradeDetailsShortDTO>();
 
             //CreateMap<MovieDto, Movie>()
             //    .ForMember(src => src.Poster, opt => opt.Ignore());
-            CreateMap<Assignment, AssignmentDetailsDTO>().ReverseMap();
+            CreateMap<Assignment, AssignmentDetailsDTO>()
+                .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.AssignedGrade).FirstOrDefault()))
+                .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.Id).FirstOrDefault()));
             CreateMap<QuizGradeDetailsDTO, QuizGrade>().ReverseMap();
             CreateMap<Question, QuestionDetailsDTO>().ReverseMap();
+            CreateMap<Assignment, AssignmentDetailsShortDTO>()
+                .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.AssignedGrade).FirstOrDefault()))
+                .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(c => c.Id).FirstOrDefault()))
+                .ForMember(d => d.AssignmentId, o => o.MapFrom(s => s.Id));
+
+            CreateMap<Quiz, GetQuizDTO>();
+            CreateMap<Quiz, QuizDetailsShortDTO>()
+                .ForMember(d => d.AssignedGrade, o => o.MapFrom(s => s.QuizGrades.Select(c => c.AssignedGrade).FirstOrDefault()))
+                .ForMember(d => d.QuizId, o => o.MapFrom(s => s.Id));
+            CreateMap<Assignment, GetAssignmentWithSubmitted>()
+                .ForMember(d => d.AssignmentAnswerId, o => o.MapFrom(s => s.AssignmentAnswers.Select(a => a.Id).FirstOrDefault()));
+            CreateMap<ParentStudent, ParentStudentsUnVerifiedRequestDTO>();
+            CreateMap<CourseStudent, CourseStudentUnVerifiedRequestsDTO>()
+                 .ForMember(d => d.CourseName, o => o.MapFrom(s => s.Course.CourseName))
+                 .ForMember(d => d.CourseImage, o => o.MapFrom(s => s.Course.CourseImage));
+
         }
     }
 }

@@ -25,6 +25,14 @@ namespace ELearning_App.Repository.Repositories
             return await IsValidFk(a => a.Id == id);
         }
 
+        public async Task<IEnumerable<Quiz>> GetQuizGradesByCourseIdByStudentIdForTeacher(int courseId, int studentId)
+        {
+            return await unitOfWork.Context.Quizzes
+                .Where(q => q.CourseId == courseId)
+                .Include(q => q.QuizGrades.Where(g => g.StudentId == studentId))
+                .ToListAsync();
+        }
+
         //public IQueryable<Quiz> GetByIdWithAnswers(int id)
         //{
         //    return unitOfWork.Context.Quizzes.Where(q => q.Id == id).Include(q => q.QuizAnswers);

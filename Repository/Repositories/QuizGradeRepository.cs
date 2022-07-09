@@ -38,6 +38,10 @@ namespace ELearning_App.Repository.Repositories
         {
             return await unitOfWork.Context.QuizGrades.Where(g => g.QuizId == quizId).Include(g => g.Quiz).Include(g => g.Student).ToListAsync();
         }
+        public async Task<IEnumerable<QuizGrade>> GetQuizGradesByCourseId(int courseId, int studentId)
+        {
+            return await unitOfWork.Context.QuizGrades.Where(g => g.StudentId == studentId && g.Quiz.CourseId == courseId).Include(g => g.Quiz).ToListAsync();
+        }
         public async Task<QuizGrade> QuizGradeAdder(int studentId, int quizId)
         {
             var questionAnswers = await unitOfWork.Context.QuestionAnswers
@@ -56,7 +60,7 @@ namespace ELearning_App.Repository.Repositories
                     {
                         if (await questionAnswerRepository.CorrectQuestionAnswerOrNot(q.Id, a.Id))
                         {
-                            quizGrade.Grade++;
+                            quizGrade.AssignedGrade++;
                             await Update(quizGrade);
                         }
                         //else {

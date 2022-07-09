@@ -8,6 +8,7 @@ namespace Domain.DTOs.UpdateDTOs
 {
     public class UpdateContentDTO : ContentDTO
     {
-        public new string Path { get; set; }
+        public new string? VideoPath { get; set; }
+        public new string? PdfPath { get; set; }
     }
 }

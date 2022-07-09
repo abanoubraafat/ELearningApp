@@ -31,6 +31,42 @@ namespace ELearning_App.Domain.Context
         //fluent API
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.Parents)
+                .WithMany(p => p.Students)
+                .UsingEntity<ParentStudent>(
+                    j => j
+                            .HasOne(ps => ps.Parent)
+                            .WithMany(p => p.ParentStudents)
+                            .HasForeignKey(ps => ps.ParentId),
+                    j => j
+                            .HasOne(ps => ps.Student)
+                            .WithMany(s => s.ParentStudents)
+                            .HasForeignKey(ps => ps.StudentId),
+                    j =>
+                    {
+                        j.Property(ps => ps.IsVerified).HasDefaultValue(false);
+                        j.HasKey(ps => new {ps.ParentId, ps.StudentId});
+                    }
+                );
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.Courses)
+                .WithMany(p => p.Students)
+                .UsingEntity<CourseStudent>(
+                    j => j
+                            .HasOne(cs => cs.Course)
+                            .WithMany(c => c.CourseStudents)
+                            .HasForeignKey(cs => cs.CourseId),
+                    j => j
+                            .HasOne(cs => cs.Student)
+                            .WithMany(s => s.CourseStudents)
+                            .HasForeignKey(cs => cs.StudentId),
+                    j =>
+                    {
+                        j.Property(cs => cs.IsVerified).HasDefaultValue(false);
+                        j.HasKey(cs => new { cs.CourseId, cs.StudentId });
+                    }
+                );
             //modelBuilder.Entity<User>()
             //     .ToTable("Users")
             //     .HasDiscriminator<string>("Role")
@@ -144,12 +180,12 @@ namespace ELearning_App.Domain.Context
             //    .HasOne(qn => qn.QuizGrade)
             //    .WithOne(qg => qg.QuizAnswer)
             //    .OnDelete(DeleteBehavior.Cascade);
-            
+
             //modelBuilder.Entity<ToDoList>()
             //    .HasOne(t => t.User)
             //    .WithMany(l => l.ToDoLists)
             //    .OnDelete(DeleteBehavior.Cascade);
-            
+
             //modelBuilder.Entity<Feature>()
             //    .HasOne(c => c.Student)
             //    .WithMany(s => s.Features)
@@ -162,13 +198,13 @@ namespace ELearning_App.Domain.Context
             //modelBuilder.Entity<Student>()
             //    .HasMany(s => s.Courses)
             //    .WithMany(c => c.Students);
-            
+
 
             //modelBuilder.Entity<Announcement>()
             //  .HasMany(A => A.Courses)
             //  .WithMany(C => C.Announcements);
 
-            
+
 
             ///
             //modelBuilder.Entity<Student>()
@@ -246,8 +282,8 @@ namespace ELearning_App.Domain.Context
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual DbSet<QuestionChoice> QuestionChoices { get; set; }
         //public virtual DbSet<Announcement> Announcements { get; set; }
-        public virtual DbSet<Feature> Features { get; set; }
-        public virtual DbSet <Resource> Resources { get; set; }
+        //public virtual DbSet<Feature> Features { get; set; }
+        //public virtual DbSet <Resource> Resources { get; set; }
         public virtual DbSet <ToDoList> ToDoLists { get; set; }
 
 

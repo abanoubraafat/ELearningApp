@@ -26,18 +26,27 @@ namespace ELearning_App.Repository.Repositories
             return await IsValidFk(a => a.Id == id);
         }
 
-        public async Task<IEnumerable<Assignment>> GetAssignmentsByCourseIdForStudent(int courseId)
+        public async Task<IEnumerable<Assignment>> GetAssignmentsByCourseIdForStudent(int courseId, int studentId)
         {
             return await unitOfWork.Context.Assignments
                 .Where(a => a.CourseId == courseId)
-                .Select(a => new Assignment
-                {
-                    CourseId = a.CourseId,
-                    Id = a.Id,
-                    Title = a.Title,
-                    EndTime = a.EndTime
-                })
+                .Include(a => a.AssignmentAnswers.Where(a => a.StudentId == studentId))
+                //.Select(a => new Assignment
+                //{
+                //    CourseId = a.CourseId,
+                //    Id = a.Id,
+                //    Title = a.Title,
+                //    EndTime = a.EndTime,
+                //    AssignmentAnswers = a.AssignmentAnswers
+                //})
                 .ToListAsync();
+        }
+        public async Task<Assignment> GetAssignmentAsync(int assignmentId, int studentId)
+        {
+            return await unitOfWork.Context.Assignments
+                .Where(a => a.Id == assignmentId)
+                .Include(a => a.AssignmentAnswers.Where(a => a.StudentId == studentId))
+                .FirstOrDefaultAsync();
         }
 
         //public IQueryable<Assignment> GetByIdWithCourses(int id1, int id2)

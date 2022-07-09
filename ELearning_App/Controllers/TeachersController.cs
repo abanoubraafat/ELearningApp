@@ -101,6 +101,8 @@ namespace ELearning_App.Controllers
         {
             try
             {
+                if (dto.Id != 0)
+                    return BadRequest("Id is auto generated don't assign it.");
                 var isNotAvailableUserEmail = await userRepository.IsNotAvailableUserEmail(dto.EmailAddress);
                 if (isNotAvailableUserEmail) 
                     return BadRequest("There's already an account with the same Email address");

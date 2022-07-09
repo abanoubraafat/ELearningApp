@@ -203,7 +203,7 @@ namespace ELearning_App.Repository.Repositories
             return true;
         }
 
-        public async Task<User> LoginTest(LoginRequest loginRequest)
+        public async Task<User?> LoginTest(LoginRequest loginRequest)
         {
             var user = await unitOfWork.Context.Users.SingleOrDefaultAsync(u => u.EmailAddress == loginRequest.EmailAddress);
             if (user == null)
