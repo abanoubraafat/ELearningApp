@@ -120,7 +120,7 @@ namespace ELearning_App.Controllers
                     {
                         await pdf.CopyToAsync(fileStream);
                     }
-                    c.PdfPath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    c.PdfPath = randomName;
                 }
                 if (dto.VideoPath != null)
                 {
@@ -133,7 +133,7 @@ namespace ELearning_App.Controllers
                     {
                         await vid.CopyToAsync(fileStream);
                     }
-                    c.VideoPath = @"\\Abanoub\wwwroot\Videos\" + randomName;
+                    c.VideoPath = randomName;
                 }
 
                 await service.AddAsync(c);
@@ -213,7 +213,7 @@ namespace ELearning_App.Controllers
                         {
                             await pdf.CopyToAsync(fileStream);
                         }
-                        content.PdfPath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                        content.PdfPath = randomName;
                     }
                     if (dto.VideoPath != null)
                     {
@@ -226,7 +226,7 @@ namespace ELearning_App.Controllers
                         {
                             await vid.CopyToAsync(fileStream);
                         }
-                        content.PdfPath = @"\\Abanoub\wwwroot\Videos\" + randomName;
+                        content.PdfPath = randomName;
                     }
                     return Ok(await service.Update(content));
                 }
@@ -267,7 +267,7 @@ namespace ELearning_App.Controllers
                     {
                         await pdf.CopyToAsync(fileStream);
                     }
-                    content.PdfPath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    content.PdfPath = randomName;
                 }
                 if (dto.VideoPath != null)
                 {
@@ -280,7 +280,7 @@ namespace ELearning_App.Controllers
                     {
                         await vid.CopyToAsync(fileStream);
                     }
-                    content.VideoPath = @"\\Abanoub\wwwroot\Videos\" + randomName;
+                    content.VideoPath = randomName;
                 }
                 content.ShowDate = dto.ShowDate;
                 content.LessonId = dto.LessonId;

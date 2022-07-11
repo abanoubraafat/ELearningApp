@@ -11,7 +11,7 @@ namespace ELearning_App.Repository.GenericRepositories
     {
 
         TEntity Add(TEntity entity);
-        Task/*<TEntity>*/ AddAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
         TEntity GetById(int id);
         Task<TEntity> GetByIdAsync(int id);

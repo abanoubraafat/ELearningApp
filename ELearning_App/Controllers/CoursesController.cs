@@ -133,7 +133,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    course.CourseImage = randomName;
                 }
                 await service.AddAsync(course);
                 return Ok();
@@ -417,7 +417,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    course.CourseImage = randomName;
                     return Ok(await service.Update(course));
                 }
                 else
@@ -459,7 +459,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    course.CourseImage = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    course.CourseImage = randomName;
                 }
                 course.CourseName = dto.CourseName;
                 course.CourseDescription = dto.CourseDescription;

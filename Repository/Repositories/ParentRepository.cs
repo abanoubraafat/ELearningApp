@@ -37,7 +37,7 @@ namespace ELearning_App.Repository.Repositories
 
         public async Task<string> HasStudent(int parentId, int studentId)
         {
-            var parent = await unitOfWork.Context.Parents.Where(p => p.Id == parentId).FirstOrDefaultAsync();
+            var parent = await unitOfWork.Context.Parents.Where(p => p.Id == parentId).Include(p => p.Students).FirstOrDefaultAsync();
             var student = await unitOfWork.Context.Students.Where(s => s.Id == studentId).FirstOrDefaultAsync();
             if (parent == null || student == null)
                 return "Invalid parentId or studentId";

@@ -1,4 +1,5 @@
-﻿using ELearning_App.Domain.Entities;
+﻿using Domain.Entities;
+using ELearning_App.Domain.Entities;
 using ELearning_App.Repository.GenericRepositories;
 
 namespace ELearning_App.Repository.IRepositories
@@ -17,6 +18,7 @@ namespace ELearning_App.Repository.IRepositories
         Task<Student> GetStudentByEmail(string email);
         Task<IEnumerable<Student>> GetStudentsByCourseId(int courseId);
         Task<IEnumerable<Student>> GetStudentsByParentId(int parentId);
+        Task DropParentForStudent(int parentId, int studentId);
 
     }
 }
