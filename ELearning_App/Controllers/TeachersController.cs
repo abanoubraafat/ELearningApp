@@ -125,7 +125,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    teacher.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    teacher.ProfilePic =  randomName;
                 }
                 await service.AddAsync(teacher);
                 return Ok();

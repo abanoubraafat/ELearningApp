@@ -316,7 +316,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    user.ProfilePic = randomName;
                     return Ok(await service.Update(user));
                 }
                 else
@@ -375,7 +375,7 @@ namespace ELearning_App.Controllers
                         {
                             await img.CopyToAsync(fileStream);
                         }
-                        user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                        user.ProfilePic = randomName;
                     }
                         if (dto.Password != null)
                         user.Password = service.CreatePasswordHash(dto.Password);
@@ -402,7 +402,7 @@ namespace ELearning_App.Controllers
                         {
                             await img.CopyToAsync(fileStream);
                         }
-                        user.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                        user.ProfilePic = randomName;
                     }
                     user.EmailAddress = dto.EmailAddress;
                     if (dto.Password != null)

@@ -130,7 +130,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    parent.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    parent.ProfilePic = randomName;
                 }
                 await service.AddAsync(parent);
                 return Ok();

@@ -64,7 +64,7 @@ namespace ELearning_App.Helpers
             CreateMap<AssignmentAnswerDetailsDTO, AssignmentAnswer>();
             //CreateMap<QuestionAnswerDetailsDTO, QuestionAnswer>();
             //CreateMap<QuizAnswerDetailsDTO, QuizAnswer>();
-            //CreateMap<QuizGrade, QuizGradeDetailsShortDTO>();
+            CreateMap<QuizGrade, QuizGradeDetailsShortDTO>();
 
             //CreateMap<MovieDto, Movie>()
             //    .ForMember(src => src.Poster, opt => opt.Ignore());
@@ -88,6 +88,7 @@ namespace ELearning_App.Helpers
             CreateMap<CourseStudent, CourseStudentUnVerifiedRequestsDTO>()
                  .ForMember(d => d.CourseName, o => o.MapFrom(s => s.Course.CourseName))
                  .ForMember(d => d.CourseImage, o => o.MapFrom(s => s.Course.CourseImage));
+            CreateMap<AssignmentAnswer, AssignmentAnswerGradeShortDTO>();
 
         }
     }

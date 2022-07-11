@@ -18,14 +18,16 @@ namespace ELearning_App.Controllers
         private IAssignmentAnswerRepository service { get; }
         private readonly IAssignmentRepository assignmentRepository;
         private readonly IStudentRepository studentRepository;
+        private readonly ICourseRepository courseRepository;
         private readonly IMapper mapper;
         private readonly IWebHostEnvironment _host;
-        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository, IMapper mapper, IWebHostEnvironment host)
+        public AssignmentAnswersController(IAssignmentAnswerRepository _service, IAssignmentRepository assignmentRepository, IStudentRepository studentRepository, IMapper mapper, IWebHostEnvironment host, ICourseRepository courseRepository)
         {
             service = _service;
             new Logger();
             this.assignmentRepository = assignmentRepository;
             this.studentRepository = studentRepository;
+            this.courseRepository = courseRepository;
             this.mapper = mapper;
             _host = host;
         }
@@ -135,7 +137,7 @@ namespace ELearning_App.Controllers
                 {
                     await img.CopyToAsync(fileStream);
                 }
-                aa.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                aa.PDF = randomName;
                 await service.AddAsync(aa);
                 return Ok();
             }
@@ -285,7 +287,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    assignmentAnswer.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    assignmentAnswer.PDF = randomName;
                     return Ok(await service.Update(assignmentAnswer));
                 }
                 else
@@ -381,7 +383,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    assignment.PDF = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    assignment.PDF = randomName;
                 }
                 assignment.SubmitDate = a.SubmitDate;
                 assignment.AssignmentId = a.AssignmentId;
@@ -392,6 +394,30 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+        [HttpGet("GetAssignmentAnswersGradesByCourseId/{courseId}/{studentId}")]
+        public async Task<ActionResult<IEnumerable<AssignmentAnswerGradeShortDTO>>> GetAssignmentAnswersByCourseId(int courseId, int studentId)
+        {
+            try
+            {
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                var isValidCourseId = await courseRepository.IsValidCourseId(courseId);
+                if (!isValidStudentId)
+                    return BadRequest($"Invalid StudentId : {studentId}");
+                if (!isValidCourseId) return BadRequest($"Invalid courseId : {courseId}");
+                var grades = await service.GetAssignmentAnswersByCourseId(courseId, studentId);
+                var mapped = mapper.Map<IEnumerable<AssignmentAnswerGradeShortDTO>>(grades);
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentAnswerController , Action: GetAssignmentAnswersByCourseId , Message: {ex.Message}");
                 return StatusCode(500);
             }
             finally

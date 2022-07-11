@@ -130,7 +130,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    student.ProfilePic = @"\\Abanoub\wwwroot\Images\" + randomName;
+                    student.ProfilePic = randomName;
                 }
                 await service.AddAsync(student);
                 return Ok();
@@ -200,7 +200,6 @@ namespace ELearning_App.Controllers
                 if (!isValidParentId)
                     return BadRequest($"No Parent with that id: {parentId}");
                 var students = await service.GetStudentsByParentId(parentId);
-                //if (!students.Any()) return NotFound($"No Students with that parentId :{parentId}");
                 return Ok(students);
             }
             catch (Exception ex)

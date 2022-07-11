@@ -76,5 +76,13 @@ namespace ELearning_App.Repository.Repositories
             }
         }
 
+        public async Task<IEnumerable<AssignmentAnswer>> GetAssignmentAnswersByCourseId(int courseId, int studentId)
+        {
+            return await unitOfWork.Context.AssignmentAnswers
+                .Where(g => g.StudentId == studentId && g.Assignment.CourseId == courseId)
+                .Include(g => g.Assignment)
+                .ToListAsync();
+
+        }
     }
 }

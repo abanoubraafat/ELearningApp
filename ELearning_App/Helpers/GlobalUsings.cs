@@ -8,3 +8,5 @@ global using Domain.Consts;
 global using Domain.DTOs.UpdateDTOs;
 global using Domain.DTOs.GetDTOs;
 global using Repository.IRepositories;
+global using Domain.DTOs.ML_APIs_DTOs;
+global using Newtonsoft.Json;
