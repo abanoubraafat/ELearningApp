@@ -99,8 +99,8 @@ namespace ELearning_App.Controllers
                 var isValidCourseId = await courseRepository.IsValidCourseId(dto.CourseId);
                 if (!isValidCourseId) return BadRequest("Invalid CourseId");
                 var l = mapper.Map<Lesson>(dto);
-                await service.AddAsync(l);
-                return Ok();
+                var added = await service.AddAsync(l);
+                return Ok(added);
             }
             catch (Exception ex)
             {

@@ -19,6 +19,6 @@ namespace ELearning_App.Repository.IRepositories
         Task<bool> IsSubmittedAssignmentAnswer(int assignmentId, int studentId);
         Task<List<AssignmentAnswer>> GetAssignmentAnswersByListOfIds(int[] ids);
         Task<int?> GetIntAssignmentGrade(int assignmentId, int studentId);
-
+        Task<IEnumerable<AssignmentAnswer>> GetAssignmentAnswersByCourseId(int courseId, int studentId);
     }
 }

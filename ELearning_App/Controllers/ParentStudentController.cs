@@ -96,22 +96,36 @@ namespace ELearning_App.Controllers
             }
 
         }
-        //[HttpPost("AddMultipleParentStudentReq")]
-        //public async Task<ActionResult> PostMultipleParentStudentReq(List<ParentStudentDTO> parentStudentDTO)
-        //{
-        //    List<ParentStudent> parentStudentList = new List<ParentStudent>();
-        //    for (int i = 0; i < parentStudentDTO.Count(); i++)
-        //    {
-        //        var isValidParentID = await _parentRepository.IsValidParentId(parentStudentDTO[i].ParentId);
-        //        var student = await _studentRepository.GetStudentByEmail(parentStudentDTO[i].StudentEmail);
-        //        var hasStudent = _parentRepository.HasStudent(parentStudentDTO[i].ParentId, student.Id);
-        //        if (isValidParentID && student != null && hasStudent.Equals("No"))
-        //        { 
-        //            parentStudentList.Add(new ParentStudent { ParentId = parentStudentDTO[i].ParentId, StudentId = student.Id });   
-        //        }
-        //    }
-        //    await service.AddMultipleAsync(parentStudentList);
-        //    return Ok();
-        //}
+        [HttpPost("AddMultipleParentStudentReq")]
+        public async Task<ActionResult> PostMultipleParentStudentReq(PostMultipleParentStudentReqDTO parentStudentDTO)
+        {
+            var isValidParentID = await _parentRepository.IsValidParentId(parentStudentDTO.ParentId);
+            if (!isValidParentID) return BadRequest($"Invalid parentId : {parentStudentDTO.ParentId}");
+            List<ParentStudent> parentStudentList = new List<ParentStudent>();
+            for (int i = 0; i < parentStudentDTO.StudentsEmails.Count(); i++)
+            {
+                var student = await _studentRepository.GetStudentByEmail(parentStudentDTO.StudentsEmails[i]);
+                var hasStudent = await _parentRepository.HasStudent(parentStudentDTO.ParentId, student.Id);
+                if (isValidParentID && student != null && hasStudent.Equals("No"))
+                {
+                    parentStudentList.Add(new ParentStudent { ParentId = parentStudentDTO.ParentId, StudentId = student.Id });
+                }
+            }
+            await service.AddMultipleAsync(parentStudentList);
+            return Ok();
+        }
+        [HttpDelete("DropParentStudentRequest/{parentId}/{studentId}")]
+        public async Task<ActionResult> DropParentForStudent(int parentId, int studentId)
+        {
+            var isValidParentId = await _parentRepository.IsValidParentId(parentId);
+            var isValidStudentId = await _studentRepository.IsValidStudentId(studentId);
+            if (!isValidStudentId) return BadRequest($"Invalid studentId : {studentId}");
+            if (!isValidParentId) return BadRequest($"Invalid parentId : {parentId}");
+            var exsistingParentStudentCompositeKey = await service.ExsistingParentStudentCompositeKey(parentId, studentId);
+            if (!exsistingParentStudentCompositeKey) return BadRequest("Invalid ParentStudentId");
+            await _studentRepository.DropParentForStudent(parentId, studentId);
+            return Ok();
+        }
+
     }
 }

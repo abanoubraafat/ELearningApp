@@ -125,7 +125,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    r.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    r.FilePath = randomName;
                 }
                 await service.AddAsync(r);
                 return Ok();
@@ -241,7 +241,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    assignment.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    assignment.FilePath = randomName;
                     var updated = await service.Update(assignment);
                     return Ok(mapper.Map<GetAssignmentDTO>(updated));
                 }
@@ -316,7 +316,7 @@ namespace ELearning_App.Controllers
                     {
                         await img.CopyToAsync(fileStream);
                     }
-                    assignment.FilePath = @"\\Abanoub\wwwroot\Files\" + randomName;
+                    assignment.FilePath = randomName;
                 }
                 assignment.StartDate = dto.StartDate;
                 assignment.EndTime = dto.EndTime;

@@ -233,30 +233,30 @@ namespace ELearning_App.Controllers
                 Log.CloseAndFlush();
             }
         }
-        //[HttpGet("GetQuizGradesByCourseId/{courseId}/{studentId}")]
-        //public async Task<ActionResult<IEnumerable<QuizGrade>>> GetQuizGradesByCourseId(int courseId, int studentId)
-        //{
-        //    try
-        //    {
-        //        var isValidCourseId = await courseRepository.IsValidCourseId(courseId);
-        //        var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
-        //        var grades = await service.GetQuizGradesByCourseId(courseId, studentId);
-        //        if (!isValidCourseId)
-        //            return BadRequest($"Invalid courseId :{courseId}");
-        //        if (!isValidStudentId)
-        //            return BadRequest($"Invalid studentId :{studentId}");
-        //        var mapped = mapper.Map<IEnumerable<QuizGradeDetailsShortDTO>>(grades);
-        //        return Ok(mapped);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Controller: QuizGradeController , Action: GetQuizGradeByQuizIdByStudentId , Message: {ex.Message}");
-        //        return StatusCode(500);
-        //    }
-        //    finally
-        //    {
-        //        Log.CloseAndFlush();
-        //    }
-        //}
+        [HttpGet("GetQuizGradesByCourseId/{courseId}/{studentId}")]
+        public async Task<ActionResult<IEnumerable<QuizGrade>>> GetQuizGradesByCourseId(int courseId, int studentId)
+        {
+            try
+            {
+                var isValidCourseId = await courseRepository.IsValidCourseId(courseId);
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                var grades = await service.GetQuizGradesByCourseId(courseId, studentId);
+                if (!isValidCourseId)
+                    return BadRequest($"Invalid courseId :{courseId}");
+                if (!isValidStudentId)
+                    return BadRequest($"Invalid studentId :{studentId}");
+                var mapped = mapper.Map<IEnumerable<QuizGradeDetailsShortDTO>>(grades);
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: QuizGradeController , Action: GetQuizGradesByCourseId , Message: {ex.Message}");
+                return StatusCode(500);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
     }
 }
