@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ELearning_App.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,7 @@ namespace Domain.DTOs
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int CourseId { get; set; }
+        public ICollection<QuestionDTO>? Questions { get; set; }
+
     }
 }

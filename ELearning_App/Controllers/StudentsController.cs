@@ -45,7 +45,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: GetStudents , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -90,7 +90,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: PutStudent , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -138,7 +138,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -161,7 +161,7 @@ namespace ELearning_App.Controllers
             //catch (Exception ex)
             //{
             //    Log.Error($"Controller: StudentsController , Action: GetStudents , Message: {ex.Message}");
-            //    return StatusCode(500);
+            //    return BadRequest();
             //}
             //finally
             //{
@@ -183,7 +183,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
     }
             finally
             {
@@ -205,7 +205,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: StudentsController , Action: PostStudent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -225,7 +225,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: DeleteStudent , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -243,7 +243,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: GetAllWithCourses , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -261,7 +261,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: GetAllWithCoursesWithGrades , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -278,7 +278,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: GetBYIdWithCourses , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -295,7 +295,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //            Log.Error($"Controller: StudentsController , Action: GetBYIdWithCoursesWithGrades , Message: {ex.Message}");
-        //            return StatusCode(500);
+        //            return BadRequest();
         //    }
         //        finally
         //        {
@@ -315,7 +315,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: JoinCourseByCourseId , Message: {ex.Message}");
-        //        StatusCode(500);
+        //        BadRequest();
         //        return false;
         //    }
         //    finally
@@ -334,7 +334,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: StudentsController , Action: GetByIdWithNotes , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {

@@ -10,3 +10,5 @@ global using Domain.DTOs.GetDTOs;
 global using Repository.IRepositories;
 global using Domain.DTOs.ML_APIs_DTOs;
 global using Newtonsoft.Json;
+global using Domain.DTOs.ML_APIs_DTOs.GoogleTranslate;
+global using Domain.DTOs.ML_APIs_DTOs.GoogleTranslate.GetSupportedLanguages;

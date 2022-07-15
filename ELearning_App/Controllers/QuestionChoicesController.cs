@@ -31,7 +31,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuestionChoicesController , Action: GetQuestionChoices , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -79,7 +79,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuestionChoicesController , Action: PutQuestionChoice , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -104,7 +104,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuestionChoicesController , Action: PostQuestionChoice , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -126,7 +126,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuestionChoicesController , Action: DeleteQuestionChoice , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -150,7 +150,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuestionChoicesController , Action: GetQuestionChoicesByQuestionId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -176,7 +176,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuestionChoicesController , Action: PostMultipleQuestionChoices , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {

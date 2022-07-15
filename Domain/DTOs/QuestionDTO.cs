@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,7 @@ namespace Domain.DTOs
         public string correctAnswer { get; set; }
         public DateTime? ShowDate { get; set; }
         public int QuizId { get; set; }
+        public ICollection<QuestionChoiceDTO>? QuestionChoices { get; set; }
+
     }
 }

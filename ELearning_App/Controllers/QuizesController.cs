@@ -40,7 +40,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuizController , Action: GetQuizs , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -49,14 +49,14 @@ namespace ELearning_App.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GetQuizDTO>> GetQuiz(int id)
+        public async Task<ActionResult<GetQuizWithAllInfoDTO>> GetQuiz(int id)
         {
             try
             {
-                var quiz = await service.GetByIdAsync(id);
+                var quiz = await service.GetQuizByIdAsync(id);
                 if (quiz == null)
                     return NotFound($"Invalid quizId : {id}");
-                var mapped = mapper.Map<GetQuizDTO>(quiz);
+                var mapped = mapper.Map<GetQuizWithAllInfoDTO>(quiz);
                 return Ok(mapped);
             }
             catch (Exception ex)
@@ -96,7 +96,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuizController , Action: PutQuiz , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -121,7 +121,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuizController , Action: PostQuiz , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -143,7 +143,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuizController , Action: DeleteQuiz , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -167,7 +167,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuizController , Action: GetQuizzesByCourseId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -192,7 +192,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: QuizController , Action: GetQuizGradesByCourseIdByStudentIdForTeacher , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -210,7 +210,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: QuizController , Action: GetByIdWithAnswers , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {

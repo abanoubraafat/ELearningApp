@@ -38,7 +38,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: GetContents , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -58,7 +58,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: GetContent , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -90,7 +90,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: PutContent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -142,7 +142,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: PostContent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -163,7 +163,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: DeleteContent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -186,7 +186,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: GetContentsByLessonId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -238,7 +238,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentsController , Action: UpdateFile , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -291,7 +291,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: ContentController , Action: PutContent , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
