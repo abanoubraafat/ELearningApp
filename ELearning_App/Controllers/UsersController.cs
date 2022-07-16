@@ -47,7 +47,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: LoginInfoController , Action: GetLoginInfos , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -124,7 +124,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: LoginInfoController , Action: PutLoginInfo , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -155,7 +155,7 @@ namespace ELearning_App.Controllers
             //catch (Exception ex)
             //{
             //    Log.Error($"Controller: LoginInfoController , Action: PostLoginInfo , Message: {ex.Message}");
-            //    return StatusCode(500);
+            //    return BadRequest();
             //}
             //finally
             //{
@@ -175,7 +175,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: LoginInfoController , Action: DeleteLoginInfo , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -200,7 +200,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: LoginInfoController , Action: Login , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -259,10 +259,10 @@ namespace ELearning_App.Controllers
             return Ok(user);
 
         }
-        [HttpGet("EmailExists/{email}")]
-        public async Task<ActionResult> EmailExists(string email)
+        [HttpPost("EmailExists")]
+        public async Task<ActionResult> EmailExists([FromBody] EmailExistDTO dto)
         {
-            var exist = await service.IsNotAvailableUserEmail(email);
+            var exist = await service.IsNotAvailableUserEmail(dto.Email);
             if (exist)
                 return BadRequest();
             return Ok();
@@ -288,7 +288,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: LoginInfoController , Action: ChangePassword , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -415,7 +415,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: LoginInfoController , Action: PutLoginInfo , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {

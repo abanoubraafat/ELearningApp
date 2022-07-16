@@ -33,6 +33,14 @@ namespace ELearning_App.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Quiz> GetQuizByIdAsync(int id)
+        {
+            return await unitOfWork.Context.Quizzes
+                .Where(q => q.Id == id)
+                .Include(q => q.Questions)
+                .ThenInclude(qu => qu.QuestionChoices)
+                .FirstOrDefaultAsync();
+        }
         //public IQueryable<Quiz> GetByIdWithAnswers(int id)
         //{
         //    return unitOfWork.Context.Quizzes.Where(q => q.Id == id).Include(q => q.QuizAnswers);

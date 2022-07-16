@@ -89,7 +89,7 @@ namespace ELearning_App.Helpers
                  .ForMember(d => d.CourseName, o => o.MapFrom(s => s.Course.CourseName))
                  .ForMember(d => d.CourseImage, o => o.MapFrom(s => s.Course.CourseImage));
             CreateMap<AssignmentAnswer, AssignmentAnswerGradeShortDTO>();
-
+            CreateMap<Quiz, GetQuizWithAllInfoDTO>();
         }
     }
 }

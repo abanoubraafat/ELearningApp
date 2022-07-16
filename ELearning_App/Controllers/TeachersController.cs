@@ -41,7 +41,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: TeachersController , Action: GetTeachers , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -86,7 +86,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: TeachersController , Action: PutTeacher , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -134,7 +134,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: TeachersController , Action: PostTeacher , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -153,7 +153,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: TeachersController , Action: DeleteTeacher , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -170,7 +170,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: TeachersController , Action: GetAllWithCourses , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -187,7 +187,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: TeachersController , Action: GetByIdWithCourses , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {

@@ -138,7 +138,7 @@ namespace ELearning_App.Repository.Repositories
             return new RefreshToken
             {
                 Token = Convert.ToBase64String(randomNumber),
-                ExpiresOn = DateTime.UtcNow.AddDays(10),
+                ExpiresOn = DateTime.UtcNow.AddDays(7),
                 CreatedOn = DateTime.UtcNow
             };
         }

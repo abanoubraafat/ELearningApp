@@ -29,6 +29,6 @@ namespace ELearning_App.Domain.Entities
         // (Quiz --> QuizAnswer) one to many
         //public virtual ICollection<QuizAnswer> QuizAnswers { get; set; } = new HashSet<QuizAnswer>();
         public ICollection<QuizGrade> QuizGrades { get; set; }
-
+        public ICollection<Question> Questions { get; set; }
     }
 }

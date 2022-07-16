@@ -42,7 +42,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: GetAssignmentAnswers , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -63,7 +63,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: GetAssignmentAnswer , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -101,7 +101,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -144,7 +144,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: PostAssignmentAnswer , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -166,7 +166,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: DeleteAssignmentAnswer , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -190,7 +190,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: GetAssignmentAnswersByAssignmentId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -220,7 +220,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: GetAssignmentAnswerByStudentIdByAssignmentId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -262,7 +262,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -298,7 +298,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswersController , Action: UpdateFile , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -329,7 +329,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -351,7 +351,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: UpdateAssignmentAnswersAssignedGrades , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -394,7 +394,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: PutAssignmentAnswer , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -418,7 +418,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentAnswerController , Action: GetAssignmentAnswersByCourseId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {

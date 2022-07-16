@@ -38,29 +38,39 @@ namespace ELearning_App.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(TextSimilarityRequestDTO dto)
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage
+            try
             {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri("https://twinword-text-similarity-v1.p.rapidapi.com/similarity/"),
-                Headers =
+                var client = new HttpClient();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri("https://twinword-text-similarity-v1.p.rapidapi.com/similarity/"),
+                    Headers =
                         {
                             { "X-RapidAPI-Key", "fdacb2ce0bmshb0a36e2081822c8p1e7ae6jsn82387bc6a932" },
                             { "X-RapidAPI-Host", "twinword-text-similarity-v1.p.rapidapi.com" },
                         },
-                Content = new FormUrlEncodedContent(new Dictionary<string, string>
+                    Content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     { "text1", dto.text1 },
                     { "text2", dto.text2 },
                 }),
-            };
-            using (var response = await client.SendAsync(request))
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    var json = JsonConvert.DeserializeObject<TextSimilarityResponseDTO>(body);
+                    return Ok(json);
+                }
+            }
+            catch (System.Net.Http.HttpRequestException)
             {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                var json = JsonConvert.DeserializeObject<TextSimilarityResponseDTO>(body);
-                //Console.WriteLine(body);
-                return Ok(json);
+                return BadRequest();
+            }
+            catch(Exception)
+            {
+                return BadRequest("Invalid request");
             }
         }
     }

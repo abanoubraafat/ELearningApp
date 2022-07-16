@@ -44,7 +44,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: GetCourses , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -65,7 +65,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: GetCourse , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -97,7 +97,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: PutCourse , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -141,7 +141,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: PostCourse , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -164,7 +164,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: DeleteCourse , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -240,7 +240,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: CoursesController , Action: GetAllWithTeachers , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -258,7 +258,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: CoursesController , Action: GetAllWithStudents , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -275,7 +275,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: CoursesController , Action: GetByIdWithTeachers , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -293,7 +293,7 @@ namespace ELearning_App.Controllers
         //    catch (Exception ex)
         //    {
         //        Log.Error($"Controller: CoursesController , Action: GetByIdWithStudents , Message: {ex.Message}");
-        //        return StatusCode(500);
+        //        return BadRequest();
         //    }
         //    finally
         //    {
@@ -317,7 +317,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: GetCoursesByTeacherId , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -340,7 +340,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: GetCoursesByStudentId , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -365,7 +365,7 @@ namespace ELearning_App.Controllers
         //    //catch (Exception ex)
         //    //{
         //    //    Log.Error($"Controller: CoursesController , Action: Last5CoursesJoined , Message: {ex.Message}");
-        //    //    return StatusCode(500);
+        //    //    return BadRequest();
         //    //}
         //    //finally
         //    //{
@@ -388,7 +388,7 @@ namespace ELearning_App.Controllers
         //    //catch (Exception ex)
         //    //{
         //    //    Log.Error($"Controller: CoursesController , Action: Last5CoursesJoined , Message: {ex.Message}");
-        //    //    return StatusCode(500);
+        //    //    return BadRequest();
         //    //}
         //    //finally
         //    //{
@@ -468,7 +468,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: CoursesController , Action: PutCourse , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {

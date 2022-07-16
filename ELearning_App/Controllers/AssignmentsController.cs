@@ -41,7 +41,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: GetAssignments , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -63,7 +63,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: GetAssignment , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -97,7 +97,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: UpdateAssignment , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -134,7 +134,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: AddAssignment , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -156,7 +156,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: DeleteAssignment , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -180,7 +180,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: GetAssignmentsByCourseId , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -216,7 +216,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: GetAssignmentsByCourseId , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -253,7 +253,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: UpdateFile , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -285,7 +285,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: GetAssignmentGradesByCourseIdForTeacher , Message: {ex.Message}");
-                return NotFound();
+                return BadRequest();
             }
             finally
             {
@@ -328,7 +328,7 @@ namespace ELearning_App.Controllers
             catch (Exception ex)
             {
                 Log.Error($"Controller: AssignmentController , Action: UpdateAssignment , Message: {ex.Message}");
-                return StatusCode(500);
+                return BadRequest();
             }
             finally
             {
@@ -338,18 +338,30 @@ namespace ELearning_App.Controllers
         [HttpGet("GetWithSubmitted/{assignmentId}/{studentId}")]
         public async Task<ActionResult<GetAssignmentWithSubmitted>> GetAssignmentByIdWithSubmitted(int assignmentId, int studentId)
         {
-            var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
-            var assignment = await service.GetByIdAsync(assignmentId);
-            if (assignment == null) return NotFound($"Invalid assignmentId : {assignmentId}");
-            if (!isValidStudentId) return BadRequest($"Invalid studentId :{studentId}");
-            var assignmentWithSubmitted = await service.GetAssignmentAsync(assignmentId, studentId);
-            if (assignmentWithSubmitted == null) return NotFound("Invalid assignmentId or studentId");
-            var mapped = mapper.Map<GetAssignmentWithSubmitted>(assignmentWithSubmitted);
-            if (mapped.AssignmentAnswerId != 0)
-                mapped.Submitted = true;
-            else
-                mapped.Submitted = false;
-            return (mapped);
+            try
+            {
+                var isValidStudentId = await studentRepository.IsValidStudentId(studentId);
+                var assignment = await service.GetByIdAsync(assignmentId);
+                if (assignment == null) return NotFound($"Invalid assignmentId : {assignmentId}");
+                if (!isValidStudentId) return BadRequest($"Invalid studentId :{studentId}");
+                var assignmentWithSubmitted = await service.GetAssignmentAsync(assignmentId, studentId);
+                if (assignmentWithSubmitted == null) return NotFound("Invalid assignmentId or studentId");
+                var mapped = mapper.Map<GetAssignmentWithSubmitted>(assignmentWithSubmitted);
+                if (mapped.AssignmentAnswerId != 0)
+                    mapped.Submitted = true;
+                else
+                    mapped.Submitted = false;
+                return (mapped);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Controller: AssignmentController , Action: UpdateAssignment , Message: {ex.Message}");
+                return BadRequest();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }
